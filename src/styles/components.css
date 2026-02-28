@@ -1,0 +1,186 @@
+/* ================================================================
+   通用 UI 组件样式 - 跨页面复用
+   包含：状态徽章、Section Header、卡片基础、服务项目等
+   ================================================================ */
+
+/* ======================== Section Header（多页面通用） ======================== */
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 16px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.section-action {
+    font-size: 14px;
+    color: var(--primary-500);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+}
+
+.section-action:hover {
+    color: var(--primary-600);
+}
+
+/* ======================== 状态徽章（通用：正常/偏高/危险） ======================== */
+.metric-status {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-normal {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.status-warning {
+    background: #fef3c7;
+    color: #d97706;
+}
+
+.status-danger {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* ======================== 趋势文字（通用） ======================== */
+.metric-trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    margin-top: 8px;
+}
+
+.trend-up {
+    color: var(--success-500);
+}
+
+.trend-down {
+    color: var(--danger-500);
+}
+
+.trend-stable {
+    color: var(--gray-500);
+}
+
+/* ======================== 设备状态卡片（设备管理页也会用） ======================== */
+.device-status-card {
+    background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    border-radius: var(--radius-xl);
+    padding: 20px;
+    margin-bottom: 16px;
+    border: 1px solid #bae6fd;
+}
+
+.device-status-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.device-icon {
+    width: 48px;
+    height: 48px;
+    background: white;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    color: var(--primary-600);
+    box-shadow: var(--shadow-sm);
+}
+
+.device-status-badge {
+    margin-left: auto;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.device-status-badge.connected {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.device-status-badge.disconnected {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+/* ======================== 服务列表项（互联网医院、AI助手等页会用） ======================== */
+.service-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid var(--gray-200);
+    background: white;
+    margin-bottom: 8px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.service-item:hover {
+    background: var(--gray-50);
+    border-color: var(--primary-500);
+}
+
+.service-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    background: var(--primary-100);
+    color: var(--primary-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* ======================== 动画（全局通用） ======================== */
+.fade-in {
+    animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
+}
