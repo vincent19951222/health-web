@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>血糖记录结果 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Markdown渲染库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* 医疗健康主题 - Web端血糖记录结果页面 */
+
+        :root {
+            /* 主色调 - 专业蓝 */
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+
+            /* 副色调 - 活力橙 */
+            --secondary-500: #f97316;
+            --secondary-600: #ea580c;
+
+            /* 医疗状态色 */
+            --success-500: #22c55e;
+            --warning-500: #f59e0b;
+            --danger-500: #ef4444;
+            --info-500: #06b6d4;
+
+            /* 中性色 */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 24px;
+
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-100);
+            min-height: 100vh;
+            display: flex;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            width: 240px;
+            background: linear-gradient(180deg, #1e40af 0%, #1e3a8a 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+        }
+
+        .sidebar-logo {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo h1 {
+            font-size: 18px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-logo i {
+            font-size: 24px;
+            color: #60a5fa;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 0;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #93c5fd;
+            padding: 8px 20px;
+            font-weight: 600;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: #e0e7ff;
+            text-decoration: none;
+            transition: all 0.2s ease;
+            font-size: 14px;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            border-left: 3px solid #60a5fa;
+        }
+
+        .nav-item i {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: #f97316;
+            color: white;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 10px;
+        }
+
+        .sidebar-user {
+            padding: 16px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #60a5fa, #3b82f6);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: #93c5fd;
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            flex: 1;
+            margin-left: 240px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 顶部Header */
+        .header {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--gray-600);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: var(--gray-200);
+            color: var(--gray-800);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .share-btn {
+            padding: 8px 16px;
+            background: var(--primary-500);
+            color: white;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 14px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .share-btn:hover {
+            background: var(--primary-600);
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 0;
+        }
+
+        /* 左侧面板 */
+        .left-panel {
+            background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 50%, #2563eb 100%);
+            padding: 48px 32px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: calc(100vh - 72px);
+        }
+
+        .result-title {
+            color: white;
+            font-size: 18px;
+            font-weight: 500;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        /* 血糖结果圆环 */
+        .blood-sugar-result-circle {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: conic-gradient(from -90deg, #10b981 0deg 216deg, #e5e7eb 216deg 360deg);
+            position: relative;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .blood-sugar-result-circle::before {
+            content: '';
+            position: absolute;
+            inset: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .result-value-container {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .result-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--gray-800);
+            line-height: 1;
+        }
+
+        .result-unit {
+            font-size: 16px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        .result-status {
+            margin-top: 24px;
+            padding: 8px 24px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .record-info {
+            margin-top: 32px;
+            text-align: center;
+            color: white;
+        }
+
+        .record-datetime {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .record-period {
+            font-size: 14px;
+            opacity: 0.7;
+            margin-top: 4px;
+        }
+
+        /* 参考范围 */
+        .reference-section {
+            margin-top: auto;
+            padding-top: 32px;
+        }
+
+        .reference-title {
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .reference-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .reference-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: white;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .reference-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .reference-dot.normal { background: #10b981; }
+        .reference-dot.warning { background: #f59e0b; }
+        .reference-dot.danger { background: #ef4444; }
+        .reference-dot.low { background: #3b82f6; }
+
+        /* 右侧面板 */
+        .right-panel {
+            background: var(--gray-50);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            max-height: calc(100vh - 72px);
+        }
+
+        /* AI提示卡片 */
+        .ai-reminder-card {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 1px solid #bae6fd;
+            border-radius: var(--radius-xl);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ai-avatar {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .ai-avatar i {
+            font-size: 24px;
+            color: white;
+        }
+
+        .ai-content {
+            flex: 1;
+        }
+
+        .ai-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin-bottom: 4px;
+        }
+
+        .ai-message {
+            font-size: 14px;
+            color: var(--gray-600);
+            line-height: 1.5;
+        }
+
+        .close-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            border: none;
+            cursor: pointer;
+            color: var(--gray-400);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background: var(--gray-100);
+            color: var(--gray-600);
+        }
+
+        /* AI分析报告 */
+        .report-section {
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .report-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .report-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .report-title i {
+            color: var(--primary-500);
+        }
+
+        .report-content {
+            padding: 24px;
+            font-size: 15px;
+            line-height: 1.8;
+            color: var(--gray-700);
+        }
+
+        .report-content h2 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin: 24px 0 12px 0;
+            padding-bottom: 8px;
+            border-bottom: 2px solid var(--primary-100);
+        }
+
+        .report-content h2:first-child {
+            margin-top: 0;
+        }
+
+        .report-content h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-800);
+            margin: 16px 0 8px 0;
+        }
+
+        .report-content p {
+            margin-bottom: 12px;
+        }
+
+        .report-content ul, .report-content ol {
+            margin: 12px 0;
+            padding-left: 24px;
+        }
+
+        .report-content li {
+            margin-bottom: 8px;
+        }
+
+        .report-content blockquote {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 12px 16px;
+            margin: 16px 0;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+        }
+
+        .report-content strong {
+            color: var(--gray-800);
+        }
+
+        .report-success {
+            background: #dcfce7;
+            border: 1px solid #86efac;
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            margin: 16px 0;
+        }
+
+        .report-content img {
+            max-width: 100%;
+            border-radius: var(--radius-lg);
+            margin: 16px 0;
+        }
+
+        .report-content video {
+            max-width: 100%;
+            border-radius: var(--radius-lg);
+            margin: 16px 0;
+        }
+
+        .report-content audio {
+            width: 100%;
+            margin: 16px 0;
+        }
+
+        .ai-disclaimer {
+            margin-top: 16px;
+            padding: 12px 16px;
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            border-radius: 4px;
+            color: #0c4a6e;
+            font-size: 14px;
+            font-style: italic;
+        }
+
+        /* 反馈区域 */
+        .feedback-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            background: var(--gray-50);
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .feedback-text {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .feedback-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .feedback-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--gray-300);
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: var(--gray-500);
+            transition: all 0.2s ease;
+        }
+
+        .feedback-btn:hover {
+            border-color: var(--primary-500);
+            color: var(--primary-500);
+            background: var(--primary-50);
+        }
+
+        .feedback-btn.active.like {
+            background: #dcfce7;
+            border-color: #22c55e;
+            color: #22c55e;
+        }
+
+        .feedback-btn.active.dislike {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* 在线问诊卡片 */
+        .consultation-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-md);
+            overflow: hidden;
+        }
+
+        .consultation-header {
+            padding: 20px 24px;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .consultation-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .consultation-icon i {
+            font-size: 20px;
+            color: white;
+        }
+
+        .consultation-info h3 {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .consultation-info p {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .consultation-body {
+            padding: 20px 24px;
+        }
+
+        .doctor-row {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .doctor-avatar {
+            width: 80px;
+            height: 100px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: var(--gray-200);
+            flex-shrink: 0;
+        }
+
+        .doctor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .doctor-details {
+            flex: 1;
+        }
+
+        .doctor-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        .doctor-title {
+            font-size: 14px;
+            color: var(--primary-500);
+            margin-top: 2px;
+        }
+
+        .doctor-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .consultation-action-btn {
+            padding: 10px 20px;
+            border-radius: 50px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .consultation-action-btn.text-btn {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        .consultation-action-btn.video-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .consultation-action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .doctor-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gray-200), transparent);
+            margin: 16px 0;
+        }
+
+        .doctor-description {
+            font-size: 14px;
+            color: var(--gray-600);
+            line-height: 1.6;
+        }
+
+        /* 底部操作栏 */
+        .action-bar {
+            display: flex;
+            gap: 16px;
+            padding: 20px 0;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+            border: none;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-600);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #059669, #10b981);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #047857, #059669);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .left-panel {
+                min-height: auto;
+                padding: 32px;
+            }
+
+            .reference-section {
+                padding-top: 24px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 64px;
+            }
+
+            .sidebar-logo h1 span,
+            .nav-section-title,
+            .nav-item span,
+            .user-info {
+                display: none;
+            }
+
+            .sidebar-logo {
+                padding: 16px;
+                display: flex;
+                justify-content: center;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .sidebar-user {
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 64px;
+            }
+
+            .doctor-row {
+                flex-direction: column;
+            }
+
+            .doctor-actions {
+                flex-direction: column;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>
+                <i class="fas fa-heartbeat"></i>
+                <span>优唐智能AI+</span>
+            </h1>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">健康监测</div>
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>健康概览</span>
+                </a>
+                <a href="blood-sugar.html" class="nav-item active">
+                    <i class="fas fa-tint"></i>
+                    <span>血糖管理</span>
+                </a>
+                <a href="blood-pressure.html" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>血压管理</span>
+                </a>
+                <a href="glycated.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>糖化血红蛋白</span>
+                </a>
+                <a href="uric-acid.html" class="nav-item">
+                    <i class="fas fa-flask"></i>
+                    <span>尿酸检测</span>
+                </a>
+                <a href="blood-ketone.html" class="nav-item">
+                    <i class="fas fa-burn"></i>
+                    <span>血酮检测</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">智能服务</div>
+                <a href="ai-chat.html" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI助手</span>
+                    <span class="badge">新</span>
+                </a>
+                <a href="hospital.html" class="nav-item">
+                    <i class="fas fa-hospital"></i>
+                    <span>互联网医院</span>
+                </a>
+                <a href="devices.html" class="nav-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>设备管理</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <span>健康报告</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">设置</div>
+                <a href="system_settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </div>
+        </nav>
+
+        <a href="profile.html" class="sidebar-user">
+            <div class="user-avatar">张</div>
+            <div class="user-info">
+                <div class="user-name">张先生</div>
+                <div class="user-status">健康会员</div>
+            </div>
+        </a>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 顶部Header -->
+        <header class="header">
+            <div class="header-left">
+                <a href="blood-sugar.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="page-title">血糖记录结果</h2>
+            </div>
+            <div class="header-right">
+                <button class="share-btn" onclick="shareResult()">
+                    <i class="fas fa-share-alt"></i>
+                    分享结果
+                </button>
+            </div>
+        </header>
+
+        <!-- 内容区域 - 左右分栏 -->
+        <div class="content">
+            <!-- 左侧 - 血糖结果显示 -->
+            <div class="left-panel fade-in">
+                <div class="result-title">本次血糖检测结果</div>
+
+                <div class="blood-sugar-result-circle" id="resultCircle">
+                    <div class="result-value-container">
+                        <span class="result-value" id="resultValue">6.7</span>
+                        <span class="result-unit">mmol/L</span>
+                    </div>
+                </div>
+
+                <div class="result-status" id="resultStatus">血糖正常</div>
+
+                <div class="record-info">
+                    <div class="record-datetime" id="recordDateTime">2025年9月13日 11:07</div>
+                    <div class="record-period" id="recordPeriod">测量时段：午餐前</div>
+                </div>
+
+                <!-- 参考范围 -->
+                <div class="reference-section">
+                    <div class="reference-title">血糖参考范围</div>
+                    <div class="reference-list">
+                        <div class="reference-item">
+                            <span class="reference-dot low"></span>
+                            <span>低血糖: &lt;3.9 mmol/L</span>
+                        </div>
+                        <div class="reference-item">
+                            <span class="reference-dot normal"></span>
+                            <span>正常: 3.9-6.1 mmol/L (空腹)</span>
+                        </div>
+                        <div class="reference-item">
+                            <span class="reference-dot warning"></span>
+                            <span>偏高: 6.1-7.0 mmol/L</span>
+                        </div>
+                        <div class="reference-item">
+                            <span class="reference-dot danger"></span>
+                            <span>过高: &gt;7.0 mmol/L</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧 - AI分析和问诊 -->
+            <div class="right-panel fade-in">
+                <!-- AI提示卡片 -->
+                <div class="ai-reminder-card" id="aiReminderCard">
+                    <div class="ai-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="ai-content">
+                        <div class="ai-title">小优提示</div>
+                        <div class="ai-message">以下内容是基于优唐AI助手生成的智能健康管理意见，仅供参考。</div>
+                    </div>
+                    <button class="close-btn" onclick="closeReminder()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <!-- AI分析报告 -->
+                <div class="report-section">
+                    <div class="report-header">
+                        <div class="report-title">
+                            <i class="fas fa-file-medical-alt"></i>
+                            血糖AI分析报告
+                        </div>
+                    </div>
+                    <div class="report-content" id="reportContent">
+                        <!-- 通过JavaScript动态加载markdown内容 -->
+                    </div>
+                    <div class="feedback-section">
+                        <span class="feedback-text">小优的建议是否有帮助：</span>
+                        <div class="feedback-buttons">
+                            <button class="feedback-btn" id="likeBtn" onclick="handleFeedback('like')">
+                                <i class="far fa-thumbs-up"></i>
+                            </button>
+                            <button class="feedback-btn" id="dislikeBtn" onclick="handleFeedback('dislike')">
+                                <i class="far fa-thumbs-down"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 在线问诊卡片 -->
+                <div class="consultation-card">
+                    <div class="consultation-header">
+                        <div class="consultation-icon">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="consultation-info">
+                            <h3>在线问诊</h3>
+                            <p>专业医生 · 精准服务</p>
+                        </div>
+                    </div>
+                    <div class="consultation-body">
+                        <div class="doctor-row">
+                            <div class="doctor-avatar">
+                                <img src="../imgs/欧阳存.png" alt="欧阳存医生">
+                            </div>
+                            <div class="doctor-details">
+                                <div class="doctor-name">欧阳存</div>
+                                <div class="doctor-title">主任医师</div>
+                                <div class="doctor-actions">
+                                    <button class="consultation-action-btn text-btn" onclick="startTextConsultation()">
+                                        <i class="fas fa-comments"></i>
+                                        图文问诊
+                                    </button>
+                                    <button class="consultation-action-btn video-btn" onclick="startVideoConsultation()">
+                                        <i class="fas fa-video"></i>
+                                        视频问诊
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="doctor-divider"></div>
+                        <p class="doctor-description">硕士生导师，原江汉大学神经内科教研室主任和武汉市第六医院神经内科主任，擅长心脑血管疾病预防、治疗、康复，各类神经病变的临床诊疗。</p>
+                    </div>
+                </div>
+
+                <!-- 底部操作栏 -->
+                <div class="action-bar">
+                    <a href="blood-sugar.html" class="btn btn-secondary">
+                        <i class="fas fa-list"></i>
+                        返回列表
+                    </a>
+                    <a href="blood-sugar-manual.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        继续记录
+                    </a>
+                    <button class="btn btn-success" onclick="openChat()">
+                        <i class="fas fa-comments"></i>
+                        联系客服
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 页面初始化
+        function initializePage() {
+            // 获取血糖记录数据
+            const urlParams = new URLSearchParams(window.location.search);
+            const value = urlParams.get('value') || '6.7';
+            const period = urlParams.get('period') || '空腹';
+            const dateTime = urlParams.get('dateTime') || formatDateTime(new Date());
+
+            // 更新显示
+            document.getElementById('resultValue').textContent = value;
+            document.getElementById('recordPeriod').textContent = '测量时段：' + period;
+            document.getElementById('recordDateTime').textContent = dateTime;
+
+            // 根据血糖值更新圆环颜色和状态
+            updateResultDisplay(parseFloat(value));
+
+            // 渲染AI报告
+            renderReportContent(value, period);
+        }
+
+        // 格式化日期时间
+        function formatDateTime(date) {
+            const year = date.getFullYear();
+            const month = date.getMonth() + 1;
+            const day = date.getDate();
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            return `${year}年${month}月${day}日 ${hours}:${minutes}`;
+        }
+
+        // 更新结果显示
+        function updateResultDisplay(value) {
+            const circle = document.getElementById('resultCircle');
+            const statusEl = document.getElementById('resultStatus');
+
+            let color = '#10b981'; // 正常绿色
+            let percentage = 60;
+            let status = '血糖正常';
+
+            if (value < 3.9) {
+                color = '#3b82f6'; // 低血糖蓝色
+                percentage = 30;
+                status = '血糖偏低';
+            } else if (value > 7.0) {
+                color = '#ef4444'; // 高血糖红色
+                percentage = 85;
+                status = '血糖偏高';
+            } else if (value > 6.1) {
+                color = '#f59e0b'; // 偏高橙色
+                percentage = 70;
+                status = '血糖略高';
+            }
+
+            circle.style.background = `conic-gradient(from -90deg, ${color} 0deg ${percentage * 3.6}deg, #e5e7eb ${percentage * 3.6}deg 360deg)`;
+            statusEl.textContent = status;
+        }
+
+        // 渲染AI报告内容
+        function renderReportContent(value, period) {
+            const markdown = `
+## 检测结果概述
+
+您好！根据本次血糖检测结果，您的${period}血糖值为 **${value} mmol/L**，${getStatusText(value)}
+
+> 💡 **医生提醒**：科学饮食是所有类型糖尿病治疗的基础，也是糖尿病患者自然病程中任何阶段预防和控制不良或严重的措施。
+
+${getRecommendationBox(value)}
+
+## 血糖趋势分析
+
+根据您近期的血糖监测数据，我们为您生成了以下趋势分析：
+
+### 主要发现：
+
+1. **血糖控制${value <= 6.1 ? '良好' : value <= 7.0 ? '一般' : '需关注'}**：您的血糖值${value <= 6.1 ? '保持在理想范围内' : value <= 7.0 ? '略有波动，需要关注' : '偏高，建议咨询医生'}
+2. **饮食管理建议**：${value <= 6.1 ? '饮食控制得当，继续保持' : '建议调整饮食结构，减少碳水化合物摄入'}
+3. **运动建议**：${value <= 6.1 ? '当前运动量适宜' : '建议适当增加有氧运动'}
+
+## 健康建议
+
+### 🍎 饮食建议
+
+- 继续保持低糖、低脂的饮食习惯
+- 增加富含纤维的蔬菜摄入
+- 控制碳水化合物的摄入量
+- 定时定量进餐
+
+### 🏃‍♂️ 运动建议
+
+适量的有氧运动对血糖控制非常有益：
+
+- **步行**：每天30分钟，强度适中
+- **游泳**：每周2-3次，每次45分钟
+- **瑜伽**：有助于放松身心，改善血糖
+
+### 💤 生活建议
+
+- 保持规律作息，避免熬夜
+- 控制情绪波动，保持心情舒畅
+- 定期监测血糖，建立健康档案
+`;
+
+            const reportContainer = document.getElementById('reportContent');
+            reportContainer.innerHTML = marked.parse(markdown);
+
+            // 添加免责声明
+            const disclaimerElement = document.createElement('div');
+            disclaimerElement.className = 'ai-disclaimer';
+            disclaimerElement.innerHTML = '<i class="fas fa-info-circle" style="margin-right: 8px;"></i>内容由AI生成，仅供参考。';
+            reportContainer.appendChild(disclaimerElement);
+        }
+
+        // 获取状态文本
+        function getStatusText(value) {
+            if (value < 3.9) return '属于低血糖范围，建议及时补充糖分。';
+            if (value <= 6.1) return '处于正常范围内。';
+            if (value <= 7.0) return '略高于正常范围，建议注意饮食控制。';
+            return '高于正常范围，建议咨询医生。';
+        }
+
+        // 获取推荐框
+        function getRecommendationBox(value) {
+            if (value <= 6.1) {
+                return '<div class="report-success">✅ **恭喜您**：本次检测结果良好，请继续保持健康的生活方式！</div>';
+            } else if (value <= 7.0) {
+                return '<div class="report-success" style="background: #fef3c7; border-color: #fcd34d;">⚠️ **温馨提示**：血糖略高，建议适当控制饮食并增加运动。</div>';
+            } else {
+                return '<div class="report-success" style="background: #fee2e2; border-color: #fca5a5;">🔴 **注意**：血糖偏高，建议及时就医咨询。</div>';
+            }
+        }
+
+        // 关闭提醒卡片
+        function closeReminder() {
+            const reminderCard = document.getElementById('aiReminderCard');
+            reminderCard.style.transition = 'all 0.3s ease';
+            reminderCard.style.transform = 'translateX(100%)';
+            reminderCard.style.opacity = '0';
+
+            setTimeout(() => {
+                reminderCard.style.display = 'none';
+            }, 300);
+        }
+
+        // 分享结果
+        function shareResult() {
+            const value = document.getElementById('resultValue').textContent;
+            if (navigator.share) {
+                navigator.share({
+                    title: '我的血糖记录',
+                    text: `血糖值：${value} mmol/L`,
+                    url: window.location.href
+                });
+            } else {
+                alert('分享功能暂不支持');
+            }
+        }
+
+        // 反馈处理
+        function handleFeedback(type) {
+            const likeBtn = document.getElementById('likeBtn');
+            const dislikeBtn = document.getElementById('dislikeBtn');
+
+            if (type === 'like') {
+                likeBtn.classList.toggle('active');
+                likeBtn.classList.toggle('like');
+                dislikeBtn.classList.remove('active', 'dislike');
+
+                if (likeBtn.classList.contains('active')) {
+                    likeBtn.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+                } else {
+                    likeBtn.innerHTML = '<i class="far fa-thumbs-up"></i>';
+                }
+                dislikeBtn.innerHTML = '<i class="far fa-thumbs-down"></i>';
+            } else {
+                dislikeBtn.classList.toggle('active');
+                dislikeBtn.classList.toggle('dislike');
+                likeBtn.classList.remove('active', 'like');
+
+                if (dislikeBtn.classList.contains('active')) {
+                    dislikeBtn.innerHTML = '<i class="fas fa-thumbs-down"></i>';
+                } else {
+                    dislikeBtn.innerHTML = '<i class="far fa-thumbs-down"></i>';
+                }
+                likeBtn.innerHTML = '<i class="far fa-thumbs-up"></i>';
+            }
+        }
+
+        // 图文问诊
+        function startTextConsultation() {
+            alert('即将跳转到图文问诊页面');
+            // window.location.href = 'text-consultation.html';
+        }
+
+        // 视频问诊
+        function startVideoConsultation() {
+            alert('即将跳转到视频问诊页面');
+            // window.location.href = 'video-consultation.html';
+        }
+
+        // 联系客服
+        function openChat() {
+            window.location.href = 'ai-chat.html';
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+
+</html>

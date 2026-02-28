@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python3 \"C:\\\\Users\\\\ASUS\\\\.claude\\\\skills\\\\ui-ux-pro-max\\\\scripts\\\\search.py\" \"healthcare medical dashboard SaaS\" --domain product)",
+      "Bash(python3 C:/Users/ASUS/.claude/skills/ui-ux-pro-max/scripts/search.py \"healthcare medical dashboard\" --domain product)"
+    ]
+  }
+}

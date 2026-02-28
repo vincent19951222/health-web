@@ -1341,6 +1341,26 @@
             const recordDateTime = document.getElementById('recordDateTime').value;
             const note = document.getElementById('noteInput').value;
 
+            // 格式化日期时间显示
+            let formattedDateTime = '';
+            if (recordDateTime) {
+                const date = new Date(recordDateTime);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                formattedDateTime = `${year}年${month}月${day}日 ${hours}:${minutes}`;
+            } else {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1;
+                const day = now.getDate();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                formattedDateTime = `${year}年${month}月${day}日 ${hours}:${minutes}`;
+            }
+
             // 创建记录对象
             const record = {
                 value: value,
@@ -1355,11 +1375,13 @@
             records.push(record);
             localStorage.setItem('bloodSugarRecords', JSON.stringify(records));
 
-            // 显示成功提示
-            alert('血糖记录已保存！');
-
-            // 跳转回血糖管理页面
-            window.location.href = 'blood-sugar.html';
+            // 跳转到结果页面，传递参数
+            const params = new URLSearchParams({
+                value: value,
+                period: selectedPeriod,
+                dateTime: formattedDateTime
+            });
+            window.location.href = `blood-sugar-result.html?${params.toString()}`;
         }
 
         // 页面加载完成后初始化
