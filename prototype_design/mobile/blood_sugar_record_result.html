@@ -1,0 +1,1812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>血糖记录结果 - 控糖助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Markdown渲染库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 代码高亮库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        /* 糖尿病控糖管理平台 - 统一样式文件 */
+
+        /* 根据UI_design.md的设计规则定义颜色 */
+        /* 主色调 */
+        .primary-color { color: #3b82f6; }
+        .primary-dark { color: #2563eb; }
+        .secondary-color { color: #f97316; }
+        .secondary-dark { color: #ea580c; }
+        
+        /* 医疗主题色彩 */
+        .medical-blue { color: #3b82f6; }
+        .medical-green { color: #22c55e; }
+        .medical-red { color: #ef4444; }
+        .medical-orange { color: #f59e0b; }
+        .medical-purple { color: #8b5cf6; }
+        
+        /* 中性色 */
+        .gray-50 { color: #f9fafb; }
+        .gray-100 { color: #f3f4f6; }
+        .gray-200 { color: #e5e7eb; }
+        .gray-300 { color: #d1d5db; }
+        .gray-400 { color: #9ca3af; }
+        .gray-500 { color: #6b7280; }
+        .gray-600 { color: #4b5563; }
+        .gray-700 { color: #374151; }
+        .gray-800 { color: #1f2937; }
+        .gray-900 { color: #111827; }
+
+        /* 隐藏所有滚动条 */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* 血糖结果圆环样式 */
+        .blood-sugar-result-circle {
+            width: 160px;
+            height: 160px;
+            background: conic-gradient(from -90deg, #10b981 0deg 216deg, #e5e7eb 216deg 360deg);
+            border-radius: 50%;
+            position: relative;
+            margin: 0 auto;
+        }
+        
+        .blood-sugar-result-circle::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        /* 症状卡片样式 */
+        .symptom-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px 12px;
+            background: #f59e0b;
+            border-radius: 12px;
+            color: white;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            min-height: 80px;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .symptom-card:hover {
+            transform: scale(1.02);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .symptom-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 8px;
+        }
+
+        /* 多媒体报告卡片样式 */
+        .medical-report-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .report-content {
+            line-height: 1.6;
+        }
+
+        .report-content h1, .report-content h2, .report-content h3 {
+            color: #374151;
+            margin-bottom: 12px;
+            margin-top: 0px;
+        }
+
+        .report-content h1 { font-size: 24px; font-weight: 700; }
+        .report-content h2 { font-size: 20px; font-weight: 600; }
+        .report-content h3 { font-size: 18px; font-weight: 600; }
+
+        .report-content p {
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        .report-content ul, .report-content ol {
+            margin-bottom: 12px;
+            padding-left: 20px;
+        }
+
+        .report-content li {
+            margin-bottom: 4px;
+            color: #374151;
+        }
+
+        .report-content blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+            margin: 16px 0;
+            background: #f9fafb;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .report-content code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .report-content pre {
+            background: #f3f4f6;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .media-container {
+            margin: 16px 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .media-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-video {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+        }
+
+        .media-audio {
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        .media-caption {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .report-section {
+            margin-bottom: 24px;
+        }
+
+        .report-highlight {
+            background: linear-gradient(135deg, #3b82f6, #22c55e);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .report-warning {
+            background: #fef3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+
+        .report-success {
+            background: #d1f2eb;
+            border: 1px solid #a3e4d7;
+            color: #0e6b56;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+
+        /* 响应式设计优化 */
+        @media (max-width: 768px) {
+            .medical-report-card {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            .report-content h1 { font-size: 20px; }
+            .report-content h2 { font-size: 18px; }
+            .report-content h3 { font-size: 16px; }
+
+            .media-video {
+                height: 180px;
+            }
+
+            .report-highlight, .report-warning, .report-success {
+                padding: 10px;
+                font-size: 14px;
+            }
+        }
+
+        /* 加载动画 */
+        .report-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #6b7280;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 媒体元素交互效果 */
+        .media-image:hover {
+            transform: scale(1.02);
+            transition: transform 0.3s ease;
+        }
+
+        .media-container:hover .media-caption {
+            color: #3b82f6;
+            transition: color 0.3s ease;
+        }
+
+        /* 报告内容表格样式 */
+        .report-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        .report-content th,
+        .report-content td {
+            border: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .report-content th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .report-content tr:nth-child(even) {
+            background: #f9fafb;
+        }
+
+        /* 不同症状的颜色 */
+        .symptom-card.thirsty { background: #3b82f6; }
+        .symptom-card.dry-skin { background: #f59e0b; }
+        .symptom-card.frequent-urination { background: #ef4444; }
+        .symptom-card.fatigue { background: #8b5cf6; }
+        .symptom-card.hunger { background: #10b981; }
+        .symptom-card.blurred-vision { background: #6366f1; }
+
+        /* 按钮样式 */
+        .action-button {
+            background: #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .action-button:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .secondary-button {
+            background: #f97316;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            min-width: 40px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .secondary-button:hover {
+            background: #ea580c;
+        }
+
+        /* 确保移动端一排显示 */
+        .feedback-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: nowrap;
+            gap: 8px;
+        }
+
+        .feedback-buttons {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .feedback-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            color: #9ca3af;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .feedback-btn:hover {
+            background: #e5e7eb;
+            transform: scale(1.05);
+        }
+
+        .feedback-btn.active.like {
+            background: #fb923c;
+            border-color: #fb923c;
+            color: white;
+        }
+
+        .feedback-btn.active.dislike {
+            background: #3b82f6;
+            border-color: #3b82f6;
+            color: white;
+        }
+
+        .feedback-text {
+            flex: 1;
+            min-width: 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 480px) {
+            .secondary-button {
+                padding: 6px 10px;
+                min-width: 36px;
+                height: 32px;
+                font-size: 12px;
+            }
+            
+            .feedback-text {
+                font-size: 12px;
+            }
+        }
+
+        /* 报告卡片样式 */
+        .report-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #10b981;
+        }
+
+        .report-title {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .report-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        /* AI提醒卡片样式 - 仿通知样式 */
+        .ai-reminder-card {
+            background: white;
+            border-radius: 16px;
+            margin: 16px 0;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            position: relative;
+            border: 1px solid #e5e7eb;
+        }
+
+        .ai-reminder-header {
+            display: flex;
+            align-items: flex-start;
+            padding: 16px;
+            position: relative;
+        }
+
+        .ai-avatar-container {
+            width: 30%;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding-right: 12px;
+        }
+
+        .ai-avatar {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .ai-avatar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="35" r="20" fill="%23ffffff" opacity="0.8"/><path d="M20 80 Q20 60 50 60 Q80 60 80 80 L80 100 L20 100 Z" fill="%23ffffff" opacity="0.8"/></svg>') center/cover;
+        }
+
+        .ai-reminder-content {
+            width: 70%;
+            padding-left: 4px;
+        }
+
+        .ai-reminder-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+
+        .ai-reminder-message {
+            font-size: 14px;
+            line-height: 1.4;
+            color: #4b5563;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 24px;
+            height: 24px;
+            background: rgba(107, 114, 128, 0.1);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .close-button:hover {
+            background: rgba(107, 114, 128, 0.2);
+        }
+
+        .close-button i {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .ai-reminder-header {
+                padding: 14px;
+            }
+
+            .ai-avatar {
+                width: 56px;
+                height: 56px;
+            }
+
+            .ai-reminder-title {
+                font-size: 14px;
+            }
+
+            .ai-reminder-message {
+                font-size: 14px;
+            }
+
+            .close-button {
+                width: 20px;
+                height: 20px;
+                top: 10px;
+                right: 10px;
+            }
+
+            .close-button i {
+                font-size: 10px;
+            }
+        }
+
+        /* 分割线样式 */
+        .section-divider {
+            display: flex;
+            align-items: center;
+            margin: 24px 0;
+            padding: 0 16px;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e5e7eb, transparent);
+        }
+
+        .divider-text {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0 16px;
+            background: #f8fafc;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #6b7280;
+            white-space: nowrap;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .divider-text i {
+            color: #f59e0b;
+            font-size: 12px;
+        }
+
+        /* 响应式优化 */
+        @media (max-width: 768px) {
+            .section-divider {
+                margin: 20px 0;
+                padding: 0 12px;
+            }
+
+            .divider-text {
+                padding: 0 12px;
+                font-size: 12px;
+            }
+
+            .divider-text i {
+                font-size: 12px;
+            }
+        }
+
+        /* 互联网医院问诊卡片样式 */
+        .online-consultation-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            border-radius: 20px;
+            padding: 24px;
+            margin-bottom: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .online-consultation-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #4f46e5, #06b6d4, #10b981);
+        }
+        
+        .consultation-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .consultation-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+        }
+        
+        .consultation-title {
+            flex: 1;
+            margin-left: 16px;
+        }
+        
+        .consultation-title h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1e293b;
+            line-height: 1.2;
+        }
+        
+        .consultation-title p {
+            margin: 4px 0 0 0;
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.2;
+        }
+        
+        .consultation-status {
+            display: flex;
+            align-items: center;
+        }
+        
+        .status-badge {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .status-badge::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 6px;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        .consultation-question {
+            margin-bottom: 20px;
+        }
+        
+        .question-bubble {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border-radius: 16px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            border-left: 4px solid #4f46e5;
+        }
+        
+        .question-icon {
+            color: #4f46e5;
+            margin-right: 12px;
+            font-size: 16px;
+        }
+        
+        .question-bubble span {
+            color: #374151;
+            font-size: 14px;
+            font-weight: 500;
+            line-height: 1.4;
+            /* 限制显示一行，超过用省略号 */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        /* 医生信息区域样式 */
+        .doctor-section {
+            margin-bottom: 4px;
+        }
+
+        .doctor-info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .doctor-info-row .doctor-avatar {
+            width: 80px;
+            height: 120px;
+            border-radius: 8px;
+            margin-right: 16px;
+            border: 3px solid white;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            flex-shrink: 0;
+        }
+
+        .doctor-info-row .doctor-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .doctor-info-row .doctor-info {
+            flex: 1;
+            text-align: left;
+        }
+
+        .doctor-info-row .doctor-name {
+            font-size: 22px;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 4px;
+        }
+
+        .doctor-info-row .doctor-title {
+            font-size: 16px;
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .doctor-info-row .doctor-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .doctor-info-row .doctor-actions .consultation-btn {
+            padding: 10px 12px;
+            font-size: 12px;
+            min-width: 80px;
+            min-height: 30px;
+        }
+
+        /* 分割线样式 */
+        .doctor-divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #e2e8f0, transparent);
+            margin: 16px 0;
+        }
+
+        /* 医生描述容器 */
+        .doctor-description-container {
+            padding: 0 4px;
+        }
+
+        .doctor-description-container .doctor-description {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+            margin: 0;
+            text-align: left;
+        }
+        
+        .consultation-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .consultation-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            padding: 14px 24px;
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+            flex: none;
+            min-height: 50px;
+            width: auto;
+            min-width: 120px;
+        }
+
+        .consultation-btn.text-btn {
+            background: linear-gradient(135deg, #059669, #10b981);
+            box-shadow: 0 4px 16px rgba(5, 150, 105, 0.3);
+        }
+
+        .consultation-btn.video-btn {
+            background: linear-gradient(135deg, #4f46e5, #7c3aed);
+            box-shadow: 0 4px 16px rgba(79, 70, 229, 0.3);
+        }
+        
+        .consultation-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.4);
+        }
+        
+        .consultation-btn:active {
+            transform: translateY(0);
+        }
+        
+        .btn-shine {
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .consultation-btn:hover .btn-shine {
+            left: 100%;
+        }
+        
+            
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.5;
+            }
+        }
+        
+        /* 移动端优化 - 针对手机屏幕 */
+        @media (max-width: 640px) {
+            .online-consultation-card {
+                padding: 16px;
+                margin-bottom: 12px;
+            }
+
+            .consultation-header {
+                margin-bottom: 12px;
+            }
+
+            .consultation-icon {
+                width: 36px;
+                height: 36px;
+                font-size: 16px;
+            }
+
+            .consultation-title h3 {
+                font-size: 16px;
+            }
+
+            .consultation-title p {
+                font-size: 12px;
+            }
+
+            .doctor-info-row {
+                flex-direction: row;
+                text-align: left;
+                gap: 8px;
+                margin-bottom: 12px;
+            }
+
+            .doctor-info-row .doctor-avatar {
+                width: 60px;
+                height: 80px;
+                margin-right: 8px;
+                border-radius: 6px;
+            }
+
+            .doctor-info-row .doctor-info {
+                text-align: left;
+            }
+
+            .doctor-info-row .doctor-name {
+                font-size: 16px;
+            }
+
+            .doctor-info-row .doctor-title {
+                font-size: 14px;
+            }
+
+            .doctor-info-row .doctor-actions {
+                flex-direction: row;
+                gap: 4px;
+                margin-top: 4px;
+            }
+
+            .doctor-info-row .doctor-actions .consultation-btn {
+                padding: 6px 10px;
+                font-size: 12px;
+                min-width: 60px;
+                min-height: 28px;
+            }
+
+            .doctor-divider {
+                margin: 8px 0;
+            }
+
+            .doctor-description-container {
+                padding: 0 2px;
+            }
+
+            .doctor-description-container .doctor-description {
+                font-size: 14px;
+                line-height: 1.5;
+            }
+
+            .consultation-action {
+                flex-direction: row;
+                gap: 4px;
+                justify-content: center;
+                padding: 0 4px;
+            }
+
+            /* 主要问诊按钮 - 移动端优化尺寸 */
+            .consultation-btn {
+                width: auto;
+                padding: 8px 12px;
+                font-size: 12px;
+                min-width: 80px;
+                min-height: 32px;
+                border-radius: 50px;
+                flex: 1;
+                max-width: 110px;
+            }
+
+            .consultation-btn i {
+                font-size: 11px;
+                margin-right: 3px;
+            }
+        }
+
+        /* 超小屏幕进一步优化 */
+        @media (max-width: 375px) {
+            .consultation-action {
+                gap: 4px;
+                padding: 0 8px;
+            }
+
+            .consultation-btn {
+                width: auto;
+                padding: 7px 10px;
+                font-size: 11px;
+                min-width: 75px;
+                min-height: 30px;
+                border-radius: 50px;
+                max-width: 100px;
+            }
+
+            .consultation-btn i {
+                font-size: 10px;
+                margin-right: 2px;
+            }
+        }
+        
+        /* 推荐卡片样式 */
+        .recommendation-card {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin: 8px 0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s ease;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .recommendation-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .recommendation-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            font-size: 20px;
+        }
+
+        .recommendation-text {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .recommendation-subtitle {
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 2px;
+        }
+
+    
+        /* 浮动对话框样式 - 铺满屏幕背景 */
+        .chat-float-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            /* 全宽度背景 */
+            background: white;
+            padding: 12px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            border: none;
+            /* 根据手机角度设置圆角：下方圆角，上方直角 */
+            border-radius: 0px 0px 0 0;
+            /* 确保在顶部 */
+            transform: translateZ(0);
+        }
+
+        .chat-buttons-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .chat-float {
+            background: #667eea;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 32px;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex: 1;
+            border: none;
+            min-height: 48px;
+        }
+
+        /* 微信绿色样式 - 第一个按钮 */
+        .chat-float.wechat-green {
+            background: #07C160;
+            box-shadow: 0 4px 16px rgba(7, 193, 96, 0.3);
+        }
+
+        .chat-float:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-float.wechat-green:hover {
+            box-shadow: 0 6px 20px rgba(7, 193, 96, 0.4);
+        }
+
+        .chat-float:active {
+            transform: translateY(0);
+        }
+
+        .chat-float i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 顶部状态栏 -->
+    <div class="bg-blue-500 text-white">
+        <div class="flex justify-between items-center px-4 py-3">
+            <!-- 返回按钮 -->
+            <button onclick="goBack()" class="text-white">
+                <i class="fas fa-chevron-left text-xl"></i>
+            </button>
+            
+            <!-- 标题 -->
+            <div class="flex-1 text-center">
+                <span class="text-white text-lg font-medium">李晓风</span>
+            </div>
+
+            <!-- 右侧按钮 -->
+            <button onclick="shareResult()" class="text-white">
+                <i class="fas fa-share text-xl"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- 主要内容区域 -->
+    <div class="px-4 py-6">
+
+        <!-- 血糖结果展示 -->
+        <div class="text-center mb-2">
+            <div class="blood-sugar-result-circle">
+                <!-- 中心数值 -->
+                <div class="absolute inset-0 flex flex-col items-center justify-center z-10">
+                    <span id="resultValue" class="text-3xl font-bold text-gray-900">6.7</span>
+                    <span class="text-sm text-gray-500">mmol/L</span>
+                </div>
+            </div>
+            
+            <!-- 记录时间和状态 -->
+            <div class="mt-6">
+                <div class="text-md text-gray-800 font-medium">
+                    <span id="recordDateTime">2025年9月13日 11:07</span>
+                    <span class="text-blue-600" id="recordPeriod">午餐前</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 优唐医生提醒 -->
+        <div class="ai-reminder-card">
+            <div class="ai-reminder-header">
+                <!-- 左侧头像区域 (30%) -->
+                <div class="ai-avatar-container">
+                    <div class="ai-avatar">
+                        <!-- 使用 SVG 人物头像 -->
+                    </div>
+                </div>
+                
+                <!-- 右侧内容区域 (70%) -->
+                <div class="ai-reminder-content">
+                    <div class="ai-reminder-title">小优提示</div>
+                    <div class="ai-reminder-message">
+                        以下内容是基于优唐AI助手生成的智能健康管理意见，仅供参考。
+                    </div>
+                </div>
+                
+                <!-- 关闭按钮 -->
+                <button class="close-button" onclick="closeReminder()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 多媒体健康报告 -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">血糖AI分析报告</h3>
+            
+            <!-- 报告卡片容器 -->
+            <div class="medical-report-card">
+                <div id="reportContent" class="report-content">
+                    <!-- 这里将通过JavaScript动态加载markdown内容 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- 小优的建议 -->
+        <div class="mb-6">
+            <div class="feedback-row">
+                <span class="feedback-text text-sm text-gray-600">小优的建议是否有帮助：</span>
+                <div class="feedback-buttons">
+                    <button class="secondary-button feedback-btn" id="likeBtn" onclick="handleFeedback('like')">
+                        <i class="far fa-thumbs-up"></i>
+                    </button>
+                    <button class="secondary-button feedback-btn" id="dislikeBtn" onclick="handleFeedback('dislike')">
+                        <i class="far fa-thumbs-down"></i>
+                    </button>
+                </div>
+            </div>
+            <!-- AI报告展开收起按钮已删除，所有内容默认全部显示 -->
+        </div>
+
+        <!-- 分割线 - 看一看，做一做 -->
+        <div class="section-divider">
+            <div class="divider-line"></div>
+            <div class="divider-text">
+                <i class="fas fa-lightbulb"></i>
+                <span>看一看，做一做</span>
+            </div>
+            <div class="divider-line"></div>
+        </div>
+
+        <!-- 智能推荐 -->
+        <div class="mb-24">
+            <!-- 互联网医院问诊按钮 -->
+            <div class="online-consultation-card">
+                <div class="consultation-header">
+                    <div class="consultation-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="consultation-title">
+                        <h3>在线问诊</h3>
+                        <p>专业医生 · 精准服务</p>
+                    </div>
+                </div>
+                
+                <div class="consultation-question">
+                    <div class="question-bubble">
+                        <i class="fas fa-comment-dots question-icon"></i>
+                        <span id="randomQuestion">"餐后血糖20怎么办？"</span>
+                    </div>
+                </div>
+
+                <!-- 医生信息区域 -->
+            <div class="doctor-section">
+                <div class="doctor-info-row">
+                    <div class="doctor-avatar">
+                        <img src="../imgs/欧阳存.png" alt="欧阳存医生">
+                    </div>
+                    <div class="doctor-info">
+                        <h4 class="doctor-name">欧阳存</h4>
+                        <p class="doctor-title">主任医师</p>
+                        <div class="doctor-actions">
+                            <button class="consultation-btn text-btn" onclick="startTextConsultation()">
+                                <i class="fas fa-comments"></i>
+                                <span>图文问诊</span>
+                                <div class="btn-shine"></div>
+                            </button>
+                            <button class="consultation-btn video-btn" onclick="startVideoConsultation()">
+                                <i class="fas fa-video"></i>
+                                <span>视频问诊</span>
+                                <div class="btn-shine"></div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 分割线 -->
+                <div class="doctor-divider"></div>
+
+                <!-- 医生描述 -->
+                <div class="doctor-description-container">
+                    <p class="doctor-description">硕士生导师，原江汉大学神经内科教研室主任和武汉市第六医院神经内科主任，擅长心脑血管疾病预防、治疗、康复，各类神经病变的临床诊疗。</p>
+                </div>
+            </div>
+            </div>
+
+            <!-- 推荐项目 - 暂时隐藏 -->
+            <div class="recommendation-card" style="display: none;">
+                <div class="recommendation-info">
+                    <div class="recommendation-icon bg-red-100">
+                        <i class="fas fa-heart text-red-500"></i>
+                    </div>
+                    <div>
+                        <div class="recommendation-text">关心糖友三角饼 【120g/盒】</div>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+
+            <div class="recommendation-card" style="display: none;">
+                <div class="recommendation-info">
+                    <div class="recommendation-icon bg-yellow-100">
+                        <i class="fas fa-gift text-yellow-500"></i>
+                    </div>
+                    <div>
+                        <div class="recommendation-text">获得你获得一次抽宝箱机会</div>
+                    </div>
+                </div>
+                <i class="fas fa-chevron-right text-gray-400"></i>
+            </div>
+        </div>
+
+    </div>
+
+    
+    <!-- 浮动对话框 - 白色背景卡片上的两个按钮 -->
+    <div class="chat-float-container">
+        <div class="chat-buttons-wrapper">
+            <div class="chat-float wechat-green" onclick="openChat()">
+                <i class="fas fa-comments"></i>
+                联系客服
+            </div>
+            <div class="chat-float" onclick="openConsultation()">
+                <i class="fas fa-user-md"></i>
+                线上问诊
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 页面初始化
+        function initializePage() {
+            // 获取血糖记录数据
+            const urlParams = new URLSearchParams(window.location.search);
+            const value = urlParams.get('value') || '6.7';
+            const period = urlParams.get('period') || '午餐前';
+            const dateTime = urlParams.get('dateTime') || '2025年9月13日 11:07';
+            
+            // 更新显示
+            document.getElementById('resultValue').textContent = value;
+            document.getElementById('recordPeriod').textContent = period;
+            document.getElementById('recordDateTime').textContent = dateTime;
+            
+            // 根据血糖值更新圆环颜色
+            updateCircleColor(parseFloat(value));
+        }
+        
+        // 更新圆环颜色
+        function updateCircleColor(value) {
+            const circle = document.querySelector('.blood-sugar-result-circle');
+            let color = '#10b981'; // 正常绿色
+            let percentage = 60; // 默认60%
+            
+            if (value < 3.9) {
+                color = '#3b82f6'; // 低血糖蓝色
+                percentage = 30;
+            } else if (value > 7.0) {
+                color = '#ef4444'; // 高血糖红色
+                percentage = 80;
+            } else if (value > 6.1) {
+                color = '#f59e0b'; // 偏高橙色
+                percentage = 70;
+            }
+            
+            circle.style.background = `conic-gradient(from -90deg, ${color} 0deg ${percentage * 3.6}deg, #e5e7eb ${percentage * 3.6}deg 360deg)`;
+        }
+
+        // 返回功能
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'home'
+                }, '*');
+            } else {
+                window.location.href = '/e:/Projects/ui-test/prototypes/home.html';
+            }
+        }
+
+        // 分享结果
+        function shareResult() {
+            // 分享功能
+            if (navigator.share) {
+                navigator.share({
+                    title: '我的血糖记录',
+                    text: `血糖值：${document.getElementById('resultValue').textContent} mmol/L`,
+                    url: window.location.href
+                });
+            } else {
+                alert('分享功能暂不支持');
+            }
+        }
+
+        // 打开聊天
+        function openChat() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'chat'
+                }, '*');
+            } else {
+                window.location.href = 'chat.html';
+            }
+        }
+
+        // 关闭提醒卡片
+        function closeReminder() {
+            const reminderCard = document.querySelector('.ai-reminder-card');
+            reminderCard.style.transition = 'all 0.3s ease';
+            reminderCard.style.transform = 'translateX(100%)';
+            reminderCard.style.opacity = '0';
+            
+            setTimeout(() => {
+                reminderCard.style.display = 'none';
+            }, 300);
+        }
+
+        // 打开线上问诊
+        function openConsultation() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'consultation'
+                }, '*');
+            } else {
+                window.location.href = 'consultation.html';
+            }
+        }
+
+        // 多媒体报告内容渲染函数
+        function renderReportContent() {
+            // 完整内容默认全部显示
+            const fullMarkdown = `
+## 检测结果概述
+
+您好，**dnurse_788013**！根据本次血糖检测结果，您的餐前血糖值为 **6.7 mmol/L**，处于正常范围内。
+
+> 💡 **医生提醒**：科学饮食是所有类型糖尿病治疗的基础，也是糖尿病患者自然病程中任何阶段预防和控制不良或严重的措施。
+
+<div class="report-success">
+✅ **恭喜您**：本次检测结果良好，请继续保持健康的生活方式！
+</div>
+
+## 血糖趋势分析
+
+根据您近期的血糖监测数据，我们为您生成了以下趋势图：
+
+![血糖趋势图](https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=200&fit=crop&crop=center)
+
+
+### 主要发现：
+
+1. **血糖控制良好**：您的血糖值保持在理想范围内
+2. **饮食管理有效**：餐前血糖稳定，说明饮食控制得当
+3. **继续保持**：当前的生活方式和治疗方案效果显著
+
+## 健康建议
+
+### 🍎 饮食建议
+
+- 继续保持低糖、低脂的饮食习惯
+- 增加富含纤维的蔬菜摄入
+- 控制碳水化合物的摄入量
+- 定时定量进餐
+
+### 🏃‍♂️ 运动建议
+
+适量的有氧运动对血糖控制非常有益：
+
+![运动示意图](https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=200&fit=crop&crop=center)
+
+
+- **步行**：每天30分钟，强度适中
+- **游泳**：每周2-3次，每次45分钟
+- **瑜伽**：有助于放松身心，改善血糖
+
+## 专家讲解视频
+
+我们为您准备了专业医生的讲解视频，帮助您更好地理解血糖管理：
+
+<video src="https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4" poster="https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=200&fit=crop&crop=center">
+您的浏览器不支持视频播放
+</video>
+
+
+## 放松音频
+
+压力管理对血糖控制同样重要，我们为您准备了放松音频：
+
+<audio src="https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3" controls>
+ 您的浏览器不支持音频播放
+ </audio>
+
+`;
+
+            // 渲染完整内容
+            const reportContainer = document.getElementById('reportContent');
+            const fullHtml = marked.parse(fullMarkdown);
+            reportContainer.innerHTML = fullHtml;
+            // 在AI报告内容结尾添加提示文字
+            const disclaimerElement = document.createElement('p');
+            disclaimerElement.style.marginTop = '16px';
+            disclaimerElement.style.padding = '12px';
+            disclaimerElement.style.background = '#f0f9ff';
+            disclaimerElement.style.borderLeft = '4px solid #0ea5e9';
+            disclaimerElement.style.borderRadius = '4px';
+            disclaimerElement.style.color = '#0c4a6e';
+            disclaimerElement.style.fontSize = '14px';
+            disclaimerElement.style.fontStyle = 'italic';
+            disclaimerElement.innerHTML = '<i class="fas fa-info-circle" style="color: #0ea5e9; margin-right: 8px;"></i>内容由AI生成，仅供参考。';
+            reportContainer.appendChild(disclaimerElement);
+
+            // 处理所有媒体元素
+            processMediaElements(reportContainer);
+        }
+
+        // 展开详情功能（已删除展开收起效果）
+        function expandDetails() {
+            // 不再提供展开收起功能
+            return;
+        }
+
+        // 收起详情功能（已删除展开收起效果）
+        function collapseDetails() {
+            // 不再提供展开收起功能
+            return;
+        }
+
+        // 更新展开/收起按钮（已删除展开收起效果）
+        function updateToggleButton(isExpanded) {
+            // 不再提供展开收起功能
+            return;
+        }
+
+        // 处理媒体元素的通用函数
+        function processMediaElements(container) {
+            // 处理图片
+            const images = container.querySelectorAll('img');
+            images.forEach(img => {
+                const mediaContainer = document.createElement('div');
+                mediaContainer.className = 'media-container';
+                
+                const newImg = document.createElement('img');
+                newImg.src = img.src;
+                newImg.alt = img.alt;
+                newImg.className = 'media-image';
+                
+                const caption = document.createElement('div');
+                caption.className = 'media-caption';
+                caption.textContent = img.alt;
+                
+                mediaContainer.appendChild(newImg);
+                mediaContainer.appendChild(caption);
+                
+                img.parentNode.replaceChild(mediaContainer, img);
+            });
+
+            // 处理视频
+            const videos = container.querySelectorAll('video');
+            videos.forEach(video => {
+                const mediaContainer = document.createElement('div');
+                mediaContainer.className = 'media-container';
+                
+                const newVideo = document.createElement('video');
+                newVideo.src = video.src;
+                newVideo.poster = video.poster;
+                newVideo.controls = true;
+                newVideo.className = 'media-video';
+                
+                const caption = document.createElement('div');
+                caption.className = 'media-caption';
+                caption.textContent = '视频：血糖管理专家讲解';
+                
+                mediaContainer.appendChild(newVideo);
+                mediaContainer.appendChild(caption);
+                
+                video.parentNode.replaceChild(mediaContainer, video);
+            });
+
+            // 处理音频
+            const audios = container.querySelectorAll('audio');
+            audios.forEach(audio => {
+                const mediaContainer = document.createElement('div');
+                mediaContainer.className = 'media-container';
+                
+                const newAudio = document.createElement('audio');
+                newAudio.src = audio.src;
+                newAudio.controls = true;
+                newAudio.className = 'media-audio';
+                
+                const caption = document.createElement('div');
+                caption.className = 'media-caption';
+                caption.textContent = '音频：冥想放松指导';
+                
+                mediaContainer.appendChild(newAudio);
+                mediaContainer.appendChild(caption);
+                
+                audio.parentNode.replaceChild(mediaContainer, audio);
+            });
+
+            // 代码高亮
+            if (typeof hljs !== 'undefined') {
+                hljs.highlightAll();
+            }
+        }
+
+        // 随机问题列表
+        const randomQuestions = [
+            "如何正确使用胰岛素？",
+            "胰岛素注射有哪些注意事项？",
+            "胰岛素的种类有哪些？",
+            "胰岛素的保存方法是什么？",
+            "胰岛素注射时间如何安排？",
+            "胰岛素剂量怎么调整？",
+            "胰岛素过敏怎么办？",
+            "胰岛素泵怎么使用？",
+            "长效胰岛素和短效胰岛素的区别？",
+            "胰岛素使用过程中如何避免低血糖？"
+        ];
+
+        // 当前问题索引
+        let currentQuestionIndex = 0;
+
+        // 显示随机问题（轮播方式）
+        function showRandomQuestion() {
+            const questionElement = document.getElementById('randomQuestion');
+            questionElement.textContent = `"${randomQuestions[currentQuestionIndex]}"`;
+            currentQuestionIndex = (currentQuestionIndex + 1) % randomQuestions.length;
+        }
+
+        // 启动问题轮播（每2秒切换一次）
+        function startQuestionRotation() {
+            // 立即显示第一个问题
+            showRandomQuestion();
+            // 每2秒切换一次问题
+            setInterval(showRandomQuestion, 2000);
+        }
+
+        // 图文问诊功能
+        function startTextConsultation() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+
+            // 显示提示信息
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info('正在启动图文问诊...');
+            }
+
+            // 模拟跳转到图文问诊页面
+            setTimeout(() => {
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'navigate',
+                        page: 'text-consultation'
+                    }, '*');
+                } else {
+                    alert('图文问诊功能即将开放，敬请期待！');
+                }
+            }, 500);
+        }
+
+        // 视频问诊功能
+        function startVideoConsultation() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+
+            // 显示提示信息
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info('正在启动视频问诊...');
+            }
+
+            // 模拟跳转到视频问诊页面
+            setTimeout(() => {
+                if (window.parent !== window) {
+                    window.parent.postMessage({
+                        type: 'navigate',
+                        page: 'video-consultation'
+                    }, '*');
+                } else {
+                    alert('视频问诊功能即将开放，敬请期待！');
+                }
+            }, 500);
+        }
+
+        // 反馈处理功能
+        let feedbackState = {
+            like: false,
+            dislike: false
+        };
+
+        // 处理用户反馈
+        function handleFeedback(type) {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+
+            const likeBtn = document.getElementById('likeBtn');
+            const dislikeBtn = document.getElementById('dislikeBtn');
+
+            if (type === 'like') {
+                // 切换点赞状态
+                feedbackState.like = !feedbackState.like;
+                feedbackState.dislike = false; // 取消不喜欢状态
+
+                if (feedbackState.like) {
+                    likeBtn.classList.add('active', 'like');
+                    likeBtn.innerHTML = '<i class="fas fa-thumbs-up"></i>';
+
+                    // 显示提示信息
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                        MedicalApp.NotificationManager.success('感谢您的点赞！');
+                    }
+                } else {
+                    likeBtn.classList.remove('active', 'like');
+                    likeBtn.innerHTML = '<i class="far fa-thumbs-up"></i>';
+                }
+
+                dislikeBtn.classList.remove('active', 'dislike');
+                dislikeBtn.innerHTML = '<i class="far fa-thumbs-down"></i>';
+
+            } else if (type === 'dislike') {
+                // 切换不喜欢状态
+                feedbackState.dislike = !feedbackState.dislike;
+                feedbackState.like = false; // 取消点赞状态
+
+                if (feedbackState.dislike) {
+                    dislikeBtn.classList.add('active', 'dislike');
+                    dislikeBtn.innerHTML = '<i class="fas fa-thumbs-down"></i>';
+
+                    // 显示提示信息
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                        MedicalApp.NotificationManager.info('已记录您的反馈');
+                    }
+                } else {
+                    dislikeBtn.classList.remove('active', 'dislike');
+                    dislikeBtn.innerHTML = '<i class="far fa-thumbs-down"></i>';
+                }
+
+                likeBtn.classList.remove('active', 'like');
+                likeBtn.innerHTML = '<i class="far fa-thumbs-up"></i>';
+            }
+        }
+
+      
+    
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+            renderReportContent(); // 直接渲染完整AI智能报告
+            startQuestionRotation(); // 启动问题轮播
+        });
+    </script>
+
+    <!-- 全局错误处理 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message);
+            // 阻止错误弹窗，但不影响页面显示
+            return true;
+        });
+
+        // 安全的getElementById包装函数
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // 安全的textContent设置函数
+        function safeSetText(id, text) {
+            const element = document.getElementById(id);
+            if (element && text !== undefined && text !== null) {
+                element.textContent = text;
+            }
+            return element;
+        }
+        // 安全的震动函数（避免iframe中的跨域限制）
+        function safeVibrate(duration) {
+            try {
+                // 检查是否支持震动API
+                if (navigator.vibrate && window.self === window.top) {
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // 忽略震动API错误
+                console.debug('Vibrate not available:', e.message);
+            }
+        }
+
+    </script>
+</body>
+</html>

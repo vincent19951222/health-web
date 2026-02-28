@@ -1,0 +1,976 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI健康报告详情 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Markdown渲染库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- 代码高亮库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        /* 糖尿病控糖管理平台 - 统一样式文件 */
+
+        /* 根据UI_design.md的设计规则定义颜色 */
+        /* 主色调 */
+        .primary-color { color: #3b82f6; }
+        .primary-dark { color: #2563eb; }
+        .secondary-color { color: #f97316; }
+        .secondary-dark { color: #ea580c; }
+
+        /* 医疗主题色彩 */
+        .medical-blue { color: #3b82f6; }
+        .medical-green { color: #22c55e; }
+        .medical-red { color: #ef4444; }
+        .medical-orange { color: #f59e0b; }
+        .medical-purple { color: #8b5cf6; }
+
+        /* 中性色 */
+        .gray-50 { color: #f9fafb; }
+        .gray-100 { color: #f3f4f6; }
+        .gray-200 { color: #e5e7eb; }
+        .gray-300 { color: #d1d5db; }
+        .gray-400 { color: #9ca3af; }
+        .gray-500 { color: #6b7280; }
+        .gray-600 { color: #4b5563; }
+        .gray-700 { color: #374151; }
+        .gray-800 { color: #1f2937; }
+        .gray-900 { color: #111827; }
+
+        /* 隐藏所有滚动条 */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 通用样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #f9fafb;
+        }
+
+        .step-container {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .step-content {
+            padding: 16px;
+            padding-bottom: 100px; /* 为底部按钮留出空间 */
+        }
+
+        /* 头部样式 */
+        .header {
+            background: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+
+        .back-btn {
+            color: #6b7280;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            color: #374151;
+        }
+
+        .back-btn i {
+            font-size: 18px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .header-spacer {
+            width: 24px;
+            height: 24px;
+        }
+
+        /* 多媒体报告卡片样式 */
+        .medical-report-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .report-content {
+            line-height: 1.6;
+        }
+
+        .report-content h1, .report-content h2, .report-content h3 {
+            color: #374151;
+            margin-bottom: 12px;
+            margin-top: 0px;
+        }
+
+        .report-content h1 { font-size: 24px; font-weight: 700; }
+        .report-content h2 { font-size: 20px; font-weight: 600; }
+        .report-content h3 { font-size: 18px; font-weight: 600; }
+
+        .report-content p {
+            margin-bottom: 12px;
+            color: #374151;
+        }
+
+        .report-content ul, .report-content ol {
+            margin-bottom: 12px;
+            padding-left: 20px;
+        }
+
+        .report-content li {
+            margin-bottom: 4px;
+            color: #374151;
+        }
+
+        .report-content blockquote {
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+            margin: 16px 0;
+            background: #f9fafb;
+            padding: 12px 16px;
+            border-radius: 8px;
+        }
+
+        .report-content code {
+            background: #f3f4f6;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .report-content pre {
+            background: #f3f4f6;
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+        }
+
+        .media-container {
+            margin: 16px 0;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .media-image {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .media-video {
+            width: 100%;
+            height: 200px;
+            border-radius: 12px;
+        }
+
+        .media-audio {
+            width: 100%;
+            margin: 8px 0;
+        }
+
+        .media-caption {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .report-section {
+            margin-bottom: 24px;
+        }
+
+        .report-highlight {
+            background: linear-gradient(135deg, #3b82f6, #22c55e);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin: 16px 0;
+        }
+
+        .report-warning {
+            background: #fef3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+
+        .report-success {
+            background: #d1f2eb;
+            border: 1px solid #a3e4d7;
+            color: #0e6b56;
+            padding: 12px;
+            border-radius: 8px;
+            margin: 12px 0;
+        }
+
+        /* 报告信息卡片样式 */
+        .report-info-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border-left: 4px solid #10b981;
+        }
+
+        .report-type-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: absolute;
+            top: 0;
+            right: 0;
+            border-radius: 0;
+            border-bottom-left-radius: 8px;
+            transform: translateX(0);
+            z-index: 10;
+        }
+
+        .report-date {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .report-period {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        /* 浮动对话框样式 */
+        .chat-float-container {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+            padding: 12px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+            border: none;
+            border-radius: 0px 0px 0 0;
+            transform: translateZ(0);
+        }
+
+        .chat-buttons-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            justify-content: center;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .chat-float {
+            background: #667eea;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 32px;
+            font-size: 15px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            flex: 1;
+            border: none;
+            min-height: 48px;
+        }
+
+        /* 微信绿色样式 */
+        .chat-float.wechat-green {
+            background: #07C160;
+            box-shadow: 0 4px 16px rgba(7, 193, 96, 0.3);
+        }
+
+        .chat-float:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .chat-float.wechat-green:hover {
+            box-shadow: 0 6px 20px rgba(7, 193, 96, 0.4);
+        }
+
+        .chat-float:active {
+            transform: translateY(0);
+        }
+
+        .chat-float i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .medical-report-card {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+
+            .report-content h1 { font-size: 20px; }
+            .report-content h2 { font-size: 18px; }
+            .report-content h3 { font-size: 16px; }
+
+            .media-video {
+                height: 180px;
+            }
+
+            .report-highlight, .report-warning, .report-success {
+                padding: 10px;
+                font-size: 14px;
+            }
+
+            .chat-float {
+                padding: 12px 16px;
+                font-size: 14px;
+                min-height: 44px;
+            }
+
+            .chat-float i {
+                font-size: 14px;
+                margin-right: 6px;
+            }
+        }
+
+        /* 加载动画 */
+        .report-loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            color: #6b7280;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e5e7eb;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 12px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 报告内容表格样式 */
+        .report-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+
+        .report-content th,
+        .report-content td {
+            border: 1px solid #e5e7eb;
+            padding: 8px 12px;
+            text-align: left;
+        }
+
+        .report-content th {
+            background: #f9fafb;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .report-content tr:nth-child(even) {
+            background: #f9fafb;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="step-container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-content">
+                <button onclick="goBack()" class="back-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h1 class="header-title">AI健康报告</h1>
+                <div class="header-spacer"></div>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="step-content">
+            <!-- 报告基本信息卡片 -->
+            <div class="report-info-card relative">
+                <!-- 右上角标签 -->
+                <div class="report-type-badge" id="reportTypeBadge">健康周报告</div>
+
+                <!-- 主要内容 -->
+                <div class="pt-6 pr-20">
+                    <div class="report-period" id="reportPeriod">2024年第1周报告</div>
+                    <div class="report-date mt-1" id="reportDate">2024年9月13日</div>
+                </div>
+
+                <!-- 报告概览 -->
+                <div class="bg-gray-50 rounded-lg p-3 mt-4">
+                    <p class="text-sm text-gray-600" id="reportOverview">
+                        根据您本周的健康数据分析，您的整体健康状况良好，血压和血糖控制较为稳定，建议继续保持当前的生活习惯。
+                    </p>
+                </div>
+            </div>
+
+            <!-- 多媒体健康报告 -->
+            <div class="mb-6">
+                <div class="medical-report-card">
+                    <div id="reportContent" class="report-content">
+                        <!-- 这里将通过JavaScript动态加载markdown内容 -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 浮动对话框 - 底部按钮 -->
+        <div class="chat-float-container">
+            <div class="chat-buttons-wrapper">
+                <div class="chat-float wechat-green" onclick="openChat()">
+                    <i class="fas fa-comments"></i>
+                    联系客服
+                </div>
+                <div class="chat-float" onclick="openConsultation()">
+                    <i class="fas fa-user-md"></i>
+                    线上问诊
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let reportData = null;
+
+        // 页面初始化
+        function initializePage() {
+            // 获取URL参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const reportId = urlParams.get('reportId');
+            const reportType = urlParams.get('type') || 'weekly';
+
+            // 模拟加载报告数据
+            loadReportData(reportId, reportType);
+        }
+
+        // 加载报告数据
+        function loadReportData(reportId, type) {
+            // 显示加载状态
+            const reportContent = document.getElementById('reportContent');
+            reportContent.innerHTML = `
+                <div class="report-loading">
+                    <div class="loading-spinner"></div>
+                    <span>正在加载报告...</span>
+                </div>
+            `;
+
+            // 模拟网络请求延迟
+            setTimeout(() => {
+                reportData = generateMockReportData(type);
+                updateReportInfo();
+                renderReportContent();
+            }, 1000);
+        }
+
+        // 获取周数（与ai_report.html保持一致）
+        function getWeekNumber(date) {
+            const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+            const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+            return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        }
+
+        // 生成模拟报告数据
+        function generateMockReportData(type) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+
+            const baseData = {
+                id: `report_${Date.now()}`,
+                type: type,
+                date: now,
+                overview: '根据您本周的健康数据分析，您的整体健康状况良好，血压和血糖控制较为稳定，建议继续保持当前的生活习惯。'
+            };
+
+            switch(type) {
+                case 'weekly':
+                    // 计算当前是第几周
+                    const weekNumber = getWeekNumber(now);
+                    return {
+                        ...baseData,
+                        title: `${year}年第${weekNumber}周健康报告`,
+                        typeLabel: '周报告',
+                        period: `${year}年第${weekNumber}周报告`,
+                        weekNumber: weekNumber,
+                        content: generateWeeklyReportContent()
+                    };
+                case 'monthly':
+                    return {
+                        ...baseData,
+                        title: `${year}年${month}月健康报告`,
+                        typeLabel: '月报告',
+                        period: `${year}年${month}月`,
+                        content: generateMonthlyReportContent()
+                    };
+                case 'yearly':
+                    return {
+                        ...baseData,
+                        title: `${year}年健康报告`,
+                        typeLabel: '年报告',
+                        period: `${year}年`,
+                        content: generateYearlyReportContent()
+                    };
+                default:
+                    return baseData;
+            }
+        }
+
+        // 生成周报告内容
+        function generateWeeklyReportContent() {
+            const now = new Date();
+            const weekNumber = getWeekNumber(now);
+            return `
+## 第${weekNumber}周健康数据总览
+
+本周您的健康监测数据显示，您的整体健康状况良好。各项关键指标都控制在合理范围内，这表明您当前的健康管理策略是有效的。
+
+### 📊 主要健康指标
+
+| 指标 | 平均值 | 状态 | 趋势 |
+|------|--------|------|------|
+| 血糖 | 6.2 mmol/L | ✅ 正常 | 📉 稳定 |
+| 血压 | 120/80 mmHg | ✅ 正常 | ➡️ 平稳 |
+| 心率 | 72 bpm | ✅ 正常 | 📉 稳定 |
+
+<div class="report-success">
+✅ **恭喜您**：本周所有指标都在正常范围内！
+</div>
+
+## 血糖详细分析
+
+### 📈 血糖趋势
+- **空腹血糖**：平均 5.8 mmol/L，控制良好
+- **餐后血糖**：平均 7.2 mmol/L，在理想范围内
+- **血糖波动**：标准差 1.2，波动较小
+
+### 💡 血糖管理建议
+1. **继续当前的饮食控制方案**
+2. **保持规律的运动习惯**
+3. **定期监测血糖变化**
+
+## 血压监测结果
+
+本周血压监测结果显示您的血压控制理想：
+- **收缩压平均**：120 mmHg
+- **舒张压平均**：80 mmHg
+- **血压变异性**：低，说明血压稳定
+
+### 🎯 血压管理要点
+- 低盐饮食，每日食盐摄入量控制在6g以内
+- 保持适当的体重
+- 规律的有氧运动
+
+## 生活方式评估
+
+### 🍎 饮食情况
+- **饮食规律性**：良好
+- **营养均衡**：基本合理
+- **控糖效果**：明显
+
+### 🏃‍♂️ 运动情况
+- **运动频率**：每周4-5次
+- **运动时长**：每次30-45分钟
+- **运动强度**：中等
+
+### 😴 睡眠质量
+- **睡眠时长**：平均7-8小时
+- **睡眠质量**：良好
+- **规律作息**：是
+
+## 下周健康建议
+
+### 🎯 重点改进方向
+1. **增加蔬菜摄入量**，建议每日500g以上
+2. **优化进餐时间**，避免晚餐过晚
+3. **增加力量训练**，提高肌肉量
+
+### ⚠️ 注意事项
+- 继续监测血糖变化
+- 保持当前的治疗方案
+- 如有不适及时就医
+
+## 专家提醒
+
+> 💡 **医生建议**：您本周的健康状况整体良好，请继续保持当前的健康管理方式。定期体检和持续监测是维护健康的关键。
+
+---
+
+**本报告由优唐AI健康助手生成，仅供参考。如有健康问题请咨询专业医生。**
+            `;
+        }
+
+        // 生成月报告内容
+        function generateMonthlyReportContent() {
+            return `
+## 本月健康数据总结
+
+本月您的健康管理效果显著，各项指标都控制在理想范围内。通过持续的健康监测和管理，您的健康状况呈现稳步改善的趋势。
+
+### 📊 月度健康指标统计
+
+| 指标 | 范围 | 平均值 | 达标率 | 趋势 |
+|------|------|--------|--------|------|
+| 血糖 | 4.4-7.8 | 6.1 mmol/L | 92% | 📉 改善 |
+| 血压 | 90-140 | 118/78 | 95% | 📉 改善 |
+| 心率 | 60-100 | 70 | 98% | ➡️ 稳定 |
+
+<div class="report-highlight">
+🎯 **本月成就**：您的血糖达标率达到92%，血压达标率达到95%，这是一个非常优秀的成绩！
+</div>
+
+## 血糖月度分析
+
+### 📈 血糖控制趋势
+本月血糖控制呈现持续改善趋势：
+- **第1周**：平均 6.5 mmol/L，达标率 85%
+- **第2周**：平均 6.3 mmol/L，达标率 89%
+- **第3周**：平均 6.1 mmol/L，达标率 92%
+- **第4周**：平均 5.9 mmol/L，达标率 96%
+
+### 🍎 饮食管理成效
+- **碳水化合物控制**：优秀
+- **蛋白质摄入**：合理
+- **脂肪摄入**：适中
+- **纤维素摄入**：充足
+
+## 血压月度评估
+
+本月血压控制良好，波动范围小：
+- **最高血压**：135/85 mmHg
+- **最低血压**：110/70 mmHg
+- **平均血压**：118/78 mmHg
+
+### 💡 血压管理要点
+- 限制钠盐摄入效果显著
+- 运动对血压控制起到积极作用
+- 体重管理对血压改善有贡献
+
+## 生活方式全面评估
+
+### 🏃‍♂️ 运动习惯
+- **运动总天数**：26天
+- **总运动时长**：20.8小时
+- **平均每日运动**：48分钟
+- **运动类型分布**：有氧运动70%，力量训练30%
+
+### 😴 睡眠质量
+- **平均睡眠时长**：7.5小时
+- **深度睡眠比例**：22%
+- **睡眠效率**：92%
+- **入睡困难次数**：0次
+
+### 🧘‍♀️ 压力管理
+- **压力水平**：低
+- **放松活动频率**：每周3-4次
+- **冥想练习**：每周2次
+
+## 下月健康管理计划
+
+### 🎯 重点目标
+1. **血糖**：进一步降低至 5.8 mmol/L 以下
+2. **血压**：维持在 115/75 mmHg 左右
+3. **体重**：继续减重 2-3kg
+
+### 📋 具体措施
+- **饮食调整**：增加优质蛋白质，减少精制糖
+- **运动升级**：增加高强度间歇训练
+- **监测频率**：保持每日血糖监测
+
+### ⚠️ 风险预警
+- 注意季节变化对血糖的影响
+- 预防感冒等疾病对健康的干扰
+- 定期复查相关指标
+
+---
+
+**感谢您对健康管理的坚持！您的努力正在得到回报。**
+            `;
+        }
+
+        // 生成年报告内容
+        function generateYearlyReportContent() {
+            return `
+## 年度健康状况总结报告
+
+恭喜您！过去一年的健康数据显示，您的健康状况得到了显著改善。通过科学的管理和持续的努力，您的各项健康指标都达到了理想水平。
+
+### 🏆 年度健康成就
+
+<div class="report-highlight">
+🎉 **年度亮点**：相比去年，您的血糖控制提升了35%，血压控制提升了28%，整体健康水平达到了近5年最佳状态！
+</div>
+
+### 📊 年度健康指标对比
+
+| 指标 | 去年平均 | 今年平均 | 改善幅度 | 评级 |
+|------|----------|----------|----------|------|
+| 空腹血糖 | 7.2 | 5.8 | 📉 19% | 优秀 |
+| 餐后血糖 | 9.5 | 7.1 | 📉 25% | 优秀 |
+| 收缩压 | 135 | 118 | 📉 13% | 良好 |
+| 舒张压 | 88 | 78 | 📉 11% | 良好 |
+| 体重 | 75kg | 68kg | 📉 9% | 良好 |
+
+## 季度健康状况分析
+
+### 🌸 春季 (3-5月)
+- **特点**：血糖开始改善，血压稳定
+- **成绩**：血糖达标率从65%提升至78%
+- **关键因素**：天气转暖，运动量增加
+
+### ☀️ 夏季 (6-8月)
+- **特点**：各项指标控制最佳
+- **成绩**：血糖达标率达到90%，血压稳定在120/80以下
+- **关键因素**：新鲜蔬果丰富，户外活动增加
+
+### 🍂 秋季 (9-11月)
+- **特点**：保持稳定，略有波动
+- **成绩**：血糖达标率88%，血压控制良好
+- **关键因素**：注意饮食调整，应对季节变化
+
+### ❄️ 冬季 (12-2月)
+- **特点**：面临挑战，需要额外关注
+- **成绩**：血糖达标率82%，血压略有上升
+- **关键因素**：室内运动增加，饮食控制加强
+
+## 生活方式年度变化
+
+### 🍎 饮食习惯的巨大改善
+- **糖分摄入**：减少 60%
+- **蔬菜摄入**：增加 120%
+- **全谷物摄入**：增加 200%
+- **优质蛋白**：增加 80%
+
+### 🏃‍♂️ 运动习惯的养成
+- **运动频率**：从每周1-2次提升至5-6次
+- **运动多样性**：从单一步行发展为有氧+力量+柔韧训练
+- **运动时长**：从平均20分钟提升至50分钟
+
+### 😴 睡眠质量的显著提升
+- **平均睡眠时长**：从6.2小时增加至7.8小时
+- **睡眠质量评分**：从6.5分提升至8.8分
+- **规律作息**：建立了稳定的生物钟
+
+## 健康风险降低情况
+
+### 🛡️ 糖尿病并发症风险
+- **心血管疾病风险**：降低 45%
+- **肾病风险**：降低 38%
+- **神经病变风险**：降低 42%
+- **视网膜病变风险**：降低 35%
+
+### 💪 心血管健康状况
+- **10年心血管风险评估**：从高风险降至低风险
+- **血脂水平**：全面改善
+- **血管弹性**：显著提升
+
+## 明年健康管理规划
+
+### 🎯 年度健康目标
+1. **血糖控制**：维持当前优秀水平，进一步提升稳定性
+2. **体重管理**：达到理想体重65kg并保持
+3. **体能提升**：完成半程马拉松挑战
+4. **营养优化**：学习更多营养知识，优化饮食结构
+
+### 📋 具体行动计划
+- **第一季度**：建立更完善的健康监测体系
+- **第二季度**：挑战新的运动目标
+- **第三季度**：深化营养知识学习
+- **第四季度**：年度总结和新目标设定
+
+### 🌟 长远健康愿景
+您的努力证明了健康管理的重要性和有效性。继续保持这种良好的生活习惯，您将拥有更加健康、充满活力的生活！
+
+---
+
+**祝贺您过去一年的优异表现！您的健康就是最大的财富。继续加油！**
+            `;
+        }
+
+        // 更新报告信息
+        function updateReportInfo() {
+            if (!reportData) return;
+
+            document.getElementById('reportTypeBadge').textContent = reportData.typeLabel;
+            document.getElementById('reportDate').textContent = formatDate(reportData.date);
+            document.getElementById('reportPeriod').textContent = reportData.period;
+            document.getElementById('reportOverview').textContent = reportData.overview;
+        }
+
+        // 渲染报告内容
+        function renderReportContent() {
+            if (!reportData) return;
+
+            const reportContainer = document.getElementById('reportContent');
+            const html = marked.parse(reportData.content);
+            reportContainer.innerHTML = html;
+
+            // 处理媒体元素
+            processMediaElements(reportContainer);
+        }
+
+        // 处理媒体元素
+        function processMediaElements(container) {
+            // 处理表格
+            const tables = container.querySelectorAll('table');
+            tables.forEach(table => {
+                table.className = 'w-full text-sm';
+                const headers = table.querySelectorAll('th');
+                const cells = table.querySelectorAll('td');
+
+                headers.forEach(header => {
+                    header.className = 'px-4 py-2 text-left font-medium text-gray-700 bg-gray-50';
+                });
+
+                cells.forEach(cell => {
+                    cell.className = 'px-4 py-2 border-t border-gray-200';
+                });
+            });
+
+            // 代码高亮
+            if (typeof hljs !== 'undefined') {
+                hljs.highlightAll();
+            }
+        }
+
+        // 格式化日期
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}年${month}月${day}日`;
+        }
+
+        // 返回上一页
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'ai_report'
+                }, '*');
+            } else {
+                window.location.href = 'ai_report.html';
+            }
+        }
+
+        // 打开聊天
+        function openChat() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'chat'
+                }, '*');
+            } else {
+                window.location.href = 'chat.html';
+            }
+        }
+
+        // 打开线上问诊
+        function openConsultation() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'consultation'
+                }, '*');
+            } else {
+                window.location.href = 'consultation.html';
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            initializePage();
+        });
+    </script>
+
+    <!-- 全局错误处理 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message);
+            // 阻止错误弹窗，但不影响页面显示
+            return true;
+        });
+
+        // 安全的getElementById包装函数
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // 安全的textContent设置函数
+        function safeSetText(id, text) {
+            const element = document.getElementById(id);
+            if (element && text !== undefined && text !== null) {
+                element.textContent = text;
+            }
+            return element;
+        }
+        // 安全的震动函数（避免iframe中的跨域限制）
+        function safeVibrate(duration) {
+            try {
+                // 检查是否支持震动API
+                if (navigator.vibrate && window.self === window.top) {
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // 忽略震动API错误
+                console.debug('Vibrate not available:', e.message);
+            }
+        }
+
+    </script>
+</body>
+</html>

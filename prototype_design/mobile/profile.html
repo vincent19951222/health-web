@@ -1,0 +1,2485 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人中心 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 糖尿病控糖管理平台 - 统一样式文件 */
+
+        /* 颜色定义 */
+        .colors {
+            /* 主色调 */
+            color: #3b82f6; /* 原 --primary-color: #667eea 改为蓝色 */
+            color: #2563eb; /* 原 --primary-dark: #5a67d8 改为深蓝色 */
+            color: #8b5cf6; /* 原 --secondary-color: #764ba2 改为紫色 */
+            
+            /* 医疗主题色彩 */
+            color: #3b82f6; /* --medical-blue */
+            color: #10b981; /* --medical-green */
+            color: #ef4444; /* --medical-red */
+            color: #f59e0b; /* --medical-orange */
+            color: #8b5cf6; /* --medical-purple */
+            
+            /* 中性色 */
+            color: #f9fafb; /* --gray-50 */
+            color: #f3f4f6; /* --gray-100 */
+            color: #e5e7eb; /* --gray-200 */
+            color: #d1d5db; /* --gray-300 */
+            color: #9ca3af; /* --gray-400 */
+            color: #6b7280; /* --gray-500 */
+            color: #4b5563; /* --gray-600 */
+            color: #374151; /* --gray-700 */
+            color: #1f2937; /* --gray-800 */
+            color: #111827; /* --gray-900 */
+        }
+        
+        /* 尺寸定义 */
+        .sizes {
+            /* 圆角 */
+            border-radius: 6px; /* --radius-sm: 6px */
+            border-radius: 8px; /* --radius-md: 8px */
+            border-radius: 12px; /* --radius-lg: 12px */
+            border-radius: 16px; /* --radius-xl: 16px */
+            border-radius: 24px; /* --radius-2xl: 24px */
+            
+            /* 间距 */
+            margin: 4px; /* --spacing-xs: 4px */
+            margin: 8px; /* --spacing-sm: 8px */
+            margin: 16px; /* --spacing-md: 16px */
+            margin: 24px; /* --spacing-lg: 24px */
+            margin: 32px; /* --spacing-xl: 32px */
+            margin: 48px; /* --spacing-2xl: 48px */
+        }
+
+        /* 全局重置和基础样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 隐藏所有滚动条 - 移动端优化 */
+        * {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        /* 隐藏Webkit浏览器滚动条 */
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 确保页面不会出现横向滚动 */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #f9fafb;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 医疗主题卡片样式 */
+        .medical-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medical-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .medical-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        /* 渐变背景 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        .gradient-bg-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .gradient-bg-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .gradient-bg-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        /* 按钮样式增强 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 20px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover:before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* 输入框样式增强 */
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+            transform: translateY(-1px);
+        }
+
+        .form-input::placeholder {
+            color: #9ca3af;
+        }
+
+        /* 状态指示器 */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .status-normal {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .status-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .status-low {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        /* 数据卡片 */
+        .data-card {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .data-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .data-value {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .data-label {
+            font-size: 14px;
+            color: #4b5563;
+            font-weight: 500;
+        }
+
+        .data-trend {
+            display: inline-flex;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .trend-up {
+            color: #10b981;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        .trend-stable {
+            color: #6b7280;
+        }
+
+        /* 图表容器 */
+        .chart-container {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 24px;
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .chart-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--gray-800);
+        }
+
+        /* 标签样式 */
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 500;
+            margin: 2px;
+        }
+
+        .tag-primary {
+            background: rgba(102, 126, 234, 0.1);
+            color: var(--primary-color);
+        }
+
+        .tag-success {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--medical-green);
+        }
+
+        .tag-warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--medical-orange);
+        }
+
+        .tag-danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--medical-red);
+        }
+
+        /* 加载动画 */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-200);
+            border-radius: 50%;
+            border-top-color: var(--primary-color);
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* 脉冲动画 */
+        .pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+
+        /* 淡入动画 */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 滑入动画 */
+        .slide-in {
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 640px) {
+            .medical-card {
+                margin: 8px;
+
+            }
+            
+            .data-card {
+                padding: 16px;
+            }
+            
+            .chart-container {
+                padding: 16px;
+                margin-bottom: 16px;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+                font-size: 13px;
+            }
+        }
+
+        /* 深色模式支持 */
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --gray-50: #1f2937;
+                --gray-100: #374151;
+                --gray-200: #4b5563;
+                --gray-800: #f9fafb;
+                --gray-900: #ffffff;
+            }
+            
+            body {
+                background-color: var(--gray-50);
+                color: var(--gray-800);
+            }
+            
+            .medical-card,
+            .data-card,
+            .chart-container {
+                background: var(--gray-100);
+                border-color: var(--gray-200);
+            }
+            
+            .form-input {
+                background: var(--gray-100);
+                border-color: var(--gray-200);
+                color: var(--gray-800);
+            }
+        }
+
+        /* 可访问性增强 */
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* 焦点样式 */
+        .focus-visible:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        /* 高对比度模式支持 */
+        @media (prefers-contrast: high) {
+            .medical-card,
+            .data-card,
+            .chart-container {
+                border-width: 2px;
+                border-color: var(--gray-800);
+            }
+            
+            .btn {
+                border-width: 2px;
+            }
+        }
+
+        /* 减少动画模式支持 */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* 打印样式 */
+        @media print {
+            .medical-card,
+            .data-card,
+            .chart-container {
+                box-shadow: none;
+                border: 1px solid var(--gray-300);
+            }
+            
+            .btn {
+                background: white !important;
+                color: black !important;
+                border: 1px solid black;
+            }
+        }
+        
+        /* profile.html 特定样式 */
+        .profile-header {
+            background: #3b82f6;
+            border-radius: 0;
+        }
+        .avatar-container {
+            position: relative;
+        }
+        .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: white;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        .vip-badge {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            border-radius: 12px;
+            padding: 4px 8px;
+            color: white;
+            font-size: 10px;
+            font-weight: bold;
+        }
+        .menu-item {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .menu-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+        .stats-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+
+        }
+        .achievement-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 44px;
+            height: 24px;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        input:checked + .slider:before {
+            transform: translateX(20px);
+        }
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 8px;
+            height: 8px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        /* 底部导航栏样式 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding-bottom: 20px;
+            z-index: 1000;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .tab-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-item.active {
+            color: #667eea;
+        }
+
+        .tab-item i {
+            font-size: 20px;
+            margin-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item span {
+            font-size: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item.active i,
+        .tab-item.active span {
+            color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .tab-item:not(.active) i,
+        .tab-item:not(.active) span {
+            color: #9ca3af;
+        }
+
+        .tab-item.add-btn {
+            background: #667eea;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-item.add-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-item.add-btn i {
+            color: white;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        /* 主内容区域样式 */
+        .main-content {
+            padding-bottom: 100px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- 个人信息头部 -->
+        <div class="profile-header bg-blue-500 text-white p-6">
+            <!-- 用户信息卡片 -->
+            <div class="relative">
+                <!-- 个人信息按钮 -->
+                <!--<button class="absolute top-0 right-0 bg-white bg-opacity-20 hover:bg-opacity-30 text-white px-3 py-1 rounded-full text-xs font-medium transition-colors">
+                    个人信息
+                </button>
+                -->
+                <!-- 头像和昵称区域 -->
+                <div class="flex flex-col items-center mb-6">
+                    <div class="avatar-container mb-4">
+                        <img src="https://yt-knowledgebase.oss-cn-beijing.aliyuncs.com/resources/logo.png" 
+                             alt="用户头像" class="w-20 h-20 rounded-full object-cover border-3 border-white border-opacity-50">
+                        <div class="avatar-edit">
+                            <i class="fas fa-camera text-gray-600 text-sm"></i>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2 mb-1 cursor-pointer" onclick="navigateToProfileEdit()">
+                        <h2 class="text-xl font-bold">张先生</h2>
+                        <i class="fas fa-chevron-right text-gray-000 text-lg"></i>
+                    </div>
+                </div>
+                
+                <!-- 个人数据区域 -->
+                <div class="grid grid-cols-3 gap-4" style="display: none;">
+                    <!-- 我的积分 -->
+                    <div class="text-center">
+                        <div class="text-sm opacity-90 mb-1">我的积分</div>
+                        <div class="text-lg font-bold">1,250</div>
+                    </div>
+
+                    <!-- 我的勋章 -->
+                    <div class="text-center">
+                        <div class="text-sm opacity-90 mb-1">我的勋章</div>
+                        <div class="text-lg font-bold">8</div>
+                    </div>
+
+                    <!-- 我的收藏 -->
+                    <div class="text-center">
+                        <div class="text-sm opacity-90 mb-1">我的收藏</div>
+                        <div class="text-lg font-bold">23</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 健康管理卡片 -->
+        <div class="px-4 -mt-4 mb-4">
+            <div class="stats-card p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">健康管理</h3>
+                
+                <!-- 健康管理按钮 -->
+                <div class="grid grid-cols-4 gap-3 mb-2">
+                    <button onclick="navigateToHealthQuestionnaire()" class="flex flex-col items-center p-3 bg-purple-50 rounded-xl hover:bg-purple-100 transition-colors">
+                        <i class="fas fa-file-medical text-purple-600 text-lg mb-1"></i>
+                        <span class="text-xs font-medium text-gray-800 whitespace-nowrap">我的档案</span>
+                    </button>
+
+                    <button onclick="navigateToBloodSugarAnalysis()" class="flex flex-col items-center p-3 bg-blue-50 rounded-xl hover:bg-blue-100 transition-colors">
+                        <i class="fas fa-notes-medical text-blue-600 text-lg mb-1"></i>
+                        <span class="text-xs font-medium text-gray-800 whitespace-nowrap">我的血糖</span>
+                    </button>
+
+                    <button onclick="navigateToAIReport()" class="flex flex-col items-center p-3 bg-green-50 rounded-xl hover:bg-green-100 transition-colors">
+                        <i class="fas fa-home text-green-600 text-lg mb-1"></i>
+                        <span class="text-xs font-medium text-gray-800 whitespace-nowrap">AI+报告</span>
+                    </button>
+
+                    <button onclick="navigateToFriendList()" class="flex flex-col items-center p-3 bg-orange-50 rounded-xl hover:bg-orange-100 transition-colors relative">
+                        <i class="fas fa-users text-orange-600 text-lg mb-1"></i>
+                        <span class="text-xs font-medium text-gray-800 whitespace-nowrap">亲友关爱</span>
+                        <div class="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full"></div>
+                    </button>
+                </div>
+                
+                <!-- 健康成就 -->
+                <div class="pt-4 border-t border-gray-100" style="display: none;">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-sm font-medium text-gray-800">我的健康成就</span>
+                        <span class="text-xs text-purple-600">查看全部</span>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="achievement-badge">
+                            <i class="fas fa-trophy text-sm"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">坚持记录30天</p>
+                            <p class="text-xs text-gray-500">恭喜您获得"坚持不懈"徽章</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 智能设备 -->
+        <div class="px-2 mb-4">
+            <div class="medical-card p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">我的设备</h3>
+                    <button onclick="navigateToDeviceList()" class="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors">
+                        添加设备
+                    </button>
+                </div>
+                
+                <!-- 设备列表 -->
+                <div id="deviceList" class="space-y-4 mb-4">
+                    <!-- 设备项目将通过JavaScript动态生成 -->
+                </div>
+
+                <!-- 查看更多按钮 (当设备数量>2时显示) -->
+                <div id="viewMoreDevices" class="text-center mt-4 hidden">
+                    <button onclick="navigateToDeviceList()" class="text-blue-600 text-sm font-medium hover:text-blue-700 transition-colors">
+                        点击查看更多 <i class="fas fa-chevron-right ml-1"></i>
+                    </button>
+                </div>               
+
+
+            </div>
+        </div>
+        
+        <!-- 系统设置 -->
+        <div class="px-4 mb-4 pb-20">
+            <div class="menu-item p-4" onclick="navigateToSystemSettings()">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
+                            <i class="fas fa-cog text-gray-600"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">系统设置</p>
+                            <p class="text-xs text-gray-500">安全、版本等显示与设置</p>
+                        </div>
+                    </div>
+                    <i class="fas fa-chevron-right text-gray-400"></i>
+                </div>
+            </div>
+
+        </div>
+        
+          </div>
+
+        <!-- 底部导航栏（精简为3个） -->
+        <div class="tab-bar">
+            <div class="tab-item" onclick="navigateToPage('home')">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item" onclick="navigateToPage('chat')">
+                <i class="fas fa-robot"></i>
+                <span>问AI</span>
+            </div>
+            <div class="tab-item active" onclick="navigateToPage('profile')">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </div>
+        </div>
+    
+    <script>
+        /**
+         * 糖尿病控糖管理平台 - 通用交互功能
+         * 提供统一的用户体验和交互增强
+         */
+
+        // 全局配置
+        const CONFIG = {
+            // 动画配置
+            animation: {
+                duration: 300,
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+            },
+            // 触觉反馈配置
+            haptic: {
+                enabled: true,
+                intensity: 'medium' // light, medium, heavy
+            },
+            // 音效配置
+            sound: {
+                enabled: false,
+                volume: 0.3
+            }
+        };
+
+        /**
+         * 工具函数集合
+         */
+        const Utils = {
+            /**
+             * 防抖函数
+             * @param {Function} func 要防抖的函数
+             * @param {number} wait 等待时间（毫秒）
+             * @returns {Function} 防抖后的函数
+             */
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+
+            /**
+             * 节流函数
+             * @param {Function} func 要节流的函数
+             * @param {number} limit 时间限制（毫秒）
+             * @returns {Function} 节流后的函数
+             */
+            throttle(func, limit) {
+                let inThrottle;
+                return function(...args) {
+                    if (!inThrottle) {
+                        func.apply(this, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                };
+            },
+
+            /**
+             * 格式化日期
+             * @param {Date|string} date 日期对象或字符串
+             * @param {string} format 格式字符串
+             * @returns {string} 格式化后的日期字符串
+             */
+            formatDate(date, format = 'YYYY-MM-DD') {
+                const d = new Date(date);
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                const hour = String(d.getHours()).padStart(2, '0');
+                const minute = String(d.getMinutes()).padStart(2, '0');
+                
+                return format
+                    .replace('YYYY', year)
+                    .replace('MM', month)
+                    .replace('DD', day)
+                    .replace('HH', hour)
+                    .replace('mm', minute);
+            },
+
+            /**
+             * 生成唯一ID
+             * @returns {string} 唯一ID字符串
+             */
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            },
+
+            /**
+             * 深拷贝对象
+             * @param {any} obj 要拷贝的对象
+             * @returns {any} 拷贝后的对象
+             */
+            deepClone(obj) {
+                if (obj === null || typeof obj !== 'object') return obj;
+                if (obj instanceof Date) return new Date(obj.getTime());
+                if (obj instanceof Array) return obj.map(item => this.deepClone(item));
+                if (typeof obj === 'object') {
+                    const clonedObj = {};
+                    for (const key in obj) {
+                        if (obj.hasOwnProperty(key)) {
+                            clonedObj[key] = this.deepClone(obj[key]);
+                        }
+                    }
+                    return clonedObj;
+                }
+            }
+        };
+
+        /**
+         * 触觉反馈管理器
+         */
+        const HapticManager = {
+            /**
+             * 触发触觉反馈
+             * @param {string} type 反馈类型：light, medium, heavy
+             */
+            trigger(type = 'medium') {
+                if (!CONFIG.haptic.enabled) return;
+                
+                // 检查是否支持触觉反馈
+                if ('vibrate' in navigator) {
+                    const patterns = {
+                        light: [10],
+                        medium: [20],
+                        heavy: [30]
+                    };
+                    navigator.vibrate(patterns[type] || patterns.medium);
+                }
+            },
+
+            /**
+             * 成功反馈
+             */
+            success() {
+                this.trigger('light');
+            },
+
+            /**
+             * 错误反馈
+             */
+            error() {
+                this.trigger('heavy');
+            },
+
+            /**
+             * 选择反馈
+             */
+            selection() {
+                this.trigger('light');
+            }
+        };
+
+        /**
+         * 动画管理器
+         */
+        const AnimationManager = {
+            /**
+             * 淡入动画
+             * @param {HTMLElement} element 目标元素
+             * @param {number} duration 动画时长
+             */
+            fadeIn(element, duration = CONFIG.animation.duration) {
+                element.style.opacity = '0';
+                element.style.transition = `opacity ${duration}ms ${CONFIG.animation.easing}`;
+                
+                requestAnimationFrame(() => {
+                    element.style.opacity = '1';
+                });
+            },
+
+            /**
+             * 淡出动画
+             * @param {HTMLElement} element 目标元素
+             * @param {number} duration 动画时长
+             */
+            fadeOut(element, duration = CONFIG.animation.duration) {
+                element.style.transition = `opacity ${duration}ms ${CONFIG.animation.easing}`;
+                element.style.opacity = '0';
+                
+                setTimeout(() => {
+                    element.style.display = 'none';
+                }, duration);
+            },
+
+            /**
+             * 滑入动画
+             * @param {HTMLElement} element 目标元素
+             * @param {string} direction 滑入方向：left, right, up, down
+             * @param {number} duration 动画时长
+             */
+            slideIn(element, direction = 'up', duration = CONFIG.animation.duration) {
+                const transforms = {
+                    up: 'translateY(20px)',
+                    down: 'translateY(-20px)',
+                    left: 'translateX(20px)',
+                    right: 'translateX(-20px)'
+                };
+                
+                element.style.transform = transforms[direction];
+                element.style.opacity = '0';
+                element.style.transition = `all ${duration}ms ${CONFIG.animation.easing}`;
+                
+                requestAnimationFrame(() => {
+                    element.style.transform = 'translate(0)';
+                    element.style.opacity = '1';
+                });
+            },
+
+            /**
+             * 弹性缩放动画
+             * @param {HTMLElement} element 目标元素
+             * @param {number} scale 缩放比例
+             * @param {number} duration 动画时长
+             */
+            bounce(element, scale = 0.95, duration = 150) {
+                element.style.transition = `transform ${duration}ms ${CONFIG.animation.easing}`;
+                element.style.transform = `scale(${scale})`;
+                
+                setTimeout(() => {
+                    element.style.transform = 'scale(1)';
+                }, duration);
+            }
+        };
+
+        /**
+         * 通知管理器
+         */
+        const NotificationManager = {
+            /**
+             * 显示通知
+             * @param {string} message 通知消息
+             * @param {string} type 通知类型：success, error, warning, info
+             * @param {number} duration 显示时长（毫秒）
+             */
+            show(message, type = 'info', duration = 3000) {
+                const notification = this.create(message, type);
+                document.body.appendChild(notification);
+                
+                // 触发动画
+                AnimationManager.slideIn(notification, 'down');
+                
+                // 自动隐藏
+                setTimeout(() => {
+                    this.hide(notification);
+                }, duration);
+                
+                return notification;
+            },
+
+            /**
+             * 创建通知元素
+             * @param {string} message 通知消息
+             * @param {string} type 通知类型
+             * @returns {HTMLElement} 通知元素
+             */
+            create(message, type) {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    z-index: 9999;
+                    padding: 16px 20px;
+                    border-radius: 12px;
+                    color: white;
+                    font-weight: 500;
+                    font-size: 14px;
+                    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+                    max-width: 300px;
+                    word-wrap: break-word;
+                `;
+                
+                const colors = {
+                    success: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+                    error: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
+                    warning: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
+                    info: 'linear-gradient(135deg, #3b82f6 0%, #2563eb 100%)'
+                };
+                
+                notification.style.background = colors[type] || colors.info;
+                notification.textContent = message;
+                
+                // 添加关闭按钮
+                const closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '×';
+                closeBtn.style.cssText = `
+                    position: absolute;
+                    top: 8px;
+                    right: 8px;
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 18px;
+                    cursor: pointer;
+                    padding: 0;
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+                
+                closeBtn.onclick = () => this.hide(notification);
+                notification.appendChild(closeBtn);
+                
+                return notification;
+            },
+
+            /**
+             * 隐藏通知
+             * @param {HTMLElement} notification 通知元素
+             */
+            hide(notification) {
+                AnimationManager.fadeOut(notification);
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, CONFIG.animation.duration);
+            },
+
+            /**
+             * 成功通知
+             * @param {string} message 消息内容
+             */
+            success(message) {
+                HapticManager.success();
+                return this.show(message, 'success');
+            },
+
+            /**
+             * 错误通知
+             * @param {string} message 消息内容
+             */
+            error(message) {
+                HapticManager.error();
+                return this.show(message, 'error');
+            },
+
+            /**
+             * 警告通知
+             * @param {string} message 消息内容
+             */
+            warning(message) {
+                return this.show(message, 'warning');
+            },
+
+            /**
+             * 信息通知
+             * @param {string} message 消息内容
+             */
+            info(message) {
+                return this.show(message, 'info');
+            }
+        };
+
+        /**
+         * 加载状态管理器
+         */
+        const LoadingManager = {
+            /**
+             * 显示加载状态
+             * @param {HTMLElement} element 目标元素
+             * @param {string} text 加载文本
+             */
+            show(element, text = '加载中...') {
+                const loadingId = 'loading-' + Utils.generateId();
+                element.dataset.loadingId = loadingId;
+                
+                const overlay = document.createElement('div');
+                overlay.id = loadingId;
+                overlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(255, 255, 255, 0.9);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    border-radius: inherit;
+                `;
+                
+                overlay.innerHTML = `
+                    <div class="loading-spinner" style="
+                        width: 32px;
+                        height: 32px;
+                        border: 3px solid #e5e7eb;
+                        border-top: 3px solid #667eea;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin-bottom: 12px;
+                    "></div>
+                    <div style="
+                        color: #6b7280;
+                        font-size: 14px;
+                        font-weight: 500;
+                    ">${text}</div>
+                `;
+                
+                // 确保父元素有相对定位
+                if (getComputedStyle(element).position === 'static') {
+                    element.style.position = 'relative';
+                }
+                
+                element.appendChild(overlay);
+                AnimationManager.fadeIn(overlay, 200);
+            },
+
+            /**
+             * 隐藏加载状态
+             * @param {HTMLElement} element 目标元素
+             */
+            hide(element) {
+                const loadingId = element.dataset.loadingId;
+                if (loadingId) {
+                    const overlay = document.getElementById(loadingId);
+                    if (overlay) {
+                        AnimationManager.fadeOut(overlay, 200);
+                        setTimeout(() => {
+                            if (overlay.parentNode) {
+                                overlay.parentNode.removeChild(overlay);
+                            }
+                        }, 200);
+                    }
+                    delete element.dataset.loadingId;
+                }
+            }
+        };
+
+        /**
+         * 表单验证管理器
+         */
+        const ValidationManager = {
+            /**
+             * 验证规则
+             */
+            rules: {
+                required: (value) => value.trim() !== '',
+                email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                phone: (value) => /^1[3-9]\d{9}$/.test(value),
+                number: (value) => !isNaN(value) && value !== '',
+                bloodSugar: (value) => {
+                    const num = parseFloat(value);
+                    return !isNaN(num) && num >= 1 && num <= 30;
+                },
+                bloodPressure: (value) => {
+                    const parts = value.split('/');
+                    if (parts.length !== 2) return false;
+                    const systolic = parseInt(parts[0]);
+                    const diastolic = parseInt(parts[1]);
+                    return !isNaN(systolic) && !isNaN(diastolic) && 
+                           systolic >= 60 && systolic <= 250 && 
+                           diastolic >= 40 && diastolic <= 150;
+                }
+            },
+
+            /**
+             * 验证单个字段
+             * @param {HTMLElement} field 字段元素
+             * @param {Array} rules 验证规则数组
+             * @returns {boolean} 验证结果
+             */
+            validateField(field, rules) {
+                const value = field.value;
+                let isValid = true;
+                let errorMessage = '';
+                
+                for (const rule of rules) {
+                    if (typeof rule === 'string') {
+                        if (!this.rules[rule](value)) {
+                            isValid = false;
+                            errorMessage = this.getErrorMessage(rule);
+                            break;
+                        }
+                    } else if (typeof rule === 'object') {
+                        if (!this.rules[rule.type](value)) {
+                            isValid = false;
+                            errorMessage = rule.message || this.getErrorMessage(rule.type);
+                            break;
+                        }
+                    }
+                }
+                
+                this.showFieldResult(field, isValid, errorMessage);
+                return isValid;
+            },
+
+            /**
+             * 显示字段验证结果
+             * @param {HTMLElement} field 字段元素
+             * @param {boolean} isValid 是否有效
+             * @param {string} errorMessage 错误消息
+             */
+            showFieldResult(field, isValid, errorMessage) {
+                // 移除之前的错误提示
+                const existingError = field.parentNode.querySelector('.field-error');
+                if (existingError) {
+                    existingError.remove();
+                }
+                
+                // 更新字段样式
+                field.classList.remove('field-valid', 'field-invalid');
+                field.classList.add(isValid ? 'field-valid' : 'field-invalid');
+                
+                // 显示错误消息
+                if (!isValid && errorMessage) {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'field-error';
+                    errorDiv.style.cssText = `
+                        color: #ef4444;
+                        font-size: 12px;
+                        margin-top: 4px;
+                        animation: fadeIn 0.3s ease;
+                    `;
+                    errorDiv.textContent = errorMessage;
+                    field.parentNode.appendChild(errorDiv);
+                }
+            },
+
+            /**
+             * 获取错误消息
+             * @param {string} ruleType 规则类型
+             * @returns {string} 错误消息
+             */
+            getErrorMessage(ruleType) {
+                const messages = {
+                    required: '此字段为必填项',
+                    email: '请输入有效的邮箱地址',
+                    phone: '请输入有效的手机号码',
+                    number: '请输入有效的数字',
+                    bloodSugar: '血糖值应在1-30之间',
+                    bloodPressure: '请输入有效的血压值（如：120/80）'
+                };
+                return messages[ruleType] || '输入格式不正确';
+            }
+        };
+
+        /**
+         * 数据存储管理器
+         */
+        const StorageManager = {
+            /**
+             * 设置本地存储
+             * @param {string} key 键名
+             * @param {any} value 值
+             */
+            set(key, value) {
+                try {
+                    localStorage.setItem(key, JSON.stringify(value));
+                } catch (error) {
+                    console.warn('无法保存到本地存储:', error);
+                }
+            },
+
+            /**
+             * 获取本地存储
+             * @param {string} key 键名
+             * @param {any} defaultValue 默认值
+             * @returns {any} 存储的值
+             */
+            get(key, defaultValue = null) {
+                try {
+                    const item = localStorage.getItem(key);
+                    return item ? JSON.parse(item) : defaultValue;
+                } catch (error) {
+                    console.warn('无法从本地存储读取:', error);
+                    return defaultValue;
+                }
+            },
+
+            /**
+             * 删除本地存储
+             * @param {string} key 键名
+             */
+            remove(key) {
+                try {
+                    localStorage.removeItem(key);
+                } catch (error) {
+                    console.warn('无法删除本地存储:', error);
+                }
+            },
+
+            /**
+             * 清空本地存储
+             */
+            clear() {
+                try {
+                    localStorage.clear();
+                } catch (error) {
+                    console.warn('无法清空本地存储:', error);
+                }
+            }
+        };
+
+        /**
+         * 页面初始化
+         */
+        function initializePage() {
+            // 添加全局样式
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes spin {
+                    to { transform: rotate(360deg); }
+                }
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .field-valid {
+                    border-color: #10b981 !important;
+                    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1) !important;
+                }
+                .field-invalid {
+                    border-color: #ef4444 !important;
+                    box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
+                }
+            `;
+            document.head.appendChild(style);
+            
+            // 初始化通用事件监听
+            initializeEventListeners();
+            
+            // 初始化页面动画
+            initializeAnimations();
+            
+            console.log('页面初始化完成');
+        }
+
+        /**
+         * 兼容性检查函数 - 检查元素是否匹配选择器
+         * @param {Element} element 要检查的元素
+         * @param {string} selector CSS选择器
+         * @returns {boolean} 是否匹配
+         */
+        function elementMatches(element, selector) {
+            // 安全检查：确保element是一个有效的HTML元素
+            if (!element || !element.nodeType || element.nodeType !== 1) {
+                return false;
+            }
+            
+            // 优先使用标准的matches方法
+            if (element.matches) {
+                return element.matches(selector);
+            }
+            // 兼容旧版本浏览器
+            if (element.webkitMatchesSelector) {
+                return element.webkitMatchesSelector(selector);
+            }
+            if (element.mozMatchesSelector) {
+                return element.mozMatchesSelector(selector);
+            }
+            if (element.msMatchesSelector) {
+                return element.msMatchesSelector(selector);
+            }
+            
+            // 最后的兼容方案 - 手动检查
+            const tagName = element.tagName ? element.tagName.toLowerCase() : '';
+            const className = element.className || '';
+            const role = element.getAttribute ? element.getAttribute('role') : '';
+            
+            // 检查按钮相关选择器
+            if (selector.includes('button') && tagName === 'button') return true;
+            if (selector.includes('.btn') && className && className.includes('btn')) return true;
+            if (selector.includes('[role="button"]') && role === 'button') return true;
+            
+            // 检查输入框相关选择器
+            if (selector.includes('input') && tagName === 'input') return true;
+            if (selector.includes('textarea') && tagName === 'textarea') return true;
+            if (selector.includes('select') && tagName === 'select') return true;
+            
+            // 检查卡片相关选择器
+            if (selector.includes('.medical-card') && className && className.includes('medical-card')) return true;
+            if (selector.includes('.data-card') && className && className.includes('data-card')) return true;
+            if (selector.includes('.menu-item') && className && className.includes('menu-item')) return true;
+            
+            return false;
+        }
+
+        /**
+         * 初始化事件监听器
+         */
+        function initializeEventListeners() {
+            // 为所有按钮添加点击效果
+            document.addEventListener('click', function(e) {
+                if (elementMatches(e.target, 'button, .btn, [role="button"]')) {
+                    HapticManager.selection();
+                    AnimationManager.bounce(e.target);
+                }
+            });
+            
+            // 为所有输入框添加焦点效果
+            document.addEventListener('focusin', function(e) {
+                if (elementMatches(e.target, 'input, textarea, select')) {
+                    e.target.style.transition = 'all 0.2s ease';
+                }
+            });
+            
+            // 为所有卡片添加悬停效果
+            document.addEventListener('mouseenter', function(e) {
+                if (elementMatches(e.target, '.medical-card, .data-card, .menu-item')) {
+                    e.target.style.transition = 'all 0.3s ease';
+                }
+            }, true);
+        }
+
+        /**
+         * 初始化页面动画
+         */
+        function initializeAnimations() {
+            // 为页面元素添加淡入动画
+            const animatedElements = document.querySelectorAll('.medical-card, .data-card, .menu-item');
+            animatedElements.forEach((element, index) => {
+                setTimeout(() => {
+                    AnimationManager.fadeIn(element);
+                }, index * 100);
+            });
+        }
+
+        // 页面加载完成后初始化
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initializePage);
+        } else {
+            initializePage();
+        }
+
+        // 导出全局对象
+        window.MedicalApp = {
+            Utils,
+            HapticManager,
+            AnimationManager,
+            NotificationManager,
+            LoadingManager,
+            ValidationManager,
+            StorageManager,
+            CONFIG
+        };
+
+        console.log('医疗应用通用功能模块加载完成');
+    </script>
+    <script>
+        // 个人中心页面特定功能
+        let userProfile = {
+            name: '张三',
+            age: 45,
+            gender: '男',
+            phone: '138****8888',
+            email: 'zhangsan@example.com',
+            diabetesType: '2型糖尿病',
+            diagnosisDate: '2020-03-15'
+        };
+        
+        let healthData = {
+            bloodSugar: { value: 6.2, unit: 'mmol/L', status: 'normal', trend: 'stable' },
+            bloodPressure: { systolic: 120, diastolic: 80, status: 'normal', trend: 'stable' },
+            weight: { value: 65, unit: 'kg', bmi: 22.5, status: 'normal', trend: 'down' },
+            exercise: { weekly: 3, duration: 150, target: 150, status: 'achieved' }
+        };
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeProfile();
+            initializeSettings();
+            initializeSystemSettings();
+            initializeHealthData();
+            initializeMembershipCard();
+            loadUserData();
+            // 初始化设备列表
+            deviceManager.renderDevices();
+        });
+
+        /**
+         * 初始化个人资料功能
+         */
+        function initializeProfile() {
+            const editProfileBtn = document.getElementById('editProfileBtn');
+            const saveProfileBtn = document.getElementById('saveProfileBtn');
+            const cancelEditBtn = document.getElementById('cancelEditBtn');
+            const profileForm = document.getElementById('profileForm');
+            const profileDisplay = document.getElementById('profileDisplay');
+            const avatarUpload = document.getElementById('avatarUpload');
+            
+            if (editProfileBtn) {
+                editProfileBtn.addEventListener('click', function() {
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.selection();
+                    }
+                    
+                    // 动画切换
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.AnimationManager) {
+                        MedicalApp.AnimationManager.fadeOut(profileDisplay, () => {
+                            profileDisplay.style.display = 'none';
+                            profileForm.style.display = 'block';
+                            MedicalApp.AnimationManager.fadeIn(profileForm);
+                        });
+                    } else {
+                        profileDisplay.style.display = 'none';
+                        profileForm.style.display = 'block';
+                    }
+                });
+            }
+            
+            if (cancelEditBtn) {
+                cancelEditBtn.addEventListener('click', function() {
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.selection();
+                    }
+                    
+                    // 动画切换
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.AnimationManager) {
+                        MedicalApp.AnimationManager.fadeOut(profileForm, () => {
+                            profileForm.style.display = 'none';
+                            profileDisplay.style.display = 'block';
+                            MedicalApp.AnimationManager.fadeIn(profileDisplay);
+                        });
+                    } else {
+                        profileForm.style.display = 'none';
+                        profileDisplay.style.display = 'block';
+                    }
+                });
+            }
+            
+            if (saveProfileBtn) {
+                saveProfileBtn.addEventListener('click', function() {
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.impact('medium');
+                    }
+                    
+                    // 显示加载状态
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.LoadingManager) {
+                        MedicalApp.LoadingManager.show('正在保存...');
+                    }
+                    
+                    // 模拟保存个人资料
+                    setTimeout(() => {
+                        // 更新用户数据
+                        updateUserProfile();
+                        
+                        // 隐藏加载状态
+                        if (typeof MedicalApp !== 'undefined' && MedicalApp.LoadingManager) {
+                            MedicalApp.LoadingManager.hide();
+                        }
+                        
+                        // 动画切换
+                        if (typeof MedicalApp !== 'undefined' && MedicalApp.AnimationManager) {
+                            MedicalApp.AnimationManager.fadeOut(profileForm, () => {
+                                profileForm.style.display = 'none';
+                                profileDisplay.style.display = 'block';
+                                MedicalApp.AnimationManager.fadeIn(profileDisplay);
+                            });
+                        } else {
+                            profileForm.style.display = 'none';
+                            profileDisplay.style.display = 'block';
+                        }
+                        
+                        // 显示成功通知
+                        if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                            MedicalApp.NotificationManager.success('个人资料已保存');
+                        }
+                        
+                        // 触觉反馈
+                        if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                            MedicalApp.HapticManager.notification('success');
+                        }
+                    }, 1000);
+                });
+            }
+            
+            // 头像上传功能
+            if (avatarUpload) {
+                avatarUpload.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const avatarImg = document.querySelector('.avatar-img');
+                            if (avatarImg) {
+                                avatarImg.src = e.target.result;
+                            }
+                            
+                            // 显示成功通知
+                            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                                MedicalApp.NotificationManager.success('头像已更新');
+                            }
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        /**
+         * 初始化系统设置模块
+         */
+        function initializeSystemSettings() {
+            const systemSettingToggle = document.querySelector('.menu-item');
+            const settingDetails = document.querySelector('.setting-details');
+
+            if (systemSettingToggle && settingDetails) {
+                systemSettingToggle.addEventListener('click', function() {
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.selection();
+                    }
+
+                    // 切换设置详情显示状态
+                    if (settingDetails.classList.contains('hidden')) {
+                        settingDetails.classList.remove('hidden');
+                        // 添加展开动画
+                        if (typeof MedicalApp !== 'undefined' && MedicalApp.AnimationManager) {
+                            MedicalApp.AnimationManager.slideIn(settingDetails, 'down');
+                        }
+
+                        // 旋转箭头图标
+                        const chevronIcon = systemSettingToggle.querySelector('.fa-chevron-right');
+                        if (chevronIcon) {
+                            chevronIcon.style.transform = 'rotate(90deg)';
+                            chevronIcon.style.transition = 'transform 0.3s ease';
+                        }
+                    } else {
+                        settingDetails.classList.add('hidden');
+
+                        // 恢复箭头图标
+                        const chevronIcon = systemSettingToggle.querySelector('.fa-chevron-right');
+                        if (chevronIcon) {
+                            chevronIcon.style.transform = 'rotate(0deg)';
+                        }
+                    }
+                });
+            }
+        }
+
+        /**
+         * 初始化设置功能
+         */
+        function initializeSettings() {
+            const settingItems = document.querySelectorAll('.setting-item');
+
+            settingItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.selection();
+                    }
+
+                    const settingType = this.dataset.setting;
+                    handleSettingClick(settingType);
+                });
+            });
+        }
+
+        /**
+         * 处理设置项点击
+         * @param {string} settingType 设置类型
+         */
+        function handleSettingClick(settingType) {
+            switch(settingType) {
+                case 'notification':
+                    showNotificationSettings();
+                    break;
+                case 'privacy':
+                    showPrivacySettings();
+                    break;
+                case 'security':
+                    showSecuritySettings();
+                    break;
+                case 'data-export':
+                    exportHealthData();
+                    break;
+                case 'about':
+                    showAboutInfo();
+                    break;
+                case 'help':
+                    showHelpCenter();
+                    break;
+                case 'feedback':
+                    showFeedbackForm();
+                    break;
+                case 'logout':
+                    handleLogout();
+                    break;
+                default:
+                    console.log('未知设置类型:', settingType);
+            }
+        }
+
+        /**
+         * 显示通知设置
+         */
+        function showNotificationSettings() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info('通知设置功能开发中...');
+            }
+        }
+
+        /**
+         * 显示隐私设置
+         */
+        function showPrivacySettings() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info('隐私设置功能开发中...');
+            }
+        }
+
+        /**
+         * 显示安全设置
+         */
+        function showSecuritySettings() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info('安全设置功能开发中...');
+            }
+        }
+
+        /**
+         * 导出健康数据
+         */
+        function exportHealthData() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.LoadingManager) {
+                MedicalApp.LoadingManager.show('正在导出数据...');
+            }
+            
+            setTimeout(() => {
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.LoadingManager) {
+                    MedicalApp.LoadingManager.hide();
+                }
+                
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                    MedicalApp.NotificationManager.success('健康数据已导出到下载文件夹');
+                }
+            }, 2000);
+        }
+
+        /**
+         * 显示关于信息
+         */
+        function showAboutInfo() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info('糖尿病控糖管理平台 v1.0.0\n专业的血糖管理助手');
+            }
+        }
+
+        /**
+         * 显示帮助中心
+         */
+        function showHelpCenter() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info('帮助中心功能开发中...');
+            }
+        }
+
+        /**
+         * 显示反馈表单
+         */
+        function showFeedbackForm() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info('意见反馈功能开发中...');
+            }
+        }
+
+        /**
+         * 处理退出登录
+         */
+        function handleLogout() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.confirm('确定要退出登录吗？', () => {
+                    // 清除本地数据
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.StorageManager) {
+                        MedicalApp.StorageManager.clear();
+                    }
+                    
+                    // 显示退出成功
+                    MedicalApp.NotificationManager.success('已退出登录');
+                    
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.notification('warning');
+                    }
+                });
+            }
+        }
+
+        /**
+         * 初始化健康数据功能
+         */
+        function initializeHealthData() {
+            const healthCards = document.querySelectorAll('.health-card');
+            
+            healthCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.selection();
+                    }
+                    
+                    const dataType = this.dataset.type;
+                    showHealthDetail(dataType);
+                });
+            });
+        }
+
+        /**
+         * 显示健康数据详情
+         * @param {string} dataType 数据类型
+         */
+        function showHealthDetail(dataType) {
+            const data = healthData[dataType];
+            if (!data) {
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                    MedicalApp.NotificationManager.warning('暂无详细数据');
+                }
+                return;
+            }
+            
+            let message = '';
+            switch(dataType) {
+                case 'bloodSugar':
+                    message = `血糖详情：\n当前值：${data.value} ${data.unit}\n状态：${getStatusText(data.status)}\n趋势：${getTrendText(data.trend)}`;
+                    break;
+                case 'bloodPressure':
+                    message = `血压详情：\n当前值：${data.systolic}/${data.diastolic} mm/Hg\n状态：${getStatusText(data.status)}\n趋势：${getTrendText(data.trend)}`;
+                    break;
+                case 'weight':
+                    message = `体重详情：\n当前值：${data.value} ${data.unit}\nBMI：${data.bmi}\n状态：${getStatusText(data.status)}\n趋势：${getTrendText(data.trend)}`;
+                    break;
+                case 'exercise':
+                    message = `运动详情：\n本周次数：${data.weekly}次\n累计时长：${data.duration}分钟\n目标完成：${data.status === 'achieved' ? '已达成' : '未达成'}`;
+                    break;
+            }
+            
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.info(message);
+            }
+        }
+
+        /**
+         * 初始化会员卡功能
+         */
+        function initializeMembershipCard() {
+            const upgradeBtn = document.getElementById('upgradeBtn');
+            if (upgradeBtn) {
+                upgradeBtn.addEventListener('click', function() {
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.impact('medium');
+                    }
+                    
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                        MedicalApp.NotificationManager.info('会员升级功能开发中...');
+                    }
+                });
+            }
+        }
+
+        /**
+         * 更新用户资料
+         */
+        function updateUserProfile() {
+            const form = document.getElementById('profileForm');
+            if (!form) return;
+            
+            const formData = new FormData(form);
+            userProfile.name = formData.get('name') || userProfile.name;
+            userProfile.age = formData.get('age') || userProfile.age;
+            userProfile.phone = formData.get('phone') || userProfile.phone;
+            userProfile.email = formData.get('email') || userProfile.email;
+            
+            // 保存到本地存储
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.StorageManager) {
+                MedicalApp.StorageManager.set('userProfile', userProfile);
+            }
+            
+            // 更新显示
+            updateProfileDisplay();
+        }
+
+        /**
+         * 更新资料显示
+         */
+        function updateProfileDisplay() {
+            const nameElement = document.querySelector('.profile-name');
+            const ageElement = document.querySelector('.profile-age');
+            const phoneElement = document.querySelector('.profile-phone');
+            const emailElement = document.querySelector('.profile-email');
+            
+            if (nameElement) nameElement.textContent = userProfile.name;
+            if (ageElement) ageElement.textContent = `${userProfile.age}岁`;
+            if (phoneElement) phoneElement.textContent = userProfile.phone;
+            if (emailElement) emailElement.textContent = userProfile.email;
+        }
+
+        /**
+         * 加载用户数据
+         */
+        function loadUserData() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.StorageManager) {
+                const savedProfile = MedicalApp.StorageManager.get('userProfile');
+                if (savedProfile) {
+                    userProfile = { ...userProfile, ...savedProfile };
+                    updateProfileDisplay();
+                }
+            }
+        }
+
+        /**
+         * 获取状态文本
+         * @param {string} status 状态
+         * @returns {string} 状态文本
+         */
+        function getStatusText(status) {
+            const statusMap = {
+                'normal': '正常',
+                'high': '偏高',
+                'low': '偏低',
+                'achieved': '已达成'
+            };
+            return statusMap[status] || '未知';
+        }
+
+        /**
+         * 获取趋势文本
+         * @param {string} trend 趋势
+         * @returns {string} 趋势文本
+         */
+        function getTrendText(trend) {
+            const trendMap = {
+                'stable': '稳定',
+                'up': '上升',
+                'down': '下降'
+            };
+            return trendMap[trend] || '未知';
+        }
+
+        console.log('个人中心页面加载完成');
+    </script>
+    
+    <script>
+        /**
+         * 导航到指定页面
+         * @param {string} page 页面名称
+         */
+        function navigateToPage(page) {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+            
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: page
+                }, '*');
+            } else {
+                // 直接跳转
+                window.location.href = page + '.html';
+            }
+        }
+
+        /**
+         * 显示记录弹窗
+         */
+        function showRecordModal() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('medium');
+            }
+            
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'showRecordModal'
+                }, '*');
+            } else {
+                // 显示本地通知
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                    MedicalApp.NotificationManager.info('记录功能开发中...');
+                }
+            }
+        }
+
+        /**
+         * 监听来自父页面的消息
+         */
+        window.addEventListener('message', function(event) {
+            // 验证消息来源
+            if (event.origin !== window.location.origin && event.origin !== 'null') return;
+            
+            const data = event.data;
+            
+            switch (data.type) {
+                case 'updateActiveTab':
+                    // 更新活动标签状态
+                    updateActiveTab(data.page);
+                    break;
+                case 'showRecordModal':
+                    // 显示记录弹窗
+                    showRecordModal();
+                    break;
+            }
+        });
+
+        /**
+         * 更新活动标签状态
+         * @param {string} activePage 活动页面名称
+         */
+        function updateActiveTab(activePage) {
+            const tabItems = document.querySelectorAll('.tab-item');
+            tabItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            // 根据页面设置活动状态
+            const pageMap = {
+                'home': 0,
+                'course': 1,
+                'chat': 3,
+                'profile': 4
+            };
+            
+            const activeIndex = pageMap[activePage];
+            if (activeIndex !== undefined && tabItems[activeIndex]) {
+                tabItems[activeIndex].classList.add('active');
+            }
+        }
+
+        /**
+         * 导航到我的健康档案页
+         */
+        function navigateToHealthQuestionnaire() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.trigger('light');
+            }
+
+            const targetUrl = 'health_profile_list.html';
+            if (window.parent !== window) {
+                // 兼容父容器的两种消息协议，并提供本页内跳转回退
+                try { window.parent.postMessage({ type: 'navigate', page: 'health_profile_list' }, '*'); } catch (e) {}
+                try { window.parent.postMessage({ type: 'navigateToPage', page: 'health_profile_list' }, '*'); } catch (e) {}
+                window.location.href = targetUrl;
+            } else {
+                window.location.href = targetUrl;
+            }
+        }
+
+        /**
+         * 导航到个人信息编辑页
+         */
+        function navigateToPersonalInfoEdit() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('light');
+            }
+
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigateToPage',
+                    page: 'personal_info_edit'
+                }, '*');
+            } else {
+                // 直接导航到个人信息编辑页
+                window.location.href = 'personal_info_edit.html';
+            }
+        }
+
+        /**
+         * 导航到血糖数据分析页
+         */
+        function navigateToBloodSugarAnalysis() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('light');
+            }
+
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigateToPage',
+                    page: 'blood_sugar_analysis'
+                }, '*');
+            } else {
+                // 直接导航到血糖数据分析页
+                window.location.href = 'blood_analysis.html';
+            }
+        }
+
+        /**
+         * 导航到亲友列表页面
+         */
+        function navigateToFriendList() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('light');
+            }
+
+            // 导航到好友管理页面
+            window.location.href = 'friend_management.html';
+        }
+
+        /**
+         * 导航到AI报告页
+         */
+        function navigateToAIReport() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('light');
+            }
+
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigateToPage',
+                    page: 'ai_report'
+                }, '*');
+            } else {
+                // 直接导航到AI报告页
+                window.location.href = 'ai_report.html';
+            }
+        }
+
+        /**
+         * 导航到系统设置页
+         */
+        function navigateToSystemSettings() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('light');
+            }
+
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigateToPage',
+                    page: 'system_settings'
+                }, '*');
+            } else {
+                // 直接导航到系统设置页
+                window.location.href = 'system_settings.html';
+            }
+        }
+
+        /**
+         * 导航到个人信息编辑页面
+         */
+        function navigateToProfileEdit() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'profile_edit'
+                }, '*');
+            } else {
+                // 直接导航到个人信息编辑页
+                window.location.href = 'profile_edit.html';
+            }
+        }
+
+        /**
+         * 设备数据管理
+         */
+        const deviceManager = {
+            // 模拟设备数据
+            devices: [
+                {
+                    id: 1,
+                    name: '优唐医生血压/血糖/尿酸/血酮测试仪(Y916D-4G版)',
+                    image: '../imgs/四合一血糖.png',
+                    status: 'connected',
+                    lastSync: '2分钟前',
+                    measureCount: 1247,
+                    syncTime: '2分钟前'
+                },
+                {
+                    id: 2,
+                    name: '优唐医生血糖仪(GLM-76L蓝牙版)',
+                    image: '../imgs/雅思.jpg',
+                    status: 'connected',
+                    lastSync: '1天前',
+                    measureCount: 51,
+                    syncTime: '1天前'
+                },
+                {
+                    id: 3,
+                    name: '优唐医生血压计(A666-4G版)',
+                    image: '../imgs/脉搏血压计.png',
+                    status: 'connected',
+                    lastSync: '3天前',
+                    measureCount: 89,
+                    syncTime: '3天前'
+                },
+            ],
+
+            /**
+             * 获取用户设备列表
+             */
+            getUserDevices() {
+                // 这里可以从localStorage或API获取实际的设备数据
+                return this.devices;
+            },
+
+            /**
+             * 渲染设备列表
+             */
+            renderDevices() {
+                const deviceList = document.getElementById('deviceList');
+                const viewMoreBtn = document.getElementById('viewMoreDevices');
+                const devices = this.getUserDevices();
+
+                if (!deviceList) return;
+
+                // 清空现有设备列表
+                deviceList.innerHTML = '';
+
+                // 只显示前2个设备
+                const displayDevices = devices.slice(0, 2);
+
+                displayDevices.forEach(device => {
+                    const deviceElement = this.createDeviceElement(device);
+                    deviceList.appendChild(deviceElement);
+                });
+
+                // 如果设备数量大于2，显示查看更多按钮
+                if (devices.length > 2) {
+                    viewMoreBtn.classList.remove('hidden');
+                } else {
+                    viewMoreBtn.classList.add('hidden');
+                }
+            },
+
+            /**
+             * 创建设备元素
+             */
+            createDeviceElement(device) {
+                const deviceDiv = document.createElement('div');
+                deviceDiv.className = 'bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-4 border border-blue-100';
+
+                const statusColor = device.status === 'connected' ? 'green' : 'gray';
+                const statusText = device.status === 'connected' ? '已绑定' : '未连接';
+
+                deviceDiv.innerHTML = `
+                    <div class="flex flex-col space-y-3">
+                        <!-- 设备名称和连接状态 -->
+                        <div class="flex items-center space-x-3">
+                            <div class="w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                                <img src="${device.image}" alt="${device.name}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-sm font-semibold text-gray-800 line-clamp-2 leading-5" style="display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;">${device.name}</h4>
+                                <div class="flex items-center space-x-2 mt-1">
+                                    <div class="w-2 h-2 bg-${statusColor}-500 rounded-full"></div>
+                                    <span class="text-xs text-${statusColor}-600 font-medium">${statusText}</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 上次同步和测量次数 -->
+                        <div class="flex justify-between pl-19">
+                            <div class="text-center">
+                                <p class="text-xs text-gray-600 mb-1">上次同步</p>
+                                <p class="text-sm font-semibold text-gray-800">${device.syncTime}</p>
+                            </div>
+                            <div class="text-center">
+                                <p class="text-xs text-gray-600 mb-1">测量次数</p>
+                                <p class="text-sm font-semibold text-gray-800">${device.measureCount.toLocaleString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                return deviceDiv;
+            }
+        };
+
+        /**
+         * 导航到设备列表页
+         */
+        function navigateToDeviceList() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigateToPage',
+                    page: 'device_all'
+                }, '*');
+            } else {
+                // 直接导航到优唐智能设备列表页
+                window.location.href = 'device_all.html';
+            }
+        }
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,1819 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>血压记录 - 控糖助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 糖尿病控糖管理平台 - 统一样式文件 */
+
+        /* 颜色定义 */
+        .colors {
+            /* 主色调 */
+            color: #3b82f6; /* 原 --primary-color: #667eea 改为蓝色 */
+            color: #2563eb; /* 原 --primary-dark: #5a67d8 改为深蓝色 */
+            color: #8b5cf6; /* 原 --secondary-color: #764ba2 改为紫色 */
+            
+            /* 医疗主题色彩 */
+            color: #3b82f6; /* --medical-blue */
+            color: #10b981; /* --medical-green */
+            color: #ef4444; /* --medical-red */
+            color: #f59e0b; /* --medical-orange */
+            color: #8b5cf6; /* --medical-purple */
+            
+            /* 中性色 */
+            color: #f9fafb; /* --gray-50 */
+            color: #f3f4f6; /* --gray-100 */
+            color: #e5e7eb; /* --gray-200 */
+            color: #d1d5db; /* --gray-300 */
+            color: #9ca3af; /* --gray-400 */
+            color: #6b7280; /* --gray-500 */
+            color: #4b5563; /* --gray-600 */
+            color: #374151; /* --gray-700 */
+            color: #1f2937; /* --gray-800 */
+            color: #111827; /* --gray-900 */
+        }
+
+        /* 隐藏所有滚动条 */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        
+        /* 血压记录页面的双圆形进度条样式 - 完全复制血糖页面设计 */
+        /* 血压圆环容器 */
+        .blood-pressure-circle-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+        }
+
+        /* 背景圆圈 */
+        .background-circle {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            top: 0;
+            left: 0;
+        }
+
+        .blood-pressure-circle {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .blood-pressure-circle::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            background: white;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* 进度环 */
+        .progress-ring {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #ef4444 0deg, #e5e7eb 0deg);
+            mask: radial-gradient(circle at center, transparent 54px, black 54px);
+            -webkit-mask: radial-gradient(circle at center, transparent 54px, black 54px);
+            z-index: 2;
+        }
+
+        .progress-ring.systolic {
+            background: conic-gradient(from 0deg, #ef4444 0deg, #e5e7eb 0deg);
+        }
+
+        .progress-ring.diastolic {
+            background: conic-gradient(from 0deg, #3b82f6 0deg, #e5e7eb 0deg);
+        }
+
+        /* 可拖动的圆点样式 - 完全复制血糖页面设计 */
+        .drag-handle {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            cursor: grab;
+            z-index: 20;
+        }
+
+        .drag-dot {
+            width: 28px;
+            height: 28px;
+            background: #ef4444;
+            border: 3px solid white;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+            transition: transform 0.2s ease;
+        }
+
+        .drag-dot.systolic {
+            background: #ef4444;
+        }
+
+        .drag-dot.diastolic {
+            background: #3b82f6;
+        }
+
+        .drag-handle:hover .drag-dot {
+            transform: translate(-50%, -50%) scale(1.2);
+        }
+
+        .drag-handle.dragging .drag-dot {
+            transform: translate(-50%, -50%) scale(1.3);
+            cursor: grabbing;
+        }
+
+        /* 收缩压圆点hover和dragging状态 */
+        .drag-handle:hover .drag-dot.systolic {
+            background: #dc2626;
+        }
+
+        .drag-handle.dragging .drag-dot.systolic {
+            background: #b91c1c;
+        }
+
+        /* 舒张压圆点hover和dragging状态 */
+        .drag-handle:hover .drag-dot.diastolic {
+            background: #2563eb;
+        }
+
+        .drag-handle.dragging .drag-dot.diastolic {
+            background: #1d4ed8;
+        }
+
+        
+  
+        /* 血压双圆环容器 */
+        .blood-pressure-container {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .pressure-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pressure-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #374151;
+            text-align: center;
+        }
+
+        .pressure-label.systolic {
+            color: #dc2626;
+        }
+
+        .pressure-label.diastolic {
+            color: #2563eb;
+        }
+
+        /* 心率输入框样式 */
+        .heart-rate-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            outline: none;
+            transition: all 0.2s ease;
+        }
+
+        .heart-rate-input:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* 状态选项样式 */
+        .status-option {
+            display: flex;
+            align-items: center;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+            font-size: 14px;
+        }
+
+        .status-option:hover {
+            background-color: #f9fafb;
+            border-color: #d1d5db;
+        }
+
+        .status-option.selected {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            color: #1d4ed8;
+        }
+
+        .status-option.selected i {
+            color: #3b82f6 !important;
+        }
+
+        /* 导航栏样式 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding-bottom: 20px;
+            z-index: 1000;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .tab-item.active {
+            color: #3b82f6;
+        }
+
+        .tab-item:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .tab-item.add-btn {
+            background: #3b82f6;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 30px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .tab-item.add-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        .tab-item i {
+            font-size: 20px;
+            margin-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item span {
+            font-size: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item.active i,
+        .tab-item.active span {
+            color: #3b82f6;
+        }
+
+        .tab-item:not(.active) i,
+        .tab-item:not(.active) span {
+            color: #9ca3af;
+        }
+
+        .tab-item.add-btn i {
+            color: white;
+            font-size: 32px;
+            margin: 0;
+        }
+
+        .main-content {
+            padding-bottom: 200px;
+        }
+
+        /* 底部悬浮按钮样式 */
+        .manual-record-btn-container {
+            background: white;
+            border-radius: 0 0 30px 30px;
+            padding: 10px;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            z-index: 999;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .manual-record-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .manual-record-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .manual-record-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        /* 时间选择器样式 */
+        .picker-option {
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: all 0.2s ease;
+        }
+
+        .picker-option:hover {
+            background-color: #f8fafc;
+        }
+
+        .picker-option.selected {
+            background-color: #3b82f6;
+            color: white;
+            font-weight: 500;
+        }
+
+        /* 数字键盘样式 */
+        .number-key {
+            padding: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .number-key:hover {
+            background: #e2e8f0;
+            transform: translateY(-1px);
+        }
+
+        .number-key:active {
+            transform: translateY(0);
+        }
+
+        .number-key.delete {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        /* 智能测量设备列表样式 - 参考blood_pressure_device.html */
+        .device-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .device-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .device-card.connected {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .device-card.unconnected {
+            border-left: 4px solid #d1d5db;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-connected {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .status-unconnected {
+            background: rgba(156, 163, 175, 0.1);
+            color: #6b7280;
+        }
+
+        .connect-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .connect-btn:active {
+            transform: translateY(0);
+        }
+
+        .connect-btn.disconnect {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .connect-btn.disconnect:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2);
+        }
+
+        .connect-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* 设备图片样式 */
+        .device-image {
+            width: 64px;
+            height: 64px;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- 顶部Tab栏 -->
+    <div class="bg-white border-b border-gray-200">
+        <div class="flex justify-between items-center px-4 py-2">
+            <!-- 返回按钮 -->
+            <button onclick="goBack()" class="text-gray-700">
+                <i class="fas fa-chevron-left text-xl"></i>
+            </button>
+
+            <!-- 中间Tab栏 -->
+            <div class="flex flex-1 justify-center">
+                <div class="flex">
+                    <div class="px-4 py-2 cursor-pointer" onclick="switchToManual()">
+                        <span id="manualTab" class="text-blue-600 text-lg font-bold">手动输入</span>
+                    </div>
+                    <div class="px-4 py-2 cursor-pointer" onclick="switchToSmart()">
+                        <span id="smartTab" class="text-gray-600 text-lg font-medium">智能测量</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 手动输入内容区域 -->
+    <div id="manualContent" class="main-content px-4 py-6">
+
+              <div class="blood-pressure-container">
+            <!-- 收缩压 -->
+            <div class="pressure-input-group">
+                <div class="pressure-label systolic">收缩压 (高压)</div>
+                <div class="blood-pressure-circle-container">
+                    <!-- 背景圆圈 -->
+                    <div class="background-circle"></div>
+                    <div class="blood-pressure-circle" id="systolicCircle">
+                        <!-- 进度环 -->
+                        <div class="progress-ring systolic" id="systolicProgressRing"></div>
+                        <!-- 中心数值 -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-center z-10">
+                            <div class="cursor-pointer flex flex-col items-center justify-center" onclick="showNumberInput('systolic')" style="width: 70px; height: 70px; border-radius: 50%; position: relative;">
+                                <span id="systolicDisplay" class="text-2xl font-bold text-red-600">0</span>
+                                <span class="text-xs text-gray-500" style="margin-top: -2px;">mm/Hg</span>
+                            </div>
+                        </div>
+                        <!-- 可拖动的圆点 -->
+                        <div class="drag-handle" id="systolicDragHandle">
+                            <div class="drag-dot systolic"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 舒张压 -->
+            <div class="pressure-input-group">
+                <div class="pressure-label diastolic">舒张压 (低压)</div>
+                <div class="blood-pressure-circle-container">
+                    <!-- 背景圆圈 -->
+                    <div class="background-circle"></div>
+                    <div class="blood-pressure-circle" id="diastolicCircle">
+                        <!-- 进度环 -->
+                        <div class="progress-ring diastolic" id="diastolicProgressRing"></div>
+                        <!-- 中心数值 -->
+                        <div class="absolute inset-0 flex flex-col items-center justify-center z-10">
+                            <div class="cursor-pointer flex flex-col items-center justify-center" onclick="showNumberInput('diastolic')" style="width: 70px; height: 70px; border-radius: 50%; position: relative;">
+                                <span id="diastolicDisplay" class="text-2xl font-bold text-blue-600">0</span>
+                                <span class="text-xs text-gray-500" style="margin-top: -2px;">mm/Hg</span>
+                            </div>
+                        </div>
+                        <!-- 可拖动的圆点 -->
+                        <div class="drag-handle" id="diastolicDragHandle">
+                            <div class="drag-dot diastolic"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 操作提示 -->
+        <div class="text-center mb-4">
+            <p class="text-sm text-gray-500">拖动圆点或点击数值输入血压值</p>
+            <p class="text-xs text-gray-400 mt-1">收缩压范围 70-250 mm/Hg，舒张压范围 40-150 mm/Hg</p>
+        </div>
+
+        <!-- 记录时间和状态 -->
+        <div class="bg-white rounded-2xl p-4 mb-6 shadow-sm">
+
+            <!-- 记录时间 -->
+            <div class="flex justify-between items-center mb-3 pt-3">
+                <span class="text-sm text-gray-600">记录时间</span>
+                <div class="flex items-center cursor-pointer" onclick="showTimePicker()">
+                    <span id="recordDateTime" class="text-sm text-gray-800">2025.09.09 15:17</span>
+                    <i class="fas fa-chevron-down ml-2 text-gray-400"></i>
+                </div>
+            </div>
+
+            <!-- 心率输入（可选） -->
+            <div class="flex justify-between items-center mb-3 pt-3 border-t relative" id="heartRateContainer">
+                <span class="text-sm text-gray-600">心率（可选）</span>
+                <div class="flex items-center cursor-pointer" onclick="showHeartRateInput()" id="heartRateDisplayContainer">
+                    <span id="heartRateDisplayText" class="text-sm text-gray-800">请输入</span>
+                    <i class="fas fa-chevron-right ml-2 text-gray-400"></i>
+                </div>
+                <!-- 隐藏的输入框 -->
+                <input
+                    type="number"
+                    id="heartRateInput"
+                    class="hidden absolute right-4 w-24 px-2 py-1 text-sm text-right border-b border-blue-500 focus:outline-none focus:border-blue-600"
+                    placeholder="0"
+                    min="0"
+                    max="250"
+                    value=""
+                    onblur="hideHeartRateInput()"
+                    onchange="handleHeartRateChange()"
+                >
+            </div>
+
+            <div class="pt-3 border-t">
+                <span class="text-sm text-gray-600 mb-3 block">个体状态（可选）</span>
+                <div class="grid grid-cols-3 gap-2" id="statusOptions">
+                    <div class="status-option" data-status="无不适">
+                        <i class="fas fa-smile text-green-500 mr-2"></i>
+                        <span>无不适</span>
+                    </div>
+                    <div class="status-option" data-status="尿多">
+                        <i class="fas fa-tint text-blue-500 mr-2"></i>
+                        <span>尿多</span>
+                    </div>
+                    <div class="status-option" data-status="口渴">
+                        <i class="fas fa-tint text-cyan-500 mr-2"></i>
+                        <span>口渴</span>
+                    </div>
+                    <div class="status-option" data-status="饥饿">
+                        <i class="fas fa-utensils text-yellow-500 mr-2"></i>
+                        <span>饥饿</span>
+                    </div>
+                    <div class="status-option" data-status="乏力">
+                        <i class="fas fa-battery-quarter text-orange-500 mr-2"></i>
+                        <span>乏力</span>
+                    </div>
+                    <div class="status-option" data-status="头痛">
+                        <i class="fas fa-head-side-cough text-red-500 mr-2"></i>
+                        <span>头痛</span>
+                    </div>
+                    <div class="status-option" data-status="出汗">
+                        <i class="fas fa-tint text-indigo-500 mr-2"></i>
+                        <span>出汗</span>
+                    </div>
+                    <div class="status-option" data-status="心悸">
+                        <i class="fas fa-heartbeat text-red-500 mr-2"></i>
+                        <span>心悸</span>
+                    </div>
+                    <div class="status-option" data-status="其他">
+                        <i class="fas fa-ellipsis-h text-gray-500 mr-2"></i>
+                        <span>其他</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 智能测量设备列表区域 -->
+    <div id="smartContent" class="main-content px-4 py-6" style="display: none;">
+        <!-- 设备列表标题 -->
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold text-gray-800 mb-2 text-center">请选择血压测量设备</h3>
+            <p class="text-sm text-gray-600 text-center">首次使用需扫码绑定，绑定后每次测量，数据自动上传</p>
+        </div>
+
+        <!-- 血压计设备列表 -->
+        <div class="px-0 pt-4 pb-6">
+            <div class="space-y-4">
+                <!-- 四合一血糖血压尿酸血酮测试仪 -->
+                <div class="device-card unconnected" onclick="navigateToDeviceDetail(event, 'yasu-76l')" style="cursor: pointer;">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="mr-4">
+                                <img src="../imgs/四合一血压.png" alt="优唐医生血压/血糖/尿酸/血酮测试仪(Y916D-4G版)" class="device-image">
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">优唐医生血压/血糖/尿酸/血酮测试仪(Y916D-4G版)</h4>
+                                <p class="text-xs text-gray-500 mt-1">高清大屏，一键测量，自带语音。一机测四项，新时代智能黑科技！</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+
+                    <!-- 底部操作区域 -->
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                        <button onclick="event.stopPropagation(); connectDevice('blood-sugar-1')" class="connect-btn px-2 py-2 rounded-lg text-sm font-medium transition-all duration-200 w-28">
+                            <i class="fas fa-link mr-1"></i>
+                            去绑定
+                        </button>
+                        <button onclick="event.stopPropagation(); window.location.href='help.html?from=blood-pressure'" class="text-gray-500 text-sm hover:text-gray-700 flex items-center">
+                            <i class="fas fa-question-circle mr-1"></i>
+                            使用帮助
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 优唐医生血压计(爱奥乐4G版) -->
+                <div class="device-card connected" onclick="navigateToDeviceDetail(event, 'youtang-aiole')" style="cursor: pointer;">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-center">
+                            <div class="mr-4">
+                                <img src="../imgs/优唐医生血压计.png" alt="优唐医生血压计(A666-4G版)" class="device-image">
+                            </div>
+                            <div>
+                                <h4 class="font-semibold text-gray-800">优唐医生血压计(A666-4G版)</h4>
+                                <p class="text-xs text-gray-500 mt-1">远程监测，智能贴心A666G臂式电子血压计</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+
+                    <!-- 底部操作区域 -->
+                    <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                        <button onclick="event.stopPropagation(); connectDevice('blood-pressure-2')" class="connect-btn disconnect px-2 py-2 rounded-lg text-sm font-medium transition-all duration-200 w-28">
+                            <i class="fas fa-unlink mr-1"></i>
+                            解除绑定
+                        </button>
+                        <button onclick="event.stopPropagation(); window.location.href='help.html?from=blood-pressure'" class="text-gray-500 text-sm hover:text-gray-700 flex items-center">
+                            <i class="fas fa-question-circle mr-1"></i>
+                            使用帮助
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 咨询购买提示 -->
+        <div class="px-4 pb-6">
+            <div class="text-center">
+                <p class="text-gray-600 mb-4 mt-8">还没有血压计设备？请咨询门店健康管理师购买。</p>
+                <button onclick="contactCustomerService()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                    <i class="fas fa-comments mr-2"></i>
+                    联系客服
+                </button>
+            </div>
+        </div>
+    </div>
+    
+
+    <!-- 底部悬浮保存按钮 -->
+    <div class="manual-record-btn-container">
+        <button onclick="saveRecord()" class="manual-record-btn">
+            保存
+        </button>
+    </div>
+
+    <!-- 时间选择器弹窗 -->
+    <div id="timePickerModal" class="fixed inset-0 bg-black bg-opacity-50 z-[1000] hidden">
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl">
+            <!-- 标题栏 -->
+            <div class="text-center px-6 py-4 border-b border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-800">选择记录时间</h3>
+            </div>
+
+            <!-- 选择器区域 -->
+            <div class="px-6 py-6">
+                <div class="flex justify-between items-center">
+                    <!-- 日期选择器 -->
+                    <div class="flex-1">
+                        <div class="text-center text-sm text-gray-500 mb-3">日期</div>
+                        <div class="h-40 overflow-y-auto border border-gray-200 rounded-lg" id="datePicker">
+                            <!-- 日期选项将通过JavaScript生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 小时选择器 -->
+                    <div class="flex-1 mx-4">
+                        <div class="text-center text-sm text-gray-500 mb-3">小时</div>
+                        <div class="h-40 overflow-y-auto border border-gray-200 rounded-lg" id="hourPicker">
+                            <!-- 小时选项将通过JavaScript生成 -->
+                        </div>
+                    </div>
+
+                    <!-- 分钟选择器 -->
+                    <div class="flex-1">
+                        <div class="text-center text-sm text-gray-500 mb-3">分钟</div>
+                        <div class="h-40 overflow-y-auto border border-gray-200 rounded-lg" id="minutePicker">
+                            <!-- 分钟选项将通过JavaScript生成 -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部按钮 -->
+            <div class="flex px-6 py-4 border-t border-gray-100">
+                <button onclick="hideTimePicker()" class="flex-1 py-3 text-gray-600 border border-gray-300 rounded-xl mr-3">
+                    取消
+                </button>
+                <button onclick="confirmTimeSelection()" class="flex-1 py-3 bg-blue-500 text-white rounded-xl">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 数字输入弹窗 -->
+    <div id="numberInputModal" class="fixed inset-0 bg-black bg-opacity-50 z-[1000] hidden">
+        <div class="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl max-h-[85vh]">
+            <!-- 标题栏 -->
+            <div class="text-center px-6 py-4 border-b border-gray-100">
+                <h3 class="text-lg font-semibold text-gray-800" id="numberInputTitle">输入血压值</h3>
+            </div>
+
+            <!-- 输入显示区域 -->
+            <div class="px-6 py-4">
+                <div class="bg-gray-50 rounded-2xl p-4">
+                    <div class="text-center">
+                        <div id="numberDisplay" class="text-5xl font-bold text-gray-800">0</div>
+                        <span class="text-sm text-gray-500 block mt-2">mm/Hg</span>
+                    </div>
+                </div>
+
+                <!-- 数字键盘 -->
+                <div class="grid grid-cols-3 gap-3 mt-4">
+                    <button onclick="inputNumber(1)" class="number-key">1</button>
+                    <button onclick="inputNumber(2)" class="number-key">2</button>
+                    <button onclick="inputNumber(3)" class="number-key">3</button>
+                    <button onclick="inputNumber(4)" class="number-key">4</button>
+                    <button onclick="inputNumber(5)" class="number-key">5</button>
+                    <button onclick="inputNumber(6)" class="number-key">6</button>
+                    <button onclick="inputNumber(7)" class="number-key">7</button>
+                    <button onclick="inputNumber(8)" class="number-key">8</button>
+                    <button onclick="inputNumber(9)" class="number-key">9</button>
+                    <button onclick="inputNumber('.')" class="number-key">.</button>
+                    <button onclick="inputNumber(0)" class="number-key">0</button>
+                    <button onclick="deleteNumber()" class="number-key delete">
+                        <i class="fas fa-backspace"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- 底部按钮 -->
+            <div class="flex px-6 py-4 border-t border-gray-100">
+                <button onclick="hideNumberInput()" class="flex-1 py-3 text-gray-600 border border-gray-300 rounded-xl mr-3">
+                    取消
+                </button>
+                <button onclick="confirmNumberInput()" class="flex-1 py-3 bg-blue-500 text-white rounded-xl">
+                    确定
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let systolicValue = 0;
+        let diastolicValue = 0;
+        let heartRateValue = null; // 心率值，可选，初始为null
+
+        // 时间选择器相关
+        let selectedDateTime = new Date();
+        let pickerSelectedDate = new Date();
+        let pickerSelectedHour = 0;
+        let pickerSelectedMinute = 0;
+
+        // 数字输入相关
+        let currentInputType = ''; // 'systolic' 或 'diastolic'
+        let currentNumberInput = '0';
+
+        // 圆环拖动相关变量 - 完全复制血糖页面模式
+        let isDragging = false;
+        let currentAngle = 0;
+        let systolicCurrentAngle = 0; // 收缩压当前角度 (0度 = 12点钟方向)
+        let diastolicCurrentAngle = 0; // 舒张压当前角度 (0度 = 12点钟方向)
+        let activeDragCircle = ''; // 'systolic' 或 'diastolic'
+        let startX = 0;
+        let startY = 0;
+        let startAngle = 0;
+        let activeCircle = null; // 当前操作的圆环
+
+        // 导航函数
+        function navigateToPage(page) {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: page
+                }, '*');
+            } else {
+                window.location.href = page + '.html';
+            }
+        }
+
+        // 显示记录弹窗
+        function showRecordModal() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'showRecordModal'
+                }, '*');
+            } else {
+                // 在独立页面中，直接跳转到记录页面
+                window.location.href = 'record.html';
+            }
+        }
+
+        // 监听来自父窗口的消息
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'updateActiveTab') {
+                // 更新活动标签状态
+                const tabItems = document.querySelectorAll('.tab-item');
+                tabItems.forEach(item => item.classList.remove('active'));
+
+                const activeTab = document.querySelector(`.tab-item[onclick="navigateToPage('${event.data.page}')"]`);
+                if (activeTab) {
+                    activeTab.classList.add('active');
+                }
+            }
+        });
+
+        // 初始化页面
+        function initializePage() {
+            updateRecordDateTime();
+            updateDisplay();
+            // 初始化圆环进度条
+            updateCircleProgress();
+
+            // 初始化角度为0（起始位置）
+            systolicCurrentAngle = 0;
+            diastolicCurrentAngle = 0;
+
+            // 初始化拖动控制
+            initializeDragControls();
+            initializeDragHandlePositions();
+
+            // 初始化状态选项
+            initializeStatusOptions();
+
+            // 初始化心率显示
+            updateHeartRateDisplay();
+
+            // 设置当前页面的导航栏active状态
+            setInitialActiveTab();
+
+            // smart文件默认选中智能测量标签页
+            switchToSmart();
+
+          }
+
+        // 设置初始的active标签状态
+        function setInitialActiveTab() {
+            // 移除所有标签的active状态
+            const tabItems = document.querySelectorAll('.tab-item');
+            tabItems.forEach(item => item.classList.remove('active'));
+
+            // 这个页面不设置特定的active状态，因为它是记录页面
+        }
+
+  
+        // 初始化触摸事件
+        function initializeTouchEvents() {
+            const systolicCircle = document.getElementById('systolicCircle');
+            const diastolicCircle = document.getElementById('diastolicCircle');
+
+            // 移除圆环拖动事件，只保留圆点拖动和数值点击
+            // 这样点击中间数值会弹出输入键盘，拖动圆点不会触发键盘
+        }
+
+        // 开始触摸/点击
+        function handleStart(e) {
+            e.preventDefault();
+
+            // 确定操作的是哪个圆环
+            activeCircle = e.target.closest('.blood-pressure-circle');
+            if (!activeCircle) return;
+
+            const rect = activeCircle.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            if (e.type === 'touchstart') {
+                startX = e.touches[0].clientX;
+                startY = e.touches[0].clientY;
+            } else {
+                startX = e.clientX;
+                startY = e.clientY;
+            }
+
+            startAngle = Math.atan2(startY - centerY, startX - centerX);
+
+            // 开始长按计时
+            longPressTimer = setTimeout(() => {
+                isLongPressing = true;
+                isDragging = true;
+                // 添加视觉反馈
+                activeCircle.style.transform = 'scale(1.05)';
+                activeCircle.style.transition = 'transform 0.2s ease';
+            }, 500); // 500ms长按
+        }
+
+        // 移动过程
+        function handleMove(e) {
+            if (!isLongPressing || !isDragging || !activeCircle) return;
+
+            e.preventDefault();
+
+            const rect = activeCircle.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            let currentX, currentY;
+            if (e.type === 'touchmove') {
+                currentX = e.touches[0].clientX;
+                currentY = e.touches[0].clientY;
+            } else {
+                currentX = e.clientX;
+                currentY = e.clientY;
+            }
+
+            const currentAngle = Math.atan2(currentY - centerY, currentX - centerX);
+            let angleDiff = currentAngle - startAngle;
+
+            // 处理角度跨越问题
+            if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+            if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+
+            // 计算水平移动距离
+            const horizontalDiff = currentX - startX;
+
+            // 根据角度差或水平移动调整数值
+            let increment = 0;
+            if (Math.abs(angleDiff) > Math.abs(horizontalDiff * 0.01)) {
+                // 使用角度变化
+                increment = angleDiff * 5; // 调整灵敏度
+            } else {
+                // 使用水平移动
+                increment = horizontalDiff * 0.05; // 调整灵敏度
+            }
+
+            // 根据圆环类型调整对应数值
+            if (activeCircle.id === 'systolicCircle') {
+                adjustSystolicValue(increment);
+            } else if (activeCircle.id === 'diastolicCircle') {
+                adjustDiastolicValue(increment);
+            }
+
+            // 更新起始位置
+            startX = currentX;
+            startY = currentY;
+            startAngle = currentAngle;
+        }
+
+        // 结束触摸/点击
+        function handleEnd(e) {
+            if (longPressTimer) {
+                clearTimeout(longPressTimer);
+                longPressTimer = null;
+            }
+
+            if (isLongPressing && activeCircle) {
+                // 移除视觉反馈
+                activeCircle.style.transform = 'scale(1)';
+            }
+
+            isLongPressing = false;
+            isDragging = false;
+            activeCircle = null;
+        }
+
+        // 调整收缩压数值
+        function adjustSystolicValue(increment) {
+            systolicValue += increment;
+            // 限制范围 60-200
+            systolicValue = Math.max(60, Math.min(200, Math.round(systolicValue)));
+            updateDisplay();
+        }
+
+        // 调整舒张压数值
+        function adjustDiastolicValue(increment) {
+            diastolicValue += increment;
+            // 限制范围 40-130
+            diastolicValue = Math.max(40, Math.min(130, Math.round(diastolicValue)));
+            updateDisplay();
+        }
+
+        // 更新显示
+        function updateDisplay() {
+            document.getElementById('systolicDisplay').textContent = systolicValue;
+            document.getElementById('diastolicDisplay').textContent = diastolicValue;
+            // 更新圆环进度条
+            updateCircleProgress();
+        }
+
+        // 只更新收缩压进度条
+        function updateSystolicProgressOnly() {
+            // 计算收缩压进度 (70-250范围) - 统一使用这个范围
+            const systolicProgress = ((systolicValue - 70) / (250 - 70)) * 100;
+            const systolicDegrees = (systolicProgress / 100) * 270; // 0-270度范围
+
+            // 更新收缩压进度环
+            const systolicProgressRing = document.getElementById("systolicProgressRing");
+            systolicProgressRing.style.background = `conic-gradient(from 0deg, #ef4444 0deg, #ef4444 ${systolicDegrees}deg, #e5e7eb ${systolicDegrees}deg, #e5e7eb 360deg)`;
+        }
+
+        // 只更新舒张压进度条
+        function updateDiastolicProgressOnly() {
+            // 计算舒张压进度 (40-150范围) - 统一使用这个范围
+            const diastolicProgress = ((diastolicValue - 40) / (150 - 40)) * 100;
+            const diastolicDegrees = (diastolicProgress / 100) * 270; // 0-270度范围
+
+            // 更新舒张压进度环
+            const diastolicProgressRing = document.getElementById("diastolicProgressRing");
+            diastolicProgressRing.style.background = `conic-gradient(from 0deg, #3b82f6 0deg, #3b82f6 ${diastolicDegrees}deg, #e5e7eb ${diastolicDegrees}deg, #e5e7eb 360deg)`;
+        }
+
+        // 更新圆环进度条显示
+        function updateCircleProgress() {
+            // 计算收缩压进度 (70-250范围) - 统一使用这个范围
+            const systolicProgress = ((systolicValue - 70) / (250 - 70)) * 100;
+            const systolicDegrees = (systolicProgress / 100) * 270; // 0-270度范围
+
+            // 计算舒张压进度 (40-150范围) - 统一使用这个范围
+            const diastolicProgress = ((diastolicValue - 40) / (150 - 40)) * 100;
+            const diastolicDegrees = (diastolicProgress / 100) * 270; // 0-270度范围
+
+            // 更新收缩压进度环
+            const systolicProgressRing = document.getElementById("systolicProgressRing");
+            systolicProgressRing.style.background = `conic-gradient(from 0deg, #ef4444 0deg, #ef4444 ${systolicDegrees}deg, #e5e7eb ${systolicDegrees}deg, #e5e7eb 360deg)`;
+
+            // 更新舒张压进度环
+            const diastolicProgressRing = document.getElementById("diastolicProgressRing");
+            diastolicProgressRing.style.background = `conic-gradient(from 0deg, #3b82f6 0deg, #3b82f6 ${diastolicDegrees}deg, #e5e7eb ${diastolicDegrees}deg, #e5e7eb 360deg)`;
+
+            // 更新拖动圆点位置
+            updateDragHandlePositionsFromValues();
+        }
+
+        // 从血压值更新圆点位置
+        function updateDragHandlePositionsFromValues() {
+            // 更新角度变量以匹配当前值
+            const systolicProgress = ((systolicValue - 70) / (250 - 70)); // 0-1范围 (70-250)
+            systolicCurrentAngle = systolicProgress * 270; // 0-270度
+
+            const diastolicProgress = ((diastolicValue - 40) / (150 - 40)); // 0-1范围 (40-150)
+            diastolicCurrentAngle = diastolicProgress * 270; // 0-270度
+
+            // 调用原有的更新函数
+            updateDragHandlePosition('systolic');
+            updateDragHandlePosition('diastolic');
+        }
+
+        // 心率输入功能 - 简化版本
+        function showHeartRateInput() {
+            const displayContainer = document.getElementById('heartRateDisplayContainer');
+            const input = document.getElementById('heartRateInput');
+
+            // 隐藏显示容器，显示输入框
+            displayContainer.classList.add('hidden');
+            input.classList.remove('hidden');
+
+            // 设置输入框的值为当前心率值
+            if (heartRateValue !== null) {
+                input.value = heartRateValue;
+            } else {
+                input.value = '';
+            }
+
+            // 聚焦输入框
+            input.focus();
+            input.select();
+        }
+
+        function hideHeartRateInput() {
+            const displayContainer = document.getElementById('heartRateDisplayContainer');
+            const input = document.getElementById('heartRateInput');
+            const displayText = document.getElementById('heartRateDisplayText');
+
+            // 隐藏输入框，显示显示容器
+            input.classList.add('hidden');
+            displayContainer.classList.remove('hidden');
+
+            // 更新显示文本
+            updateHeartRateDisplay();
+        }
+
+        function handleHeartRateChange() {
+            const input = document.getElementById('heartRateInput');
+            const value = input.value.trim();
+
+            if (value === '') {
+                heartRateValue = null;
+            } else {
+                const numValue = parseInt(value);
+                if (!isNaN(numValue) && numValue >= 0 && numValue <= 250) {
+                    heartRateValue = numValue;
+                } else {
+                    // 如果输入无效，重置为边界值
+                    if (numValue > 250) {
+                        heartRateValue = 250;
+                        input.value = 250;
+                    } else if (numValue < 0) {
+                        heartRateValue = 0;
+                        input.value = 0;
+                    } else {
+                        heartRateValue = null;
+                        input.value = '';
+                    }
+                }
+            }
+        }
+
+        function updateHeartRateDisplay() {
+            const displayText = document.getElementById('heartRateDisplayText');
+
+            if (heartRateValue !== null) {
+                displayText.textContent = heartRateValue + ' 次/分';
+            } else {
+                displayText.textContent = '请输入';
+            }
+        }
+
+        // 处理Enter键
+        document.addEventListener('DOMContentLoaded', function() {
+            const heartRateInput = document.getElementById('heartRateInput');
+            if (heartRateInput) {
+                heartRateInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        this.blur();
+                    }
+                });
+            }
+        });
+
+        // 保存记录
+        function saveRecord() {
+            if (systolicValue <= 0 || diastolicValue <= 0) {
+                alert('请输入有效的血压值');
+                return;
+            }
+
+            if (systolicValue > 200 || diastolicValue > 130) {
+                alert('血压值过高，请检查输入');
+                return;
+            }
+
+            // 创建记录对象
+            const record = {
+                systolic: systolicValue,
+                diastolic: diastolicValue,
+                heartRate: heartRateValue, // 添加心率数据
+                timestamp: selectedDateTime.toISOString(),
+                date: selectedDateTime.toLocaleDateString('zh-CN'),
+                time: selectedDateTime.toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", hour12: false }),
+                statuses: selectedStatuses // 添加状态信息
+            };
+
+            // 保存到本地存储
+            let records = JSON.parse(localStorage.getItem('bloodPressureRecords') || '[]');
+            records.push(record);
+            localStorage.setItem('bloodPressureRecords', JSON.stringify(records));
+
+            // 跳转到结果页面，传递记录数据
+            const now = new Date();
+            const dateStr = now.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) + ' ' + now.toLocaleTimeString('zh-CN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+
+            const params = new URLSearchParams({
+                systolic: systolicValue,
+                diastolic: diastolicValue,
+                dateTime: dateStr
+            });
+
+            // 添加心率参数（如果有）
+            if (heartRateValue !== null) {
+                params.append('heartRate', heartRateValue);
+            }
+
+            // 跳转到结果页面
+            window.location.href = `blood_pressure_record_result.html?${params.toString()}`;
+        }
+
+        // 返回首页
+        function goBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'home'
+                }, '*');
+            } else {
+                window.location.href = 'home.html';
+            }
+        }
+
+        // 状态选项管理
+        let selectedStatuses = [];
+
+        function initializeStatusOptions() {
+            const statusOptions = document.querySelectorAll('.status-option');
+            statusOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    const status = this.getAttribute('data-status');
+                    toggleStatus(status, this);
+                });
+            });
+        }
+
+        function toggleStatus(status, element) {
+            const index = selectedStatuses.indexOf(status);
+            if (index > -1) {
+                // 取消选择
+                selectedStatuses.splice(index, 1);
+                element.classList.remove('selected');
+            } else {
+                // 添加选择
+                selectedStatuses.push(status);
+                element.classList.add('selected');
+            }
+        }
+
+        // 更新记录时间显示
+        function updateRecordDateTime() {
+            const dateStr = selectedDateTime.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            }).replace(/\//g, '.');
+            const timeStr = selectedDateTime.toLocaleTimeString('zh-CN', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: false
+            });
+
+            const element = document.getElementById('recordDateTime');
+            if (element) {
+                element.textContent = `${dateStr} ${timeStr}`;
+            }
+        }
+
+        // 时间选择器功能
+        function showTimePicker() {
+            const modal = document.getElementById('timePickerModal');
+
+            // 初始化选择器值
+            pickerSelectedDate = new Date(selectedDateTime);
+            pickerSelectedHour = selectedDateTime.getHours();
+            pickerSelectedMinute = selectedDateTime.getMinutes();
+
+            // 生成选择器选项
+            generateDatePickerOptions();
+            generateHourPickerOptions();
+            generateMinutePickerOptions();
+
+            modal.classList.remove('hidden');
+        }
+
+        function hideTimePicker() {
+            const modal = document.getElementById('timePickerModal');
+            modal.classList.add('hidden');
+        }
+
+        function generateDatePickerOptions() {
+            const container = document.getElementById('datePicker');
+            container.innerHTML = '';
+
+            const today = new Date();
+            const startDate = new Date(today);
+            startDate.setDate(today.getDate() - 30); // 显示过去30天
+
+            const endDate = new Date(today);
+
+            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                const option = document.createElement('div');
+                option.className = 'picker-option';
+                option.textContent = d.toLocaleDateString('zh-CN', {
+                    month: '2-digit',
+                    day: '2-digit'
+                }).replace(/\//g, '.');
+
+                if (d.toDateString() === pickerSelectedDate.toDateString()) {
+                    option.classList.add('selected');
+                }
+
+                option.onclick = function() {
+                    document.querySelectorAll('#datePicker .picker-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    pickerSelectedDate = new Date(d);
+                };
+
+                container.appendChild(option);
+            }
+        }
+
+        function generateHourPickerOptions() {
+            const container = document.getElementById('hourPicker');
+            container.innerHTML = '';
+
+            for (let i = 0; i < 24; i++) {
+                const option = document.createElement('div');
+                option.className = 'picker-option';
+                option.textContent = i.toString().padStart(2, '0');
+
+                if (i === pickerSelectedHour) {
+                    option.classList.add('selected');
+                }
+
+                option.onclick = function() {
+                    document.querySelectorAll('#hourPicker .picker-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    pickerSelectedHour = i;
+                };
+
+                container.appendChild(option);
+            }
+        }
+
+        function generateMinutePickerOptions() {
+            const container = document.getElementById('minutePicker');
+            container.innerHTML = '';
+
+            for (let i = 0; i < 60; i += 5) {
+                const option = document.createElement('div');
+                option.className = 'picker-option';
+                option.textContent = i.toString().padStart(2, '0');
+
+                if (i === pickerSelectedMinute) {
+                    option.classList.add('selected');
+                }
+
+                option.onclick = function() {
+                    document.querySelectorAll('#minutePicker .picker-option').forEach(opt => opt.classList.remove('selected'));
+                    this.classList.add('selected');
+                    pickerSelectedMinute = i;
+                };
+
+                container.appendChild(option);
+            }
+        }
+
+        function confirmTimeSelection() {
+            selectedDateTime = new Date(pickerSelectedDate);
+            selectedDateTime.setHours(pickerSelectedHour);
+            selectedDateTime.setMinutes(pickerSelectedMinute);
+            updateRecordDateTime();
+            hideTimePicker();
+        }
+
+        // 数字输入功能
+        function showNumberInput(type) {
+            currentInputType = type;
+            currentNumberInput = '0';
+
+            const modal = document.getElementById('numberInputModal');
+            const title = document.getElementById('numberInputTitle');
+            const display = document.getElementById('numberDisplay');
+
+            if (type === 'systolic') {
+                title.textContent = '输入收缩压';
+                currentNumberInput = systolicValue.toString();
+            } else {
+                title.textContent = '输入舒张压';
+                currentNumberInput = diastolicValue.toString();
+            }
+
+            display.textContent = currentNumberInput;
+            modal.classList.remove('hidden');
+        }
+
+        function hideNumberInput() {
+            const modal = document.getElementById('numberInputModal');
+            modal.classList.add('hidden');
+        }
+
+        function inputNumber(num) {
+            if (currentNumberInput === '0' && num !== '.') {
+                currentNumberInput = num.toString();
+            } else if (num === '.' && currentNumberInput.includes('.')) {
+                return; // 防止多个小数点
+            } else {
+                currentNumberInput += num.toString();
+            }
+
+            // 限制输入长度
+            if (currentNumberInput.length > 6) {
+                currentNumberInput = currentNumberInput.substring(0, 6);
+            }
+
+            document.getElementById('numberDisplay').textContent = currentNumberInput;
+        }
+
+        function deleteNumber() {
+            if (currentNumberInput.length > 1) {
+                currentNumberInput = currentNumberInput.substring(0, currentNumberInput.length - 1);
+            } else {
+                currentNumberInput = '0';
+            }
+
+            document.getElementById('numberDisplay').textContent = currentNumberInput;
+        }
+
+        function confirmNumberInput() {
+            const value = parseFloat(currentNumberInput);
+
+            if (isNaN(value)) {
+                alert('请输入有效的数值');
+                return;
+            }
+
+            // 验证血压值范围
+            if (currentInputType === 'systolic') {
+                if (value < 70 || value > 250) {
+                    alert('收缩压应在70-250之间');
+                    return;
+                }
+                systolicValue = Math.round(value);
+                document.getElementById('systolicDisplay').textContent = systolicValue;
+            } else {
+                if (value < 40 || value > 150) {
+                    alert('舒张压应在40-150之间');
+                    return;
+                }
+                diastolicValue = Math.round(value);
+                document.getElementById('diastolicDisplay').textContent = diastolicValue;
+            }
+
+            // 更新圆环进度
+            updateCircleProgress();
+
+            // 更新拖动圆点位置
+            if (currentInputType === 'systolic') {
+                // 根据收缩压值计算角度 (70-250范围)
+                const progress = (systolicValue - 70) / (250 - 70); // 0-1范围
+                systolicCurrentAngle = progress * 270; // 0-270度
+                updateDragHandlePosition('systolic');
+            } else {
+                // 根据舒张压值计算角度 (40-150范围)
+                const progress = (diastolicValue - 40) / (150 - 40); // 0-1范围
+                diastolicCurrentAngle = progress * 270; // 0-270度
+                updateDragHandlePosition('diastolic');
+            }
+
+            hideNumberInput();
+        }
+
+        // 血压圆环拖动功能
+        function initializeDragControls() {
+            const systolicDragHandle = document.getElementById('systolicDragHandle');
+            const diastolicDragHandle = document.getElementById('diastolicDragHandle');
+
+            // 收缩压拖动事件
+            systolicDragHandle.addEventListener('mousedown', (e) => startDrag(e, 'systolic'));
+            systolicDragHandle.addEventListener('touchstart', (e) => startDrag(e, 'systolic'), { passive: false });
+
+            // 舒张压拖动事件
+            diastolicDragHandle.addEventListener('mousedown', (e) => startDrag(e, 'diastolic'));
+            diastolicDragHandle.addEventListener('touchstart', (e) => startDrag(e, 'diastolic'), { passive: false });
+
+            // 全局事件
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function startDrag(e, circleType) {
+            e.preventDefault();
+            isDragging = true;
+            activeDragCircle = circleType;
+
+            const dragHandle = document.getElementById(circleType + 'DragHandle');
+            dragHandle.classList.add('dragging');
+
+            document.body.style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            const circle = document.getElementById(activeDragCircle + 'Circle');
+            const rect = circle.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            let clientX, clientY;
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            // 计算角度
+            const mathAngle = Math.atan2(clientY - centerY, clientX - centerX) * 180 / Math.PI;
+            let currentAngle = mathAngle + 90; // 转换为CSS角度
+
+            // 限制角度范围（0-270度）
+            if (currentAngle < 0) currentAngle = 0;
+            if (currentAngle > 270) currentAngle = 270;
+
+            if (activeDragCircle === 'systolic') {
+                systolicCurrentAngle = currentAngle;
+                updateSystolicValueFromAngle();
+            } else {
+                diastolicCurrentAngle = currentAngle;
+                updateDiastolicValueFromAngle();
+            }
+
+            updateDragHandlePosition(activeDragCircle);
+        }
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+
+            if (activeDragCircle) {
+                const dragHandle = document.getElementById(activeDragCircle + 'DragHandle');
+                dragHandle.classList.remove('dragging');
+            }
+
+            activeDragCircle = '';
+            document.body.style.cursor = 'default';
+
+            // 滑动结束后不触发数字输入键盘
+        }
+
+        function updateSystolicValueFromAngle() {
+            // 将角度转换为收缩压值 (0-270度 = 70-250)
+            const progress = systolicCurrentAngle / 270; // 0-1范围
+            const value = 70 + progress * 180; // 70-250范围
+            systolicValue = Math.max(70, Math.min(250, Math.round(value)));
+            document.getElementById('systolicDisplay').textContent = systolicValue;
+            // 只更新收缩压进度条，不更新所有圆点位置
+            updateSystolicProgressOnly();
+            updateDragHandlePosition('systolic');
+        }
+
+        function updateDiastolicValueFromAngle() {
+            // 将角度转换为舒张压值 (0-270度 = 40-150)
+            const progress = diastolicCurrentAngle / 270; // 0-1范围
+            const value = 40 + progress * 110; // 40-150范围
+            diastolicValue = Math.max(40, Math.min(150, Math.round(value)));
+            document.getElementById('diastolicDisplay').textContent = diastolicValue;
+            // 只更新舒张压进度条，不更新所有圆点位置
+            updateDiastolicProgressOnly();
+            updateDragHandlePosition('diastolic');
+        }
+
+        function updateDragHandlePosition(circleType) {
+            const dragHandle = document.getElementById(circleType + 'DragHandle');
+            const radius = 54; // 圆点半径，适应120px容器 (与血糖页面比例相同)
+            const centerX = 60;
+            const centerY = 60;
+
+            const currentAngle = circleType === 'systolic' ? systolicCurrentAngle : diastolicCurrentAngle;
+            // 将CSS角度（0deg=12点钟方向）转换为数学角度（0deg=3点钟方向）
+            const mathAngle = (currentAngle - 90) * Math.PI / 180;
+            const x = centerX + radius * Math.cos(mathAngle);
+            const y = centerY + radius * Math.sin(mathAngle);
+
+            dragHandle.style.left = x + 'px';
+            dragHandle.style.top = y + 'px';
+            dragHandle.style.transform = 'translate(-50%, -50%)';
+        }
+
+        function initializeDragHandlePositions() {
+            updateDragHandlePosition('systolic');
+            updateDragHandlePosition('diastolic');
+        }
+
+        // Tab切换功能 - 切换到手动输入
+        function switchToManual() {
+            // 显示手动输入内容，隐藏智能测量内容
+            document.getElementById('manualContent').style.display = 'block';
+            document.getElementById('smartContent').style.display = 'none';
+
+            // 更新Tab样式
+            document.getElementById('manualTab').className = 'text-blue-600 text-lg font-bold';
+            document.getElementById('smartTab').className = 'text-gray-600 text-lg font-medium';
+
+            // 显示底部保存按钮
+            document.querySelector('.manual-record-btn-container').style.display = 'block';
+        }
+
+        // Tab切换功能 - 切换到智能测量
+        function switchToSmart() {
+            // 显示智能测量内容，隐藏手动输入内容
+            document.getElementById('manualContent').style.display = 'none';
+            document.getElementById('smartContent').style.display = 'block';
+
+            // 更新Tab样式
+            document.getElementById('manualTab').className = 'text-gray-600 text-lg font-medium';
+            document.getElementById('smartTab').className = 'text-blue-600 text-lg font-bold';
+
+            // 隐藏底部保存按钮（智能测量不需要手动保存）
+            document.querySelector('.manual-record-btn-container').style.display = 'none';
+        }
+
+        // 导航到设备详情页
+        function navigateToDeviceDetail(event, deviceType) {
+            // 阻止事件冒泡，避免触发绑定/解绑操作
+            event.stopPropagation();
+
+            // 检查设备是否已绑定
+            const card = event.currentTarget;
+            const button = card.querySelector('button[onclick*="connectDevice"]');
+            const isBound = button.classList.contains('disconnect');
+
+            if (!isBound) {
+                // 如果设备未绑定，提示用户先绑定设备
+                alert('请先绑定设备后再查看详情');
+                return;
+            }
+
+            // 跳转到设备详情页
+            console.log('导航到设备详情页:', deviceType);
+            alert(`跳转到${deviceType}设备详情页（功能开发中）`);
+        }
+
+        // 连接设备
+        function connectDevice(deviceType) {
+            // 获取正确的按钮元素（可能是event.target或其父元素）
+            let button = event.target;
+            while (button && button.tagName !== 'BUTTON') {
+                button = button.parentElement;
+            }
+
+            if (!button) return;
+
+            const originalText = button.innerHTML;
+
+            if (!button.classList.contains('disconnect')) {
+                // 未绑定设备 - 跳转到扫码绑定页面，并传递from参数
+                window.location.href = 'device-qr-scan.html?from=blood-pressure';
+            } else {
+                // 如果是已绑定状态，点击后直接解绑
+                if (confirm('确定要解除绑定该设备吗？')) {
+                    // 显示解绑中状态
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>解绑中...';
+                    button.disabled = true;
+
+                    setTimeout(() => {
+                        // 更新为未绑定状态
+                        button.innerHTML = '<i class="fas fa-link mr-1"></i>去绑定';
+                        button.classList.remove('disconnect');
+
+                        // 更新卡片状态
+                        const card = button.closest('.device-card');
+                        card.classList.remove('connected');
+                        card.classList.add('unconnected');
+
+                        // 启用按钮
+                        button.disabled = false;
+
+                        alert('设备已解除绑定！');
+                    }, 800);
+                }
+            }
+        }
+
+        // 联系客服
+        function contactCustomerService() {
+            // 模拟联系客服功能
+            const customerServicePhone = '400-123-4567';
+            const customerServiceTime = '工作日 9:00-18:00';
+
+            if (confirm(`客服电话：${customerServicePhone}\n服务时间：${customerServiceTime}\n\n是否拨打电话联系客服？`)) {
+                // 在实际应用中，这里可以调用拨号功能
+                alert(`正在拨打客服电话：${customerServicePhone}`);
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+
+    <!-- 全局错误处理 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message);
+            // 阻止错误弹窗，但不影响页面显示
+            return true;
+        });
+
+        // 安全的getElementById包装函数
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // 安全的textContent设置函数
+        function safeSetText(id, text) {
+            const element = document.getElementById(id);
+            if (element && text !== undefined && text !== null) {
+                element.textContent = text;
+            }
+            return element;
+        }
+        // 安全的震动函数（避免iframe中的跨域限制）
+        function safeVibrate(duration) {
+            try {
+                // 检查是否支持震动API
+                if (navigator.vibrate && window.self === window.top) {
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // 忽略震动API错误
+                console.debug('Vibrate not available:', e.message);
+            }
+        }
+
+    </script>
+</body>
+</html>

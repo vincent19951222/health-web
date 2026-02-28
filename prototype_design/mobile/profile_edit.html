@@ -1,0 +1,1240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人信息 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 颜色定义 - 与设备页面保持一致 */
+        .colors {
+            /* 主色调 */
+            color: #3b82f6; /* 原 --primary-color: #667eea 改为蓝色 */
+            color: #2563eb; /* 原 --primary-dark: #5a67d8 改为深蓝色 */
+            color: #8b5cf6; /* 原 --secondary-color: #764ba2 改为紫色 */
+
+            /* 医疗主题色彩 */
+            color: #3b82f6; /* --medical-blue */
+            color: #10b981; /* --medical-green */
+            color: #ef4444; /* --medical-red */
+            color: #f59e0b; /* --medical-orange */
+            color: #8b5cf6; /* --medical-purple */
+
+            /* 中性色 */
+            color: #f9fafb; /* --gray-50 */
+            color: #f3f4f6; /* --gray-100 */
+            color: #e5e7eb; /* --gray-200 */
+            color: #d1d5db; /* --gray-300 */
+            color: #9ca3af; /* --gray-400 */
+            color: #6b7280; /* --gray-500 */
+            color: #4b5563; /* --gray-600 */
+            color: #374151; /* --gray-700 */
+            color: #1f2937; /* --gray-800 */
+            color: #111827; /* --gray-900 */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #f9fafb;
+        }
+
+        .medical-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medical-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        .info-item {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .info-item:hover {
+            background: rgba(59, 130, 246, 0.05);
+        }
+
+        .info-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 底部弹窗样式 */
+        .bottom-sheet {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: transparent;
+        }
+
+        .bottom-sheet.show {
+            display: block;
+        }
+
+        .bottom-sheet-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .bottom-sheet.show .bottom-sheet-backdrop {
+            opacity: 1;
+        }
+
+        .bottom-sheet-content {
+            position: relative;
+            background-color: white;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            max-height: 80vh;
+            overflow-y: auto;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .bottom-sheet.show .bottom-sheet-content {
+            transform: translateY(0);
+        }
+
+        .bottom-sheet-header {
+            text-align: center;
+            margin-bottom: 0px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #f0f0f0;
+            position: relative;
+        }
+
+        .bottom-sheet-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            text-align: center;
+        }
+
+        .bottom-sheet-close {
+            position: absolute;
+            right: 0;
+            top: 0;
+            background: none;
+            border: none;
+            color: #6b7280;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .bottom-sheet-close:hover {
+            color: #374151;
+        }
+
+        /* 滚动选择器样式 */
+        .picker-container {
+            display: flex;
+            align-items: center;
+            height: 240px;
+            overflow: hidden;
+            border-radius: 12px;
+            background: #f9fafb;
+            margin: 20px 0;
+        }
+
+        .picker-column {
+            flex: 1;
+            position: relative;
+            margin: 0 4px;
+            overflow: hidden;
+        }
+
+        .picker-scroller {
+            height: 100%;
+            overflow-y: auto;
+            scroll-snap-type: y mandatory;
+            padding: 100px 0;
+            /* 隐藏滚动条但保持滚动功能 */
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .picker-scroller::-webkit-scrollbar {
+            display: none;
+        }
+
+        .picker-scroller::-moz-scrollbar {
+            display: none;
+        }
+
+        .picker-item {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: #9ca3af;
+            scroll-snap-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .picker-item.active {
+            color: #1f2937;
+            font-weight: 600;
+            font-size: 18px;
+        }
+
+        .picker-indicator {
+            position: absolute;
+            top: 50%;
+            left: 8px;
+            right: 8px;
+            height: 40px;
+            transform: translateY(-50%);
+            border-top: 2px solid #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+            background: rgba(59, 130, 246, 0.05);
+            pointer-events: none;
+            border-radius: 8px;
+        }
+
+        .picker-label {
+            text-align: center;
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        /* 输入框样式 */
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* 头像样式 */
+        .avatar-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid #e5e7eb;
+        }
+
+        .avatar-placeholder {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 4px solid #e5e7eb;
+        }
+
+        /* 顶部头像独立样式 */
+        .avatar-section {
+            text-align: center;
+            margin: 10px 0;
+            padding: 12px 0;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .avatar-wrapper:hover {
+            transform: scale(1.05);
+        }
+
+        .avatar-edit-overlay {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: #ffffff;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        /* 选择器样式 */
+        .select-option {
+            padding: 16px 20px;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            text-align: center;
+            font-size: 16px;
+            color: #374151;
+        }
+
+        .select-option:hover {
+            background-color: #f9fafb;
+        }
+
+        .select-option.selected {
+            background-color: #eff6ff;
+            color: #3b82f6;
+            font-weight: 500;
+        }
+
+        .select-option:last-child {
+            border-bottom: none;
+        }
+
+        /* 复选框样式 */
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            padding: 4px 0;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 12px;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* 血糖记录页面样式的保存按钮 */
+        .manual-save-btn-container {
+            background: white;
+            border-radius: 0 0 30px 30px;
+            padding: 10px;
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            z-index: 999;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .manual-save-btn {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            padding: 15px 30px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .manual-save-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+        }
+
+        .manual-save-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+        }
+
+        .main-content {
+            padding-bottom: 64px;
+        }
+
+        /* 并发症显示适配 */
+        .complications-text {
+            display: -webkit-box;
+            display: -moz-box;
+            display: box;
+            -webkit-line-clamp: 2;
+            -moz-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            -moz-box-orient: vertical;
+            box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            line-height: 1.4;
+            max-height: 2.8em;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen main-content">
+        <!-- 顶部导航栏 - 与设备页面保持一致 -->
+        <div class="bg-white shadow-sm relative">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button onclick="goBack()" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-chevron-left text-lg"></i>
+                </button>
+                <h1 class="text-lg font-semibold text-gray-800 absolute left-1/2 transform -translate-x-1/2">个人信息</h1>
+                <div class="w-6"></div> <!-- 占位符保持居中 -->
+            </div>
+        </div>
+
+        <!-- 头像独立显示区域 -->
+        <div class="avatar-section">
+            <div class="avatar-wrapper" onclick="selectAvatar()">
+                <div class="avatar-container">
+                    <img id="avatarImage" class="avatar hidden" alt="头像">
+                    <div id="avatarPlaceholder" class="avatar-placeholder">
+                        <i class="fas fa-user text-gray-400 text-2xl"></i>
+                    </div>
+                </div>
+                <div class="avatar-edit-overlay">
+                    <i class="fas fa-camera text-gray-600 text-sm"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- 个人信息内容区域 -->
+        <div class="px-4 pb-6 pt-0">
+            <div class="medical-card">
+                <!-- 头像设置已移除 -->
+
+                <!-- 姓名 -->
+                <div class="info-item flex items-center justify-between" onclick="editName()">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium">姓名</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span id="nameDisplay" class="text-gray-600 mr-3">优唐24420266</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- 性别 -->
+                <div class="info-item flex items-center justify-between" onclick="selectGender()">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium">性别</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span id="genderDisplay" class="text-gray-600 mr-3">请选择</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- 出生日期 -->
+                <div class="info-item flex items-center justify-between" onclick="selectBirthDate()">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium">出生日期</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span id="birthDateDisplay" class="text-gray-600 mr-3">请选择</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+
+
+
+                <!-- 身高 -->
+                <div class="info-item flex items-center justify-between" onclick="editHeight()">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium">身高(cm)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span id="heightDisplay" class="text-gray-600 mr-3">请输入</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+
+                <!-- 体重 -->
+                <div class="info-item flex items-center justify-between" onclick="editWeight()">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium">体重(kg)</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span id="weightDisplay" class="text-gray-600 mr-3">请输入</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+
+                                <!-- 糖尿病类型 -->
+                <div class="info-item flex items-center justify-between" onclick="selectDiabetesType()">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium">糖尿病类型</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span id="diabetesTypeDisplay" class="text-gray-600 mr-3">请选择</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+
+
+
+                <!-- 并发症 -->
+                <div class="info-item flex items-center justify-between" onclick="selectComplications()">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium">并发症</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span id="complicationsDisplay" class="text-gray-600 mr-3 text-right max-w-48 complications-text">请选择</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+
+                                <!-- 劳动强度 -->
+                <div class="info-item flex items-center justify-between" onclick="selectLaborIntensity()">
+                    <div class="flex items-center">
+                        <span class="text-gray-700 font-medium">劳动强度</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span id="laborIntensityDisplay" class="text-gray-600 mr-3">请选择</span>
+                        <i class="fas fa-chevron-right text-gray-400"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 血糖记录页面样式的保存按钮 -->
+    <div class="manual-save-btn-container">
+        <button onclick="saveProfile()" class="manual-save-btn">
+            保存
+        </button>
+    </div>
+
+    <!-- 姓名编辑底部弹窗 -->
+    <div id="nameModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('nameModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">编辑姓名</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('nameModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <input type="text" id="nameInput" class="input-field" placeholder="请输入姓名" maxlength="20">
+            <div class="flex justify-end mt-6 space-x-3">
+                <button class="btn bg-gray-200 text-gray-700 flex-1" onclick="closeModal('nameModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="confirmName()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 性别选择底部弹窗 -->
+    <div id="genderModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('genderModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">选择性别</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('genderModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="select-option" onclick="selectOption('gender', '男')">男</div>
+            <div class="select-option" onclick="selectOption('gender', '女')">女</div>
+        </div>
+    </div>
+
+    <!-- 出生日期选择底部弹窗 -->
+    <div id="birthDateModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('birthDateModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">选择（阳历）出生日期</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('birthDateModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- 日期滚动选择器 -->
+            <div class="picker-container">
+                <!-- 年份选择器 -->
+                <div class="picker-column">
+                    <div class="picker-label">年</div>
+                    <div class="picker-scroller" id="yearPicker"></div>
+                    <div class="picker-indicator"></div>
+                </div>
+                <!-- 月份选择器 -->
+                <div class="picker-column">
+                    <div class="picker-label">月</div>
+                    <div class="picker-scroller" id="monthPicker"></div>
+                    <div class="picker-indicator"></div>
+                </div>
+                <!-- 日期选择器 -->
+                <div class="picker-column">
+                    <div class="picker-label">日</div>
+                    <div class="picker-scroller" id="dayPicker"></div>
+                    <div class="picker-indicator"></div>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6 space-x-3">
+                <button class="btn bg-gray-200 text-gray-700 flex-1" onclick="closeModal('birthDateModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="confirmBirthDate()">确定</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- 身高编辑底部弹窗 -->
+    <div id="heightModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('heightModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">输入身高</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('heightModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- 身高滚动选择器 -->
+            <div class="picker-container" style="max-width: 300px; margin: 20px auto;">
+                <div class="picker-column flex-1">
+                    <div class="picker-scroller" id="heightPicker"></div>
+                    <div class="picker-indicator"></div>
+                </div>
+                <div class="flex items-center justify-center ml-4">
+                    <span class="text-gray-500">厘米</span>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6 space-x-3">
+                <button class="btn bg-gray-200 text-gray-700 flex-1" onclick="closeModal('heightModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="confirmHeight()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 体重编辑底部弹窗 -->
+    <div id="weightModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('weightModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">输入体重</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('weightModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <!-- 体重滚动选择器 -->
+            <div class="picker-container" style="max-width: 300px; margin: 20px auto;">
+                <div class="picker-column flex-1">
+                    <div class="picker-scroller" id="weightPicker"></div>
+                    <div class="picker-indicator"></div>
+                </div>
+                <div class="flex items-center justify-center ml-4">
+                    <span class="text-gray-500">公斤</span>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6 space-x-3">
+                <button class="btn bg-gray-200 text-gray-700 flex-1" onclick="closeModal('weightModal')">取消</button>
+                <button class="btn btn-primary flex-1" onclick="confirmWeight()">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 糖尿病类型选择底部弹窗 -->
+    <div id="diabetesTypeModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('diabetesTypeModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">选择糖尿病类型</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('diabetesTypeModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="select-option" onclick="selectOption('diabetesType', '1型糖尿病')">1型糖尿病</div>
+            <div class="select-option" onclick="selectOption('diabetesType', '2型糖尿病')">2型糖尿病</div>
+            <div class="select-option" onclick="selectOption('diabetesType', '妊娠糖尿病')">妊娠糖尿病</div>
+            <div class="select-option" onclick="selectOption('diabetesType', '其他糖尿病')">其他糖尿病</div>
+            <div class="select-option" onclick="selectOption('diabetesType', '糖尿病前期')">糖尿病前期</div>
+            <div class="select-option" onclick="selectOption('diabetesType', '特殊糖尿病')">特殊糖尿病</div>
+            <div class="select-option" onclick="selectOption('diabetesType', '无')">无</div>
+        </div>
+    </div>
+
+    <!-- 并发症选择底部弹窗 -->
+    <div id="complicationsModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('complicationsModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">选择并发症（可多选）</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('complicationsModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-3">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="comp_vascular" value="血管并发症" onchange="updateComplications()">
+                    <label for="comp_vascular">血管并发症</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="comp_eye" value="眼病" onchange="updateComplications()">
+                    <label for="comp_eye">眼病</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="comp_kidney" value="肾脏病变" onchange="updateComplications()">
+                    <label for="comp_kidney">肾脏病变</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="comp_dizziness" value="头晕失眠" onchange="updateComplications()">
+                    <label for="comp_dizziness">头晕失眠</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="comp_neuropathy" value="神经病变" onchange="updateComplications()">
+                    <label for="comp_neuropathy">神经病变</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="comp_foot" value="病足" onchange="updateComplications()">
+                    <label for="comp_foot">病足</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="comp_other" value="其他" onchange="updateComplications()">
+                    <label for="comp_other">其他</label>
+                </div>
+            </div>
+            <div class="flex justify-end mt-6">
+                <button class="btn btn-primary w-full" onclick="closeModal('complicationsModal')">确定</button>
+            </div>
+        </div>
+    </div>
+
+        <!-- 劳动强度选择底部弹窗 -->
+    <div id="laborIntensityModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('laborIntensityModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">选择劳动强度</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('laborIntensityModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="select-option" onclick="selectOption('laborIntensity', '轻体力劳动')">轻体力劳动</div>
+            <div class="select-option" onclick="selectOption('laborIntensity', '中体力劳动')">中体力劳动</div>
+            <div class="select-option" onclick="selectOption('laborIntensity', '重体力劳动')">重体力劳动</div>
+            <div class="select-option" onclick="selectOption('laborIntensity', '卧床休息')">卧床休息</div>
+        </div>
+    </div>
+
+    <!-- 头像选择底部弹窗 -->
+    <div id="avatarModal" class="bottom-sheet">
+        <div class="bottom-sheet-backdrop" onclick="closeModal('avatarModal')"></div>
+        <div class="bottom-sheet-content">
+            <div class="bottom-sheet-header">
+                <h3 class="bottom-sheet-title">选择头像</h3>
+                <button class="bottom-sheet-close" onclick="closeModal('avatarModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <input type="file" id="avatarInput" accept="image/*" style="display: none;" onchange="handleAvatarSelect(event)">
+            <div class="space-y-3">
+                <button class="btn w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onclick="document.getElementById('avatarInput').click()">
+                    <i class="fas fa-image mr-2"></i>从相册选择
+                </button>
+                <button class="btn w-full bg-gray-100 text-gray-700 hover:bg-gray-200" onclick="takePhoto()">
+                    <i class="fas fa-camera mr-2"></i>拍照
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 用户数据对象
+        let userProfile = {
+            avatar: '',
+            name: '优唐24420266',
+            gender: '',
+            birthDate: '',
+            diabetesType: '',
+            height: '',
+            weight: '',
+            laborIntensity: '',
+            complications: []
+        };
+
+        // 滚动选择器相关变量
+        let selectedYear = 1990;
+        let selectedMonth = 1;
+        let selectedDay = 1;
+        let selectedHeight = 170;
+        let selectedWeight = 65;
+
+        // 页面初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 加载已保存的数据
+            loadUserProfile();
+
+            // 添加淡入动画
+            document.querySelector('.medical-card').classList.add('fade-in');
+        });
+
+        // 返回上一页
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'home.html';
+            }
+        }
+
+        // 通用模态框操作（底部弹窗）
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.add('show');
+        }
+
+        function closeModal(modalId) {
+            const modal = document.getElementById(modalId);
+            modal.classList.remove('show');
+        }
+
+        // 点击底部弹窗背景关闭
+        window.onclick = function(event) {
+            const backdrops = document.querySelectorAll('.bottom-sheet-backdrop');
+            backdrops.forEach(backdrop => {
+                if (event.target === backdrop) {
+                    const modal = backdrop.parentElement;
+                    modal.classList.remove('show');
+                }
+            });
+        }
+
+        // 头像选择
+        function selectAvatar() {
+            openModal('avatarModal');
+        }
+
+        function handleAvatarSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    userProfile.avatar = e.target.result;
+                    updateAvatarDisplay();
+                };
+                reader.readAsDataURL(file);
+                closeModal('avatarModal');
+            }
+        }
+
+        function takePhoto() {
+            alert('拍照功能需要在移动设备上使用，或者使用摄像头权限');
+            closeModal('avatarModal');
+        }
+
+        function updateAvatarDisplay() {
+            const avatarImage = document.getElementById('avatarImage');
+            const avatarPlaceholder = document.getElementById('avatarPlaceholder');
+
+            if (userProfile.avatar) {
+                avatarImage.src = userProfile.avatar;
+                avatarImage.classList.remove('hidden');
+                avatarPlaceholder.classList.add('hidden');
+            } else {
+                avatarImage.classList.add('hidden');
+                avatarPlaceholder.classList.remove('hidden');
+            }
+        }
+
+        // 姓名编辑
+        function editName() {
+            document.getElementById('nameInput').value = userProfile.name;
+            openModal('nameModal');
+        }
+
+        function confirmName() {
+            const name = document.getElementById('nameInput').value.trim();
+            if (name) {
+                userProfile.name = name;
+                document.getElementById('nameDisplay').textContent = name;
+                closeModal('nameModal');
+            } else {
+                alert('请输入姓名');
+            }
+        }
+
+        // 通用选择功能
+        function selectOption(field, value) {
+            userProfile[field] = value;
+            document.getElementById(field + 'Display').textContent = value;
+            closeModal(field + 'Modal');
+        }
+
+        // 性别选择
+        function selectGender() {
+            openModal('genderModal');
+        }
+
+        // 出生日期选择
+        function selectBirthDate() {
+            // 初始化选择器
+            generateDatePickerOptions();
+            openModal('birthDateModal');
+        }
+
+        function generateDatePickerOptions() {
+            // 生成年份选项
+            const yearPicker = document.getElementById('yearPicker');
+            yearPicker.innerHTML = '';
+            const currentYear = new Date().getFullYear();
+            for (let year = currentYear; year >= currentYear - 100; year--) {
+                const item = document.createElement('div');
+                item.className = 'picker-item';
+                item.textContent = year + '年';
+                item.onclick = () => selectYear(year);
+                if (year === selectedYear) {
+                    item.classList.add('active');
+                }
+                yearPicker.appendChild(item);
+            }
+
+            // 生成月份选项
+            const monthPicker = document.getElementById('monthPicker');
+            monthPicker.innerHTML = '';
+            for (let month = 1; month <= 12; month++) {
+                const item = document.createElement('div');
+                item.className = 'picker-item';
+                item.textContent = month + '月';
+                item.onclick = () => selectMonth(month);
+                if (month === selectedMonth) {
+                    item.classList.add('active');
+                }
+                monthPicker.appendChild(item);
+            }
+
+            // 生成日期选项
+            generateDayPickerOptions();
+        }
+
+        function generateDayPickerOptions() {
+            const dayPicker = document.getElementById('dayPicker');
+            dayPicker.innerHTML = '';
+            const daysInMonth = new Date(selectedYear, selectedMonth, 0).getDate();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const item = document.createElement('div');
+                item.className = 'picker-item';
+                item.textContent = day + '日';
+                item.onclick = () => selectDay(day);
+                if (day === selectedDay) {
+                    item.classList.add('active');
+                }
+                dayPicker.appendChild(item);
+            }
+        }
+
+        function selectYear(year) {
+            selectedYear = year;
+            generateDatePickerOptions();
+        }
+
+        function selectMonth(month) {
+            selectedMonth = month;
+            generateDayPickerOptions();
+        }
+
+        function selectDay(day) {
+            selectedDay = day;
+            generateDayPickerOptions();
+        }
+
+        function confirmBirthDate() {
+            const birthDate = `${selectedYear}-${String(selectedMonth).padStart(2, '0')}-${String(selectedDay).padStart(2, '0')}`;
+            userProfile.birthDate = birthDate;
+            document.getElementById('birthDateDisplay').textContent = birthDate;
+            closeModal('birthDateModal');
+        }
+
+        // 糖尿病类型选择
+        function selectDiabetesType() {
+            openModal('diabetesTypeModal');
+        }
+
+        // 身高编辑
+        function editHeight() {
+            // 初始化身高选择器
+            generateHeightPickerOptions();
+            openModal('heightModal');
+        }
+
+        function generateHeightPickerOptions() {
+            const heightPicker = document.getElementById('heightPicker');
+            heightPicker.innerHTML = '';
+            for (let height = 100; height <= 250; height++) {
+                const item = document.createElement('div');
+                item.className = 'picker-item';
+                item.textContent = height;
+                item.onclick = () => selectHeight(height);
+                if (height === selectedHeight) {
+                    item.classList.add('active');
+                }
+                heightPicker.appendChild(item);
+            }
+        }
+
+        function selectHeight(height) {
+            selectedHeight = height;
+            generateHeightPickerOptions();
+        }
+
+        function confirmHeight() {
+            userProfile.height = selectedHeight;
+            document.getElementById('heightDisplay').textContent = selectedHeight + 'cm';
+            closeModal('heightModal');
+        }
+
+        // 体重编辑
+        function editWeight() {
+            // 初始化体重选择器
+            generateWeightPickerOptions();
+            openModal('weightModal');
+        }
+
+        function generateWeightPickerOptions() {
+            const weightPicker = document.getElementById('weightPicker');
+            weightPicker.innerHTML = '';
+            for (let weight = 20; weight <= 200; weight++) {
+                const item = document.createElement('div');
+                item.className = 'picker-item';
+                item.textContent = weight;
+                item.onclick = () => selectWeight(weight);
+                if (weight === selectedWeight) {
+                    item.classList.add('active');
+                }
+                weightPicker.appendChild(item);
+            }
+        }
+
+        function selectWeight(weight) {
+            selectedWeight = weight;
+            generateWeightPickerOptions();
+        }
+
+        function confirmWeight() {
+            userProfile.weight = selectedWeight;
+            document.getElementById('weightDisplay').textContent = selectedWeight + 'kg';
+            closeModal('weightModal');
+        }
+
+        // 劳动强度选择
+        function selectLaborIntensity() {
+            openModal('laborIntensityModal');
+        }
+
+        // 并发症选择
+        function selectComplications() {
+            // 同步当前选择状态到复选框
+            const checkboxes = document.querySelectorAll('#complicationsModal input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = userProfile.complications.includes(checkbox.value);
+            });
+            openModal('complicationsModal');
+        }
+
+        function updateComplications() {
+            const checkboxes = document.querySelectorAll('#complicationsModal input[type="checkbox"]:checked');
+            userProfile.complications = Array.from(checkboxes).map(cb => cb.value);
+
+            // 更新显示
+            const display = document.getElementById('complicationsDisplay');
+            if (userProfile.complications.length === 0) {
+                display.textContent = '请选择';
+            } else {
+                display.textContent = userProfile.complications.join('、');
+            }
+        }
+
+        // 保存个人信息
+        function saveProfile() {
+            // 验证必填信息
+            if (!userProfile.name.trim()) {
+                alert('请填写姓名');
+                return;
+            }
+
+            if (!userProfile.gender) {
+                alert('请选择性别');
+                return;
+            }
+
+            if (!userProfile.birthDate) {
+                alert('请选择出生日期');
+                return;
+            }
+
+            if (!userProfile.height) {
+                alert('请输入身高');
+                return;
+            }
+
+            if (!userProfile.weight) {
+                alert('请输入体重');
+                return;
+            }
+
+            // 保存到本地存储
+            localStorage.setItem('userProfile', JSON.stringify(userProfile));
+
+            // 显示保存成功提示
+            const saveBtn = document.querySelector('.fixed-save-btn');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<i class="fas fa-check mr-2"></i>已保存';
+            saveBtn.disabled = true;
+
+            setTimeout(() => {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+
+                // 可以选择返回上一页或留在当前页面
+                // goBack();
+            }, 2000);
+        }
+
+        // 加载用户数据
+        function loadUserProfile() {
+            const savedProfile = localStorage.getItem('userProfile');
+            if (savedProfile) {
+                userProfile = JSON.parse(savedProfile);
+
+                // 更新显示
+                document.getElementById('nameDisplay').textContent = userProfile.name || '优唐24420266';
+                document.getElementById('genderDisplay').textContent = userProfile.gender || '请选择';
+                document.getElementById('birthDateDisplay').textContent = userProfile.birthDate || '请选择';
+                document.getElementById('diabetesTypeDisplay').textContent = userProfile.diabetesType || '请选择';
+                document.getElementById('heightDisplay').textContent = userProfile.height ? userProfile.height + 'cm' : '请输入';
+                document.getElementById('weightDisplay').textContent = userProfile.weight ? userProfile.weight + 'kg' : '请输入';
+
+                // 初始化滚动选择器值
+                if (userProfile.height) selectedHeight = parseInt(userProfile.height);
+                if (userProfile.weight) selectedWeight = parseInt(userProfile.weight);
+                if (userProfile.birthDate) {
+                    const date = new Date(userProfile.birthDate);
+                    selectedYear = date.getFullYear();
+                    selectedMonth = date.getMonth() + 1;
+                    selectedDay = date.getDate();
+                }
+                document.getElementById('laborIntensityDisplay').textContent = userProfile.laborIntensity || '请选择';
+
+                const complicationsText = userProfile.complications.length > 0 ?
+                    userProfile.complications.join('、') : '请选择';
+                document.getElementById('complicationsDisplay').textContent = complicationsText;
+
+                updateAvatarDisplay();
+            }
+        }
+
+        // 导航功能（与其他页面保持一致）
+        function navigateToPage(page) {
+            console.log('导航到页面:', page);
+
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: page
+                }, '*');
+            } else {
+                window.location.href = page + '.html';
+            }
+        }
+    </script>
+
+    <!-- 全局错误处理 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message);
+            // 阻止错误弹窗，但不影响页面显示
+            return true;
+        });
+
+        // 安全的getElementById包装函数
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // 安全的textContent设置函数
+        function safeSetText(id, text) {
+            const element = document.getElementById(id);
+            if (element && text !== undefined && text !== null) {
+                element.textContent = text;
+            }
+            return element;
+        }
+        // 安全的震动函数（避免iframe中的跨域限制）
+        function safeVibrate(duration) {
+            try {
+                // 检查是否支持震动API
+                if (navigator.vibrate && window.self === window.top) {
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // 忽略震动API错误
+                console.debug('Vibrate not available:', e.message);
+            }
+        }
+
+    </script>
+</body>
+</html>

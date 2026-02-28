@@ -1,0 +1,2970 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI问答 - 控糖助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Markdown解析库 -->
+    <script src="https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js"></script>
+    <!-- 代码高亮库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <style>
+        /* 糖尿病控糖管理平台 - 统一样式文件 */
+
+        /* 颜色定义 */
+        .colors {
+            /* 主色调 */
+            color: #3b82f6; /* 原 --primary-color: #667eea 改为蓝色 */
+            color: #2563eb; /* 原 --primary-dark: #5a67d8 改为深蓝色 */
+            color: #8b5cf6; /* 原 --secondary-color: #764ba2 改为紫色 */
+            
+            /* 医疗主题色彩 */
+            color: #3b82f6; /* --medical-blue */
+            color: #10b981; /* --medical-green */
+            color: #ef4444; /* --medical-red */
+            color: #f59e0b; /* --medical-orange */
+            color: #8b5cf6; /* --medical-purple */
+            
+            /* 中性色 */
+            color: #f9fafb; /* --gray-50 */
+            color: #f3f4f6; /* --gray-100 */
+            color: #e5e7eb; /* --gray-200 */
+            color: #d1d5db; /* --gray-300 */
+            color: #9ca3af; /* --gray-400 */
+            color: #6b7280; /* --gray-500 */
+            color: #4b5563; /* --gray-600 */
+            color: #374151; /* --gray-700 */
+            color: #1f2937; /* --gray-800 */
+            color: #111827; /* --gray-900 */
+        }
+
+        /* 全局重置和基础样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 隐藏所有滚动条 - 移动端优化 */
+        * {
+            scrollbar-width: none; /* Firefox */
+            -ms-overflow-style: none; /* IE and Edge */
+        }
+
+        /* 隐藏Webkit浏览器滚动条 */
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 确保页面不会出现横向滚动 */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #f9fafb;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 医疗主题卡片样式 */
+        .medical-card {
+            background: white;
+            border-radius: var(--radius-2xl);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--gray-200);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medical-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .medical-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        /* 渐变背景 */
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        .gradient-bg-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .gradient-bg-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+
+        .gradient-bg-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        /* 按钮样式增强 */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 20px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover:before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #3b82f6;
+            border: 2px solid #3b82f6;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-secondary:hover {
+            background: #3b82f6;
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* 输入框样式增强 */
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        /* 移动端滚动条优化 */
+        html, body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+        
+        /* 隐藏所有滚动条 */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none;
+        }
+        
+        /* 自定义样式 */
+        .medical-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .chat-container {
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+        .message-user {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            border-radius: 18px 18px 4px 18px;
+            margin-left: 20%;
+        }
+        .message-ai {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px 18px 18px 4px;
+            margin-right: 20%;
+        }
+        .typing-indicator {
+            display: none;
+        }
+        .typing-indicator.active {
+            display: flex;
+        }
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: #9ca3af;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .quick-question {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .quick-question:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            transition: all 0.3s ease;
+        }
+        .send-button:hover {
+            transform: scale(1.05);
+        }
+        .send-button:disabled {
+            background: #9ca3af;
+            transform: none;
+        }
+        .ai-avatar {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+        .feature-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+        .feature-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+        }
+
+        /* 状态栏样式 */
+        .status-bar {
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), transparent);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        /* 消息样式 */
+        .message-bubble {
+            max-width: 85%;
+            word-wrap: break-word;
+        }
+
+        .message-user .message-bubble {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .message-ai .message-bubble {
+            background: white;
+            color: #1f2937;
+        }
+
+        /* 底部输入区域样式 */
+        .bottom-input-area {
+            position: fixed;
+            bottom: 83px;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+            z-index: 1001;
+        }
+
+        /* 底部导航栏样式 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            z-index: 101;
+        }
+
+        /* 聊天区域样式 */
+        .chat-area {
+            height: calc(100vh - 120px);
+            overflow-y: auto;
+            padding-bottom: 120px;
+        }
+
+        /* 加载动画 */
+        .thinking-animation {
+            display: inline-block;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background-color: #6b7280;
+            animation: thinking 1.4s infinite ease-in-out;
+        }
+
+        .thinking-animation:nth-child(1) { animation-delay: -0.32s; }
+        .thinking-animation:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes thinking {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+  
+        /* Markdown内容样式 */
+        .markdown-content h1, .markdown-content h2, .markdown-content h3 {
+            margin-top: 16px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .markdown-content p {
+            margin-bottom: 12px;
+        }
+
+        .markdown-content ul, .markdown-content ol {
+            margin-bottom: 12px;
+            padding-left: 24px;
+        }
+
+        .markdown-content code {
+            background: #f3f4f6;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.875em;
+        }
+
+        .markdown-content pre {
+            background: #f3f4f6;
+            padding: 12px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: 12px;
+        }
+
+        /* 动画效果 */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-fade-in-up {
+            animation: fadeInUp 0.3s ease-out;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 85%;
+            max-width: 350px;
+            height: 100vh;
+            background: white;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.15);
+            transition: left 0.3s ease;
+            z-index: 1500;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background: rgba(0,0,0,0.6);
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            z-index: 1499;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* 底部导航栏样式 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding-bottom: 20px;
+            z-index: 1000;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .tab-item:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .tab-item.active {
+            color: #667eea;
+        }
+
+        .tab-item i {
+            font-size: 20px;
+            margin-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item span {
+            font-size: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item.active i,
+        .tab-item.active span {
+            color: #667eea;
+            transform: scale(1.1);
+        }
+
+        .tab-item:not(.active) i,
+        .tab-item:not(.active) span {
+            color: #9ca3af;
+        }
+
+        .tab-item.add-btn {
+            background: #667eea;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .tab-item.add-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(102, 126, 234, 0.4);
+        }
+
+        .tab-item.add-btn i {
+            color: white;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        /* 主内容区域样式 */
+        .main-content {
+            padding-bottom: 100px;
+        }
+
+        /* 多行文本截断样式 */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* 优化AI消息文本显示 */
+        .markdown-content {
+            line-height: 1.7;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+        /* 用户消息样式优化 */
+        .message-user .message-bubble div {
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex flex-col">
+  
+        <!-- 顶部导航 -->
+        <div class="bg-white border-b border-gray-200">
+            <div class="flex items-center justify-between px-4 py-2 relative">
+                <!-- 左侧图标区域 -->
+                <div class="flex items-center space-x-0">
+                    <!-- 菜单图标（历史会话） -->
+                    <button id="headerChatBtn" class="p-1 rounded-lg">
+                        <i class="fas fa-history text-lg text-gray-600"></i>
+                    </button>
+                    <!-- 新增会话图标 -->
+                    <button id="newChatBtn" class="p-3 rounded-lg">
+                        <i class="fas fa-plus text-lg text-gray-600"></i>
+                    </button>
+                </div>
+                <h1 class="text-gray-800 text-lg font-medium absolute left-1/2 transform -translate-x-1/2">优唐AI助手</h1>
+            </div>
+        </div>
+
+        <!-- 聊天消息区域 -->
+        <div class="flex-1 chat-area px-4 py-4 main-content" id="chatContainer">
+            <!-- 欢迎消息 -->
+            <div class="mb-4 animate-fade-in-up">
+                <div class="flex items-start space-x-3">
+                    <div class="ai-avatar w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <div class="message-bubble">
+                        <div class="bg-white border border-gray-200 rounded-2xl rounded-bl-md p-4 shadow-sm">
+                            <p class="text-sm text-gray-800 leading-relaxed mb-2">
+                                👋 您好！我是您的AI健康助手，很高兴为您服务！
+                            </p>
+                            <p class="text-sm text-gray-800 leading-relaxed mb-2">
+                                我可以帮您：
+                            </p>
+                            <ul class="text-sm text-gray-700 space-y-1">
+                                <li>• 解读血糖数据和趋势</li>
+                                <li>• 个性化饮食建议</li>
+                                <li>• 运动和生活方式指导</li>
+                                <li>• 用药提醒和注意事项</li>
+                                <li>• 情绪管理和心理支持</li>
+                            </ul>
+                            <p class="text-sm text-gray-800 leading-relaxed mt-2">
+                                请告诉我您的需求，我会为您提供专业的健康建议。
+                            </p>
+                            <div class="flex items-center justify-between mt-3">
+                                <span class="text-xs text-gray-500">刚刚</span>
+                                <div class="flex items-center space-x-2">
+                                    <button class="text-xs text-gray-500 hover:text-purple-600 transition-colors">
+                                        <i class="fas fa-thumbs-up mr-1"></i>有用
+                                    </button>
+                                    <button class="text-xs text-gray-500 hover:text-purple-600 transition-colors">
+                                        <i class="fas fa-copy mr-1"></i>复制
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 快捷问题 -->
+            <div class="mb-4">
+                <p class="text-sm text-gray-600 mb-3">常见问题，点击快速咨询</p>
+                <div class="grid grid-cols-2 gap-3">
+                    <button class="quick-question p-3 text-left text-sm" data-question="我的血糖值7.8mmol/L正常吗？">
+                        <i class="fas fa-tint text-purple-500 mr-2"></i>
+                        血糖值解读
+                    </button>
+                    <button class="quick-question p-3 text-left text-sm" data-question="糖尿病患者适合吃什么水果？">
+                        <i class="fas fa-apple-alt text-green-500 mr-2"></i>
+                        饮食建议
+                    </button>
+                    <button class="quick-question p-3 text-left text-sm" data-question="什么运动适合糖尿病患者？">
+                        <i class="fas fa-running text-blue-500 mr-2"></i>
+                        运动指导
+                    </button>
+                    <button class="quick-question p-3 text-left text-sm" data-question="胰岛素注射有什么注意事项？">
+                        <i class="fas fa-syringe text-red-500 mr-2"></i>
+                        用药咨询
+                    </button>
+                </div>
+            </div>
+
+            <!-- 消息容器 -->
+            <div id="messagesContainer"></div>
+
+            <!-- 打字指示器 -->
+            <div class="typing-indicator mb-4" id="typingIndicator">
+                <div class="flex items-start space-x-3">
+                    <div class="ai-avatar w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-robot text-white text-sm"></i>
+                    </div>
+                    <div class="bg-white border border-gray-200 rounded-2xl rounded-bl-md p-4 shadow-sm">
+                        <div class="flex items-center space-x-1">
+                            <div class="thinking-animation"></div>
+                            <div class="thinking-animation"></div>
+                            <div class="thinking-animation"></div>
+                            <span class="text-xs text-gray-500 ml-2">AI正在思考...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 输入区域 -->
+        <div class="bottom-input-area p-3">
+            <div class="input-container flex items-center gap-3 bg-gray-50 rounded-full p-1">
+                <button class="text-gray-400 hover:text-gray-600 transition-colors p-1" id="voiceBtn">
+                    <i class="fas fa-microphone text-sm"></i>
+                </button>
+                <textarea
+                    id="messageInput"
+                    class="flex-1 resize-none border-none outline-none text-sm bg-transparent px-2 py-0.5"
+                    rows="1"
+                    placeholder="请输入您的问题..."
+                    maxlength="500"></textarea>
+                <button
+                    id="sendButton"
+                    class="send-button w-8 h-8 rounded-full flex items-center justify-center text-white"
+                    disabled>
+                    <i class="fas fa-paper-plane text-sm"></i>
+                </button>
+            </div>
+            <!-- AI提示文本 -->
+            <div class="text-center mt-1">
+                <span class="text-gray-500 text-xs">内容由AI生成，仅供参考</span>
+            </div>
+        </div>
+
+        <!-- 底部导航栏（精简为3个） -->
+        <div class="tab-bar">
+            <div class="tab-item" onclick="navigateToPage('home')">
+                <i class="fas fa-home"></i>
+                <span>首页</span>
+            </div>
+            <div class="tab-item active" onclick="navigateToPage('chat')">
+                <i class="fas fa-robot"></i>
+                <span>问AI</span>
+            </div>
+            <div class="tab-item" onclick="navigateToPage('profile')">
+                <i class="fas fa-user"></i>
+                <span>我的</span>
+            </div>
+        </div>
+
+      </div>
+
+
+    <!-- 侧边栏 -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <div class="sidebar" id="sidebar">
+        <div class="p-4 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h2 class="text-lg font-semibold">历史会话</h2>
+                <i class="fas fa-times text-gray-400 cursor-pointer" id="closeSidebar"></i>
+            </div>
+        </div>
+
+        <!-- 会话列表 -->
+        <div class="p-4">
+            <div class="space-y-2" id="conversationsList">
+                <!-- 会话列表将在这里显示 -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * 糖尿病控糖管理平台 - 通用交互功能
+         * 提供统一的用户体验和交互增强
+         */
+
+        // 全局配置
+        const CONFIG = {
+            // 动画配置
+            animation: {
+                duration: 300,
+                easing: 'cubic-bezier(0.4, 0, 0.2, 1)'
+            },
+            // 触觉反馈配置
+            haptic: {
+                enabled: true,
+                intensity: 'medium' // light, medium, heavy
+            },
+            // 音效配置
+            sound: {
+                enabled: false,
+                volume: 0.3
+            }
+        };
+
+        /**
+         * 工具函数集合
+         */
+        const Utils = {
+            /**
+             * 防抖函数
+             * @param {Function} func 要防抖的函数
+             * @param {number} wait 等待时间（毫秒）
+             * @returns {Function} 防抖后的函数
+             */
+            debounce(func, wait) {
+                let timeout;
+                return function executedFunction(...args) {
+                    const later = () => {
+                        clearTimeout(timeout);
+                        func(...args);
+                    };
+                    clearTimeout(timeout);
+                    timeout = setTimeout(later, wait);
+                };
+            },
+
+            /**
+             * 节流函数
+             * @param {Function} func 要节流的函数
+             * @param {number} limit 时间限制（毫秒）
+             * @returns {Function} 节流后的函数
+             */
+            throttle(func, limit) {
+                let inThrottle;
+                return function(...args) {
+                    if (!inThrottle) {
+                        func.apply(this, args);
+                        inThrottle = true;
+                        setTimeout(() => inThrottle = false, limit);
+                    }
+                };
+            },
+
+            /**
+             * 格式化日期
+             * @param {Date|string} date 日期对象或字符串
+             * @param {string} format 格式字符串
+             * @returns {string} 格式化后的日期字符串
+             */
+            formatDate(date, format = 'YYYY-MM-DD') {
+                const d = new Date(date);
+                const year = d.getFullYear();
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const day = String(d.getDate()).padStart(2, '0');
+                const hour = String(d.getHours()).padStart(2, '0');
+                const minute = String(d.getMinutes()).padStart(2, '0');
+                
+                return format
+                    .replace('YYYY', year)
+                    .replace('MM', month)
+                    .replace('DD', day)
+                    .replace('HH', hour)
+                    .replace('mm', minute);
+            },
+
+            /**
+             * 生成唯一ID
+             * @returns {string} 唯一ID字符串
+             */
+            generateId() {
+                return Date.now().toString(36) + Math.random().toString(36).substr(2);
+            },
+
+            /**
+             * 深拷贝对象
+             * @param {Object} obj 要拷贝的对象
+             * @returns {Object} 拷贝后的对象
+             */
+            deepClone(obj) {
+                if (obj === null || typeof obj !== 'object') return obj;
+                if (obj instanceof Date) return new Date(obj.getTime());
+                if (obj instanceof Array) return obj.map(item => this.deepClone(item));
+                if (typeof obj === 'object') {
+                    const cloned = {};
+                    Object.keys(obj).forEach(key => {
+                        cloned[key] = this.deepClone(obj[key]);
+                    });
+                    return cloned;
+                }
+            },
+
+            /**
+             * 检查是否为移动设备
+             * @returns {boolean} 是否为移动设备
+             */
+            isMobile() {
+                return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            },
+
+            /**
+             * 获取设备类型
+             * @returns {string} 设备类型
+             */
+            getDeviceType() {
+                const width = window.innerWidth;
+                if (width < 768) return 'mobile';
+                if (width < 1024) return 'tablet';
+                return 'desktop';
+            },
+
+            /**
+             * 本地存储操作
+             */
+            storage: {
+                set(key, value) {
+                    try {
+                        localStorage.setItem(key, JSON.stringify(value));
+                    } catch (e) {
+                        console.error('存储失败:', e);
+                    }
+                },
+                get(key, defaultValue = null) {
+                    try {
+                        const item = localStorage.getItem(key);
+                        return item ? JSON.parse(item) : defaultValue;
+                    } catch (e) {
+                        console.error('读取存储失败:', e);
+                        return defaultValue;
+                    }
+                },
+                remove(key) {
+                    try {
+                        localStorage.removeItem(key);
+                    } catch (e) {
+                        console.error('删除存储失败:', e);
+                    }
+                },
+                clear() {
+                    try {
+                        localStorage.clear();
+                    } catch (e) {
+                        console.error('清空存储失败:', e);
+                    }
+                }
+            },
+
+            /**
+             * 格式化文件大小
+             * @param {number} bytes 字节数
+             * @returns {string} 格式化后的大小
+             */
+            formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            },
+
+            /**
+             * 验证邮箱格式
+             * @param {string} email 邮箱地址
+             * @returns {boolean} 是否有效
+             */
+            isValidEmail(email) {
+                return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+            },
+
+            /**
+             * 验证手机号格式
+             * @param {string} phone 手机号
+             * @returns {boolean} 是否有效
+             */
+            isValidPhone(phone) {
+                return /^1[3-9]\d{9}$/.test(phone);
+            },
+
+            /**
+             * 获取URL参数
+             * @param {string} name 参数名
+             * @returns {string|null} 参数值
+             */
+            getUrlParam(name) {
+                const urlParams = new URLSearchParams(window.location.search);
+                return urlParams.get(name);
+            },
+
+            /**
+             * 设置URL参数
+             * @param {string} name 参数名
+             * @param {string} value 参数值
+             */
+            setUrlParam(name, value) {
+                const url = new URL(window.location.href);
+                url.searchParams.set(name, value);
+                window.history.pushState({}, '', url);
+            },
+
+            /**
+             * 复制文本到剪贴板
+             * @param {string} text 要复制的文本
+             * @returns {Promise<boolean>} 是否成功
+             */
+            async copyToClipboard(text) {
+                try {
+                    await navigator.clipboard.writeText(text);
+                    return true;
+                } catch (err) {
+                    // 降级方案
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text;
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    try {
+                        document.execCommand('copy');
+                        return true;
+                    } catch (err) {
+                        return false;
+                    } finally {
+                        document.body.removeChild(textarea);
+                    }
+                }
+            },
+
+            /**
+             * 下载文件
+             * @param {string} content 文件内容
+             * @param {string} filename 文件名
+             * @param {string} type 文件类型
+             */
+            downloadFile(content, filename, type = 'text/plain') {
+                const blob = new Blob([content], { type });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }
+        };
+
+        /**
+         * 动画管理器
+         */
+        const AnimationManager = {
+            /**
+             * 淡入动画
+             * @param {HTMLElement} element 目标元素
+             * @param {number} duration 持续时间
+             * @param {Function} callback 回调函数
+             */
+            fadeIn(element, duration = CONFIG.animation.duration, callback) {
+                element.style.opacity = '0';
+                element.style.display = 'block';
+                
+                const start = performance.now();
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    element.style.opacity = progress;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        if (callback) callback();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            },
+
+            /**
+             * 淡出动画
+             * @param {HTMLElement} element 目标元素
+             * @param {number} duration 持续时间
+             * @param {Function} callback 回调函数
+             */
+            fadeOut(element, duration = CONFIG.animation.duration, callback) {
+                const start = performance.now();
+                const initialOpacity = parseFloat(getComputedStyle(element).opacity) || 1;
+                
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    
+                    element.style.opacity = initialOpacity * (1 - progress);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        element.style.display = 'none';
+                        if (callback) callback();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            },
+
+            /**
+             * 滑入动画
+             * @param {HTMLElement} element 目标元素
+             * @param {string} direction 方向 ('left', 'right', 'up', 'down')
+             * @param {number} duration 持续时间
+             * @param {Function} callback 回调函数
+             */
+            slideIn(element, direction = 'left', duration = CONFIG.animation.duration, callback) {
+                element.style.display = 'block';
+                
+                const rect = element.getBoundingClientRect();
+                let startX, startY;
+                
+                switch (direction) {
+                    case 'left':
+                        startX = -rect.width;
+                        startY = 0;
+                        break;
+                    case 'right':
+                        startX = rect.width;
+                        startY = 0;
+                        break;
+                    case 'up':
+                        startX = 0;
+                        startY = -rect.height;
+                        break;
+                    case 'down':
+                        startX = 0;
+                        startY = rect.height;
+                        break;
+                }
+                
+                element.style.transform = `translate(${startX}px, ${startY}px)`;
+                
+                const start = performance.now();
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = this.easeOutCubic(progress);
+                    
+                    const currentX = startX * (1 - easeProgress);
+                    const currentY = startY * (1 - easeProgress);
+                    
+                    element.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        if (callback) callback();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            },
+
+            /**
+             * 滑出动画
+             * @param {HTMLElement} element 目标元素
+             * @param {string} direction 方向 ('left', 'right', 'up', 'down')
+             * @param {number} duration 持续时间
+             * @param {Function} callback 回调函数
+             */
+            slideOut(element, direction = 'left', duration = CONFIG.animation.duration, callback) {
+                const rect = element.getBoundingClientRect();
+                let endX, endY;
+                
+                switch (direction) {
+                    case 'left':
+                        endX = -rect.width;
+                        endY = 0;
+                        break;
+                    case 'right':
+                        endX = rect.width;
+                        endY = 0;
+                        break;
+                    case 'up':
+                        endX = 0;
+                        endY = -rect.height;
+                        break;
+                    case 'down':
+                        endX = 0;
+                        endY = rect.height;
+                        break;
+                }
+                
+                const start = performance.now();
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = this.easeOutCubic(progress);
+                    
+                    const currentX = endX * easeProgress;
+                    const currentY = endY * easeProgress;
+                    
+                    element.style.transform = `translate(${currentX}px, ${currentY}px)`;
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    } else {
+                        element.style.display = 'none';
+                        if (callback) callback();
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            },
+
+            /**
+             * 缓动函数 - 三次方缓出
+             * @param {number} t 进度 (0-1)
+             * @returns {number} 缓动后的进度
+             */
+            easeOutCubic(t) {
+                return 1 - Math.pow(1 - t, 3);
+            },
+
+            /**
+             * 平滑滚动到元素
+             * @param {HTMLElement} element 目标元素
+             * @param {number} offset 偏移量
+             * @param {number} duration 持续时间
+             */
+            scrollToElement(element, offset = 0, duration = CONFIG.animation.duration) {
+                const targetPosition = element.offsetTop - offset;
+                const startPosition = window.pageYOffset;
+                const distance = targetPosition - startPosition;
+                
+                const start = performance.now();
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = this.easeOutCubic(progress);
+                    
+                    window.scrollTo(0, startPosition + distance * easeProgress);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            },
+
+            /**
+             * 平滑滚动到位置
+             * @param {number} targetPosition 目标位置
+             * @param {number} duration 持续时间
+             */
+            scrollTo(targetPosition, duration = CONFIG.animation.duration) {
+                const startPosition = window.pageYOffset;
+                const distance = targetPosition - startPosition;
+                
+                const start = performance.now();
+                const animate = (currentTime) => {
+                    const elapsed = currentTime - start;
+                    const progress = Math.min(elapsed / duration, 1);
+                    const easeProgress = this.easeOutCubic(progress);
+                    
+                    window.scrollTo(0, startPosition + distance * easeProgress);
+                    
+                    if (progress < 1) {
+                        requestAnimationFrame(animate);
+                    }
+                };
+                
+                requestAnimationFrame(animate);
+            }
+        };
+
+        /**
+         * 触觉反馈管理器
+         */
+        const HapticManager = {
+            /**
+             * 触觉反馈 - 冲击
+             * @param {string} intensity 强度 ('light', 'medium', 'heavy')
+             */
+            impact(intensity = 'medium') {
+                if (!CONFIG.haptic.enabled) return;
+                
+                if ('vibrate' in navigator) {
+                    const patterns = {
+                        light: [10],
+                        medium: [20],
+                        heavy: [30]
+                    };
+                    
+                    navigator.vibrate(patterns[intensity] || patterns.medium);
+                }
+            },
+
+            /**
+             * 触觉反馈 - 通知
+             * @param {string} type 类型 ('success', 'warning', 'error')
+             */
+            notification(type = 'success') {
+                if (!CONFIG.haptic.enabled) return;
+                
+                if ('vibrate' in navigator) {
+                    const patterns = {
+                        success: [10, 20, 10],
+                        warning: [20, 10, 20],
+                        error: [30, 20, 30]
+                    };
+                    
+                    navigator.vibrate(patterns[type] || patterns.success);
+                }
+            },
+
+            /**
+             * 触觉反馈 - 选择
+             */
+            selection() {
+                if (!CONFIG.haptic.enabled) return;
+                
+                if ('vibrate' in navigator) {
+                    navigator.vibrate([10]);
+                }
+            }
+        };
+
+        /**
+         * 音效管理器
+         */
+        const SoundManager = {
+            /**
+             * 播放音效
+             * @param {string} type 音效类型
+             */
+            play(type) {
+                if (!CONFIG.sound.enabled) return;
+                
+                // 这里可以添加具体的音效播放逻辑
+                // 由于浏览器限制，可能需要用户交互后才能播放
+            },
+
+            /**
+             * 设置音量
+             * @param {number} volume 音量 (0-1)
+             */
+            setVolume(volume) {
+                CONFIG.sound.volume = Math.max(0, Math.min(1, volume));
+            }
+        };
+
+        /**
+         * 通知管理器
+         */
+        const NotificationManager = {
+            /**
+             * 显示通知
+             * @param {string} message 消息内容
+             * @param {string} type 通知类型 ('success', 'error', 'warning', 'info')
+             * @param {number} duration 显示时长
+             * @returns {HTMLElement} 通知元素
+             */
+            show(message, type = 'info', duration = 3000) {
+                const notification = document.createElement('div');
+                notification.className = `notification notification-${type}`;
+                notification.style.cssText = `
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    padding: 16px 20px;
+                    border-radius: 8px;
+                    color: white;
+                    font-weight: 500;
+                    z-index: 10000;
+                    max-width: 300px;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+                `;
+                
+                // 根据类型设置背景色
+                const colors = {
+                    success: '#10b981',
+                    error: '#ef4444',
+                    warning: '#f59e0b',
+                    info: '#3b82f6'
+                };
+                
+                notification.style.background = colors[type] || colors.info;
+                notification.textContent = message;
+                
+                document.body.appendChild(notification);
+                
+                // 添加关闭按钮
+                const closeBtn = document.createElement('button');
+                closeBtn.innerHTML = '×';
+                closeBtn.style.cssText = `
+                    position: absolute;
+                    top: 8px;
+                    right: 8px;
+                    background: none;
+                    border: none;
+                    color: white;
+                    font-size: 18px;
+                    cursor: pointer;
+                    padding: 0;
+                    width: 20px;
+                    height: 20px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+                
+                closeBtn.onclick = () => this.hide(notification);
+                notification.appendChild(closeBtn);
+                
+                // 自动隐藏
+                if (duration > 0) {
+                    setTimeout(() => this.hide(notification), duration);
+                }
+                
+                return notification;
+            },
+
+            /**
+             * 隐藏通知
+             * @param {HTMLElement} notification 通知元素
+             */
+            hide(notification) {
+                if (notification && notification.parentNode) {
+                    AnimationManager.fadeOut(notification, 300, () => {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    });
+                }
+            },
+
+            /**
+             * 成功通知
+             * @param {string} message 消息内容
+             */
+            success(message) {
+                HapticManager.notification('success');
+                return this.show(message, 'success');
+            },
+
+            /**
+             * 错误通知
+             * @param {string} message 消息内容
+             */
+            error(message) {
+                HapticManager.notification('error');
+                return this.show(message, 'error');
+            },
+
+            /**
+             * 警告通知
+             * @param {string} message 消息内容
+             */
+            warning(message) {
+                return this.show(message, 'warning');
+            },
+
+            /**
+             * 信息通知
+             * @param {string} message 消息内容
+             */
+            info(message) {
+                return this.show(message, 'info');
+            },
+
+            /**
+             * 确认对话框
+             * @param {string} message 确认消息
+             * @param {Function} onConfirm 确认回调
+             * @param {Function} onCancel 取消回调
+             */
+            confirm(message, onConfirm, onCancel) {
+                const overlay = document.createElement('div');
+                overlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.5);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 10000;
+                `;
+                
+                const dialog = document.createElement('div');
+                dialog.style.cssText = `
+                    background: white;
+                    border-radius: 12px;
+                    padding: 24px;
+                    max-width: 400px;
+                    width: 90%;
+                    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+                `;
+                
+                dialog.innerHTML = `
+                    <p style="margin: 0 0 20px 0; color: #374151; font-size: 16px;">${message}</p>
+                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                        <button id="cancelBtn" style="
+                            padding: 8px 16px;
+                            border: 1px solid #d1d5db;
+                            border-radius: 6px;
+                            background: white;
+                            color: #374151;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">取消</button>
+                        <button id="confirmBtn" style="
+                            padding: 8px 16px;
+                            border: none;
+                            border-radius: 6px;
+                            background: #3b82f6;
+                            color: white;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">确认</button>
+                    </div>
+                `;
+                
+                overlay.appendChild(dialog);
+                document.body.appendChild(overlay);
+                
+                // 绑定事件
+                dialog.querySelector('#confirmBtn').onclick = () => {
+                    document.body.removeChild(overlay);
+                    if (onConfirm) onConfirm();
+                };
+                
+                dialog.querySelector('#cancelBtn').onclick = () => {
+                    document.body.removeChild(overlay);
+                    if (onCancel) onCancel();
+                };
+                
+                overlay.onclick = (e) => {
+                    if (e.target === overlay) {
+                        document.body.removeChild(overlay);
+                        if (onCancel) onCancel();
+                    }
+                };
+            }
+        };
+
+        /**
+         * 加载状态管理器
+         */
+        const LoadingManager = {
+            /**
+             * 显示加载状态
+             * @param {HTMLElement} element 目标元素
+             * @param {string} text 加载文本
+             */
+            show(element, text = '加载中...') {
+                const loadingId = 'loading-' + Utils.generateId();
+                element.dataset.loadingId = loadingId;
+                
+                const overlay = document.createElement('div');
+                overlay.id = loadingId;
+                overlay.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    background: rgba(255, 255, 255, 0.9);
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    justify-content: center;
+                    z-index: 1000;
+                    border-radius: inherit;
+                `;
+                
+                overlay.innerHTML = `
+                    <div class="loading-spinner" style="
+                        width: 32px;
+                        height: 32px;
+                        border: 3px solid #e5e7eb;
+                        border-top: 3px solid #667eea;
+                        border-radius: 50%;
+                        animation: spin 1s linear infinite;
+                        margin-bottom: 12px;
+                    "></div>
+                    <div style="
+                        color: #6b7280;
+                        font-size: 14px;
+                        font-weight: 500;
+                    ">${text}</div>
+                `;
+                
+                // 确保父元素有相对定位
+                if (getComputedStyle(element).position === 'static') {
+                    element.style.position = 'relative';
+                }
+                
+                element.appendChild(overlay);
+                AnimationManager.fadeIn(overlay, 200);
+            },
+
+            /**
+             * 隐藏加载状态
+             * @param {HTMLElement} element 目标元素
+             */
+            hide(element) {
+                const loadingId = element.dataset.loadingId;
+                if (loadingId) {
+                    const overlay = document.getElementById(loadingId);
+                    if (overlay) {
+                        AnimationManager.fadeOut(overlay, 200, () => {
+                            if (overlay.parentNode) {
+                                overlay.parentNode.removeChild(overlay);
+                            }
+                        });
+                    }
+                    delete element.dataset.loadingId;
+                }
+            }
+        };
+
+        /**
+         * 表单验证管理器
+         */
+        const ValidationManager = {
+            /**
+             * 验证规则
+             */
+            rules: {
+                required: (value) => value.trim() !== '',
+                email: (value) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value),
+                phone: (value) => /^1[3-9]\d{9}$/.test(value),
+                number: (value) => !isNaN(value) && value !== '',
+                bloodSugar: (value) => {
+                    const num = parseFloat(value);
+                    return !isNaN(num) && num >= 1 && num <= 30;
+                },
+                bloodPressure: (value) => {
+                    const parts = value.split('/');
+                    if (parts.length !== 2) return false;
+                    const systolic = parseInt(parts[0]);
+                    const diastolic = parseInt(parts[1]);
+                    return !isNaN(systolic) && !isNaN(diastolic) && 
+                           systolic >= 60 && systolic <= 250 && 
+                           diastolic >= 40 && diastolic <= 150;
+                }
+            },
+
+            /**
+             * 验证单个字段
+             * @param {HTMLElement} field 字段元素
+             * @param {Array} rules 验证规则数组
+             * @returns {boolean} 验证结果
+             */
+            validateField(field, rules) {
+                const value = field.value;
+                let isValid = true;
+                let errorMessage = '';
+                
+                for (const rule of rules) {
+                    if (typeof rule === 'string') {
+                        if (!this.rules[rule](value)) {
+                            isValid = false;
+                            errorMessage = this.getErrorMessage(rule);
+                            break;
+                        }
+                    } else if (typeof rule === 'object') {
+                        if (!this.rules[rule.type](value)) {
+                            isValid = false;
+                            errorMessage = rule.message || this.getErrorMessage(rule.type);
+                            break;
+                        }
+                    }
+                }
+                
+                // 显示错误信息
+                this.showFieldError(field, isValid, errorMessage);
+                
+                return isValid;
+            },
+
+            /**
+             * 验证表单
+             * @param {HTMLFormElement} form 表单元素
+             * @param {Object} fieldRules 字段规则映射
+             * @returns {boolean} 验证结果
+             */
+            validateForm(form, fieldRules) {
+                let isValid = true;
+                
+                for (const [fieldName, rules] of Object.entries(fieldRules)) {
+                    const field = form.elements[fieldName];
+                    if (field && !this.validateField(field, rules)) {
+                        isValid = false;
+                    }
+                }
+                
+                return isValid;
+            },
+
+            /**
+             * 显示字段错误
+             * @param {HTMLElement} field 字段元素
+             * @param {boolean} isValid 是否有效
+             * @param {string} errorMessage 错误消息
+             */
+            showFieldError(field, isValid, errorMessage) {
+                // 移除旧的错误信息
+                const oldError = field.parentNode.querySelector('.field-error');
+                if (oldError) {
+                    oldError.remove();
+                }
+                
+                if (!isValid) {
+                    // 添加错误样式
+                    field.classList.add('border-red-500');
+                    
+                    // 显示错误信息
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'field-error text-red-500 text-xs mt-1';
+                    errorDiv.textContent = errorMessage;
+                    field.parentNode.appendChild(errorDiv);
+                } else {
+                    // 移除错误样式
+                    field.classList.remove('border-red-500');
+                    field.classList.add('border-green-500');
+                }
+            },
+
+            /**
+             * 获取错误消息
+             * @param {string} rule 规则名称
+             * @returns {string} 错误消息
+             */
+            getErrorMessage(rule) {
+                const messages = {
+                    required: '此字段为必填项',
+                    email: '请输入有效的邮箱地址',
+                    phone: '请输入有效的手机号码',
+                    number: '请输入有效的数字',
+                    bloodSugar: '请输入有效的血糖值 (1-30 mmol/L)',
+                    bloodPressure: '请输入有效的血压值 (如: 120/80)'
+                };
+                return messages[rule] || '请输入有效的值';
+            }
+        };
+
+        /**
+         * 导出全局对象
+         */
+        window.MedicalApp = {
+            Utils,
+            AnimationManager,
+            HapticManager,
+            SoundManager,
+            NotificationManager,
+            LoadingManager,
+            ValidationManager,
+            CONFIG
+        };
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('医疗应用功能模块加载完成');
+        });
+
+        // 聊天相关变量
+        let chatHistory = [];
+        let isProcessing = false;
+        let aiTimeout = null;
+        let conversations = []; // 会话列表
+        let currentConversationId = null; // 当前会话ID
+
+        // 初始化聊天功能
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeChat();
+            loadConversations();
+            loadChatHistory();
+
+            // 显示用户引导提示
+            setTimeout(() => {
+                showUserGuide();
+            }, 1000);
+        });
+
+        /**
+         * 初始化聊天功能
+         */
+        function initializeChat() {
+            const messageInput = document.getElementById('messageInput');
+            const sendButton = document.getElementById('sendButton');
+            const voiceBtn = document.getElementById('voiceBtn');
+
+            const headerChatBtn = document.getElementById('headerChatBtn');
+            const newChatBtn = document.getElementById('newChatBtn');
+            const closeSidebar = document.getElementById('closeSidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+
+            // 绑定事件
+            sendButton.addEventListener('click', sendMessage);
+            messageInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+
+            // 输入框事件
+            messageInput.addEventListener('input', function() {
+                updateSendButton(this);
+                autoResize(this);
+            });
+
+            // 快捷问题点击事件
+            document.querySelectorAll('.quick-question').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const question = this.getAttribute('data-question');
+                    handleQuickQuestion(question);
+                });
+            });
+
+            // 语音输入
+            voiceBtn.addEventListener('click', function() {
+                if (isVoiceMode) {
+                    // 当前是语音模式，切换回输入模式
+                    switchToInputMode();
+                } else {
+                    // 当前是输入模式，开始语音输入
+                    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                        startVoiceInput();
+                    } else {
+                        MedicalApp.NotificationManager.warning('您的浏览器不支持语音输入功能');
+                    }
+                }
+            });
+
+            // 标题栏会话按钮（历史会话）
+            headerChatBtn.addEventListener('click', function() {
+                openSidebar();
+            });
+
+            // 标题栏新增会话按钮
+            newChatBtn.addEventListener('click', function() {
+                createNewConversation();
+            });
+
+            closeSidebar.addEventListener('click', function() {
+                closeSidebarFunc();
+            });
+
+            sidebarOverlay.addEventListener('click', function() {
+                closeSidebarFunc();
+            });
+
+            // 底部导航
+            document.querySelectorAll('.bottom-nav button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    handleNavigation(this);
+                });
+            });
+
+            console.log('AI问答页面加载完成');
+        }
+
+        /**
+         * 更新发送按钮状态
+         * @param {HTMLTextAreaElement} textarea 输入框
+         */
+        function updateSendButton(textarea) {
+            const sendBtn = document.getElementById('sendButton');
+            const icon = sendBtn.querySelector('i');
+            
+            if (isProcessing) {
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                icon.className = 'fas fa-stop text-sm';
+                return;
+            }
+
+            const hasText = textarea.value.trim().length > 0;
+            icon.className = 'fas fa-paper-plane text-sm';
+            
+            if (hasText) {
+                sendBtn.disabled = false;
+                sendBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                sendBtn.disabled = true;
+                sendBtn.classList.add('opacity-50', 'cursor-not-allowed');
+            }
+        }
+
+        /**
+         * 自动调整输入框高度
+         * @param {HTMLTextAreaElement} textarea 输入框
+         */
+        function autoResize(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 120) + 'px';
+        }
+
+        /**
+         * 滚动到聊天底部
+         */
+        function scrollToBottom() {
+            const chatContainer = document.getElementById('chatContainer');
+            if (!chatContainer) return;
+            
+            // 使用动画管理器的平滑滚动
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.AnimationManager) {
+                MedicalApp.AnimationManager.scrollTo(chatContainer.scrollHeight);
+            } else {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+            }
+        }
+
+        /**
+         * 创建用户消息元素
+         * @param {string} text 消息内容
+         * @returns {string} HTML字符串
+         */
+        function createUserMessage(text) {
+            return `
+                <div class="flex justify-end mb-4 animate-fade-in-up">
+                    <div class="message-bubble">
+                        <div class="bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-2xl rounded-br-md shadow-lg p-4">
+                            <p class="text-sm leading-relaxed">${text}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * 创建AI消息元素
+         * @param {string} text 消息内容
+         * @returns {string} HTML字符串
+         */
+        function createAIMessage(text) {
+            const timestamp = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            const messageId = Utils.generateId();
+            return `
+                <div class="flex justify-start mb-4 animate-fade-in-up">
+                    <div class="flex items-start space-x-3">
+                        <div class="ai-avatar w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center shadow-md">
+                            <i class="fas fa-robot text-white text-sm"></i>
+                        </div>
+                        <div class="message-bubble">
+                            <div class="bg-white border border-gray-200 rounded-2xl rounded-bl-md shadow-lg p-5">
+                                <div class="markdown-content text-sm text-gray-800 leading-relaxed">${text}</div>
+                                <div class="flex items-center justify-between mt-3">
+                                    <span class="text-xs text-gray-500">${timestamp}</span>
+                                    <div class="flex items-center space-x-3">
+                                        <button onclick="likeMessage('${messageId}', this)" class="text-gray-400 hover:text-green-600 transition-colors p-1">
+                                            <i class="fas fa-thumbs-up text-sm"></i>
+                                        </button>
+                                        <button onclick="copyMessage('${messageId}', this)" class="text-gray-400 hover:text-blue-600 transition-colors p-1">
+                                            <i class="fas fa-copy text-sm"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * 创建加载消息元素
+         * @returns {string} HTML字符串
+         */
+        function createLoadingMessage() {
+            return `
+                <div class="flex justify-start mb-4 loading-message">
+                    <div class="flex items-start space-x-3">
+                        <div class="ai-avatar w-8 h-8 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full flex items-center justify-center shadow-md">
+                            <i class="fas fa-robot text-white text-sm"></i>
+                        </div>
+                        <div class="message-bubble">
+                            <div class="bg-white border border-gray-200 rounded-2xl rounded-bl-md shadow-lg p-4">
+                                <div class="flex items-center space-x-1">
+                                    <div class="thinking-animation"></div>
+                                    <div class="thinking-animation"></div>
+                                    <div class="thinking-animation"></div>
+                                    <span class="text-xs text-gray-500 ml-2">AI正在思考...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        /**
+         * 停止AI回复
+         */
+        function stopAIResponse() {
+            if (aiTimeout) {
+                clearTimeout(aiTimeout);
+                aiTimeout = null;
+            }
+            
+            isProcessing = false;
+            
+            // 移除加载消息
+            const chatContainer = document.getElementById('chatContainer');
+            const loadingMessage = chatContainer.querySelector('.loading-message');
+            if (loadingMessage) {
+                loadingMessage.remove();
+            }
+            
+            updateSendButton(document.getElementById('messageInput'));
+        }
+
+        /**
+         * 发送消息
+         */
+        function sendMessage() {
+            if (isProcessing) {
+                stopAIResponse();
+                return;
+            }
+
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+
+            if (!message) {
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                    MedicalApp.NotificationManager.warning('请输入消息内容');
+                }
+                return;
+            }
+
+            // 确保有当前会话，没有则创建新会话
+            if (!currentConversationId) {
+                createNewConversation();
+            }
+
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('light');
+            }
+
+            const chatContainer = document.getElementById('chatContainer');
+
+            // 添加用户消息
+            const userMessage = { type: 'user', content: message, timestamp: new Date().toISOString() };
+            chatHistory.push(userMessage);
+            chatContainer.innerHTML += createUserMessage(message);
+
+            // 清空输入框
+            messageInput.value = '';
+            messageInput.style.height = 'auto';
+
+            updateSendButton(messageInput);
+
+            // 滚动到底部
+            scrollToBottom();
+
+            // 显示加载状态
+            isProcessing = true;
+            chatContainer.innerHTML += createLoadingMessage();
+            scrollToBottom();
+            
+            // 更新按钮状态为停止图标
+            updateSendButton(messageInput);
+
+            // 模拟AI回复
+            aiTimeout = setTimeout(() => {
+                // 移除加载消息
+                const loadingMessage = chatContainer.querySelector('.loading-message');
+                if (loadingMessage) {
+                    loadingMessage.remove();
+                }
+
+                const aiResponses = [
+                    '根据您的血糖数据，建议您在餐前30分钟测量血糖，这样可以更好地了解血糖变化趋势。记住保持规律的测量时间。',
+                    '您的血糖控制得不错！建议继续保持现有的饮食和运动习惯，定期复查血糖指标。',
+                    '建议您多吃一些富含纤维的食物，如燕麦、豆类、绿叶蔬菜等，有助于稳定血糖水平。',
+                    '运动是控制血糖的重要方式，建议每天进行30分钟的有氧运动，如快走、游泳或骑自行车。',
+                    '请记住按时服药，如有任何不适症状，请及时咨询您的主治医生。',
+                    '保持良好的睡眠质量对血糖控制很重要，建议每晚保证7-8小时的充足睡眠。',
+                    '压力管理也很重要，可以尝试冥想、深呼吸或瑜伽来帮助放松身心。'
+                ];
+
+                const randomResponse = aiResponses[Math.floor(Math.random() * aiResponses.length)];
+                const aiMessage = { type: 'ai', content: randomResponse, timestamp: new Date().toISOString() };
+                chatHistory.push(aiMessage);
+
+                chatContainer.innerHTML += createAIMessage(randomResponse);
+                scrollToBottom();
+
+                // 保存聊天历史和会话信息
+                saveChatHistory();
+                updateCurrentConversation();
+
+                // 触觉反馈
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                    MedicalApp.HapticManager.notification('success');
+                }
+
+                isProcessing = false;
+                aiTimeout = null;
+                updateSendButton(messageInput);
+            }, 1500 + Math.random() * 1000); // 随机延迟增加真实感
+        }
+
+        /**
+         * 快捷问题点击处理
+         * @param {string} question 问题内容
+         */
+        function handleQuickQuestion(question) {
+            const messageInput = document.getElementById('messageInput');
+            messageInput.value = question;
+            
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+            
+            // 自动发送
+            setTimeout(() => {
+                sendMessage();
+            }, 300);
+        }
+
+        /**
+         * 保存聊天历史
+         */
+        function saveChatHistory() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.Utils) {
+                MedicalApp.Utils.storage.set('chatHistory', chatHistory);
+            }
+        }
+
+        /**
+         * 创建新会话
+         */
+        function createNewConversation() {
+            const conversationId = MedicalApp.Utils.generateId();
+            const newConversation = {
+                id: conversationId,
+                title: '',
+                messages: [],
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            };
+
+            conversations.unshift(newConversation);
+            currentConversationId = conversationId;
+            chatHistory = [];
+
+            // 保存会话列表
+            saveConversations();
+
+            // 更新UI
+            updateConversationsList();
+            clearChatMessages();
+            closeSidebarFunc();
+
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('light');
+            }
+
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.success('新会话已创建');
+            }
+        }
+
+        /**
+         * 保存会话列表
+         */
+        function saveConversations() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.Utils) {
+                MedicalApp.Utils.storage.set('conversations', conversations);
+                MedicalApp.Utils.storage.set('currentConversationId', currentConversationId);
+            }
+        }
+
+        /**
+         * 加载会话列表
+         */
+        function loadConversations() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.Utils) {
+                conversations = MedicalApp.Utils.storage.get('conversations', []);
+                currentConversationId = MedicalApp.Utils.storage.get('currentConversationId', null);
+
+                // 如果没有会话，创建默认会话
+                if (conversations.length === 0) {
+                    createDefaultConversation();
+                }
+
+                updateConversationsList();
+
+                // 如果有当前会话，加载会话消息
+                if (currentConversationId) {
+                    loadConversation(currentConversationId);
+                }
+            }
+        }
+
+        /**
+         * 创建默认会话
+         */
+        function createDefaultConversation() {
+            // 创建示例会话数据
+            const sampleConversations = [
+                {
+                    id: MedicalApp.Utils.generateId(),
+                    title: '血糖偏高吃什么？',
+                    messages: [
+                        { type: 'user', content: '血糖偏高吃什么？', timestamp: new Date(Date.now() - 86400000).toISOString() },
+                        { type: 'ai', content: '建议您多吃一些富含纤维的食物...', timestamp: new Date(Date.now() - 86400000).toISOString() }
+                    ],
+                    createdAt: new Date(Date.now() - 86400000).toISOString(),
+                    updatedAt: new Date(Date.now() - 86400000).toISOString()
+                },
+                {
+                    id: MedicalApp.Utils.generateId(),
+                    title: '空腹血糖7.8mmol/L算不算高？需要注意什么事项？应该如何调整饮食结构？',
+                    messages: [
+                        { type: 'user', content: '空腹血糖7.8mmol/L算不算高？需要注意什么事项？应该如何调整饮食结构？', timestamp: new Date(Date.now() - 172800000).toISOString() },
+                        { type: 'ai', content: '空腹血糖7.8mmol/L确实偏高，建议您...', timestamp: new Date(Date.now() - 172800000).toISOString() }
+                    ],
+                    createdAt: new Date(Date.now() - 172800000).toISOString(),
+                    updatedAt: new Date(Date.now() - 172800000).toISOString()
+                },
+                {
+                    id: MedicalApp.Utils.generateId(),
+                    title: '最近体检发现血糖偏高，医生建议控制饮食，具体应该怎么吃？有没有什么食物推荐或者需要避免的食物？',
+                    messages: [
+                        { type: 'user', content: '最近体检发现血糖偏高，医生建议控制饮食，具体应该怎么吃？有没有什么食物推荐或者需要避免的食物？', timestamp: new Date(Date.now() - 259200000).toISOString() },
+                        { type: 'ai', content: '血糖偏高确实需要调整饮食结构，建议您...', timestamp: new Date(Date.now() - 259200000).toISOString() }
+                    ],
+                    createdAt: new Date(Date.now() - 259200000).toISOString(),
+                    updatedAt: new Date(Date.now() - 259200000).toISOString()
+                }
+            ];
+
+            // 将示例会话添加到列表开头
+            conversations.unshift(...sampleConversations);
+            currentConversationId = sampleConversations[0].id;
+            saveConversations();
+        }
+
+        /**
+         * 更新会话列表显示
+         */
+        function updateConversationsList() {
+            const conversationsList = document.getElementById('conversationsList');
+            if (!conversationsList) return;
+
+            conversationsList.innerHTML = '';
+
+            if (conversations.length === 0) {
+                conversationsList.innerHTML = '<p class="text-gray-500 text-sm text-center">暂无会话</p>';
+                return;
+            }
+
+            conversations.forEach(conversation => {
+                const conversationDiv = document.createElement('div');
+                conversationDiv.className = `p-3 rounded-lg cursor-pointer transition-all ${
+                    conversation.id === currentConversationId
+                    ? 'bg-blue-50 border-2 border-blue-300'
+                    : 'bg-gray-50 hover:bg-gray-100 border-2 border-transparent'
+                }`;
+
+                const displayTitle = conversation.title || '新会话';
+
+                conversationDiv.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div class="flex-1 min-w-0 pr-3">
+                            <h3 class="font-medium text-sm text-gray-900 line-clamp-2 leading-tight" title="${displayTitle}">${displayTitle}</h3>
+                        </div>
+                        <button onclick="deleteConversation('${conversation.id}', event)" class="text-gray-400 hover:text-red-600 p-1 rounded transition-colors">
+                            <i class="fas fa-times text-sm"></i>
+                        </button>
+                    </div>
+                `;
+
+                conversationDiv.addEventListener('click', function(e) {
+                    // 如果点击的是删除按钮，不切换会话
+                    if (e.target.closest('button')) {
+                        return;
+                    }
+                    switchToConversation(conversation.id);
+                });
+
+                conversationsList.appendChild(conversationDiv);
+            });
+        }
+
+        /**
+         * 格式化会话日期
+         */
+        function formatConversationDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays === 0) {
+                return date.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            } else if (diffDays === 1) {
+                return '昨天';
+            } else if (diffDays < 7) {
+                return `${diffDays}天前`;
+            } else {
+                return date.toLocaleDateString('zh-CN', { month: 'short', day: 'numeric' });
+            }
+        }
+
+        /**
+         * 切换到指定会话
+         */
+        function switchToConversation(conversationId) {
+            // 保存当前会话的消息
+            if (currentConversationId) {
+                updateCurrentConversation();
+            }
+
+            // 切换会话
+            currentConversationId = conversationId;
+            loadConversation(conversationId);
+            updateConversationsList();
+            closeSidebarFunc();
+
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+        }
+
+        /**
+         * 加载指定会话
+         */
+        function loadConversation(conversationId) {
+            const conversation = conversations.find(c => c.id === conversationId);
+            if (!conversation) return;
+
+            // 使用会话中的消息，如果没有消息则使用空数组
+            chatHistory = conversation.messages || [];
+            console.log('加载会话:', conversation.title, '消息数量:', chatHistory.length);
+
+            // 清空聊天区域并重新加载消息
+            clearChatMessages();
+            loadConversationMessages();
+            scrollToBottom();
+        }
+
+        /**
+         * 更新当前会话
+         */
+        function updateCurrentConversation() {
+            if (!currentConversationId) return;
+
+            const conversation = conversations.find(c => c.id === currentConversationId);
+            if (conversation) {
+                conversation.messages = [...chatHistory];
+                conversation.updatedAt = new Date().toISOString();
+
+                // 自动生成会话标题（基于第一条用户消息）
+                if (chatHistory.length > 0) {
+                    const firstUserMessage = chatHistory.find(m => m.type === 'user');
+                    if (firstUserMessage) {
+                        // 直接使用完整的用户问题作为标题，让CSS来处理截断显示
+                        conversation.title = firstUserMessage.content;
+                    }
+                }
+
+                saveConversations();
+                updateConversationsList();
+            }
+        }
+
+        /**
+         * 删除会话
+         */
+        function deleteConversation(conversationId, event) {
+            event.stopPropagation();
+
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.confirm('确定要删除这个会话吗？', () => {
+                    // 从会话列表中删除
+                    conversations = conversations.filter(c => c.id !== conversationId);
+
+                    // 如果删除的是当前会话，切换到其他会话或创建新会话
+                    if (conversationId === currentConversationId) {
+                        if (conversations.length > 0) {
+                            switchToConversation(conversations[0].id);
+                        } else {
+                            currentConversationId = null;
+                            chatHistory = [];
+                            clearChatMessages();
+                            createDefaultConversation();
+                        }
+                    }
+
+                    saveConversations();
+                    updateConversationsList();
+
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                        MedicalApp.NotificationManager.success('会话已删除');
+                    }
+                });
+            }
+        }
+
+        /**
+         * 清空聊天消息显示
+         */
+        function clearChatMessages() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            if (messagesContainer) {
+                messagesContainer.innerHTML = '';
+            }
+        }
+
+        /**
+         * 加载会话消息到聊天区域
+         */
+        function loadConversationMessages() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            if (!messagesContainer) return;
+
+            chatHistory.forEach(message => {
+                if (message.type === 'user') {
+                    messagesContainer.innerHTML += createUserMessage(message.content);
+                } else {
+                    messagesContainer.innerHTML += createAIMessage(message.content);
+                }
+            });
+        }
+
+        /**
+         * 加载聊天历史
+         */
+        function loadChatHistory() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.Utils) {
+                chatHistory = MedicalApp.Utils.storage.get('chatHistory', []);
+                
+                const chatContainer = document.getElementById('chatContainer');
+                if (chatContainer && chatHistory.length > 0) {
+                    // 清空欢迎消息后的所有内容
+                    const welcomeMessage = chatContainer.querySelector('.mb-4');
+                    const quickQuestions = chatContainer.querySelector('.grid');
+                    const messagesContainer = document.getElementById('messagesContainer');
+                    
+                    if (messagesContainer) {
+                        messagesContainer.innerHTML = '';
+                        
+                        chatHistory.forEach(message => {
+                            if (message.type === 'user') {
+                                messagesContainer.innerHTML += createUserMessage(message.content);
+                            } else {
+                                messagesContainer.innerHTML += createAIMessage(message.content);
+                            }
+                        });
+                        
+                        scrollToBottom();
+                    }
+                }
+            }
+        }
+
+        /**
+         * 清除聊天历史
+         */
+        function clearChatHistory() {
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                MedicalApp.NotificationManager.confirm('确定要清除所有聊天记录吗？', () => {
+                    chatHistory = [];
+                    saveChatHistory();
+                    
+                    const messagesContainer = document.getElementById('messagesContainer');
+                    if (messagesContainer) {
+                        messagesContainer.innerHTML = '';
+                    }
+                    
+                    MedicalApp.NotificationManager.success('聊天记录已清除');
+                });
+            }
+        }
+
+        /**
+         * 语音输入
+         */
+        let isVoiceMode = false;
+
+        function startVoiceInput() {
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                MedicalApp.NotificationManager.warning('您的浏览器不支持语音输入功能');
+                return;
+            }
+
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            const recognition = new SpeechRecognition();
+
+            recognition.lang = 'zh-CN';
+            recognition.continuous = false;
+            recognition.interimResults = false;
+
+            const voiceBtn = document.getElementById('voiceBtn');
+            const messageInput = document.getElementById('messageInput');
+            const inputContainer = document.querySelector('.input-container');
+            const sendButton = document.getElementById('sendButton');
+
+            const originalIcon = voiceBtn.innerHTML;
+            const originalPlaceholder = messageInput.placeholder;
+            const originalInputDisplay = messageInput.style.display;
+            const originalSendDisplay = sendButton.style.display;
+
+            // 开始录音
+            recognition.start();
+
+            // 切换到语音模式界面
+            isVoiceMode = true;
+            voiceBtn.innerHTML = '<i class="fas fa-keyboard text-gray-600"></i>';
+            voiceBtn.classList.remove('animate-pulse');
+            messageInput.style.display = 'none';
+            sendButton.style.display = 'none';
+
+            // 创建按住说话提示
+            const voiceHint = document.createElement('div');
+            voiceHint.className = 'flex-1 text-center text-gray-500 text-sm';
+            voiceHint.textContent = '按住说话';
+            voiceHint.id = 'voiceHint';
+            inputContainer.insertBefore(voiceHint, messageInput);
+
+            // 添加红色录音指示点
+            const recordingDot = document.createElement('div');
+            recordingDot.className = 'w-2 h-2 bg-red-500 rounded-full animate-pulse mr-2';
+            recordingDot.id = 'recordingDot';
+            voiceHint.insertBefore(recordingDot, voiceHint.firstChild);
+            
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                const messageInput = document.getElementById('messageInput');
+                messageInput.value = transcript;
+
+                // 识别完成后自动切换回输入模式
+                setTimeout(() => {
+                    switchToInputMode();
+                }, 1000);
+    
+                updateSendButton(messageInput);
+                autoResize(messageInput);
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('语音识别错误:', event.error);
+                MedicalApp.NotificationManager.error('语音识别失败，请重试');
+                resetVoiceButton();
+            };
+            
+            recognition.onend = function() {
+                resetVoiceButton();
+            };
+            
+            function switchToInputMode() {
+                const voiceBtn = document.getElementById('voiceBtn');
+                const messageInput = document.getElementById('messageInput');
+                const sendButton = document.getElementById('sendButton');
+                const voiceHint = document.getElementById('voiceHint');
+                const recordingDot = document.getElementById('recordingDot');
+
+                // 恢复输入模式界面
+                isVoiceMode = false;
+                voiceBtn.innerHTML = '<i class="fas fa-microphone text-sm"></i>';
+                messageInput.style.display = 'block';
+                sendButton.style.display = 'flex';
+
+                // 移除语音提示元素
+                if (voiceHint) {
+                    voiceHint.remove();
+                }
+            }
+
+            function resetVoiceButton() {
+                switchToInputMode();
+            }
+        }
+
+        /**
+         * 处理图片上传
+         * @param {Event} event 上传事件
+         */
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (!file.type.startsWith('image/')) {
+                MedicalApp.NotificationManager.error('请选择图片文件');
+                return;
+            }
+            
+            if (file.size > 5 * 1024 * 1024) {
+                MedicalApp.NotificationManager.error('图片大小不能超过5MB');
+                return;
+            }
+            
+            // 这里可以添加图片上传逻辑
+            MedicalApp.NotificationManager.info('图片上传功能开发中...');
+        }
+
+        /**
+         * 处理文件上传
+         * @param {Event} event 上传事件
+         */
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            if (file.size > 10 * 1024 * 1024) {
+                MedicalApp.NotificationManager.error('文件大小不能超过10MB');
+                return;
+            }
+            
+            // 这里可以添加文件上传逻辑
+            MedicalApp.NotificationManager.info('文件上传功能开发中...');
+        }
+
+        /**
+         * 显示快捷操作
+         */
+        function showQuickActions() {
+            const actions = [
+                { icon: 'fa-camera', text: '拍照', action: 'camera' },
+                { icon: 'fa-image', text: '相册', action: 'gallery' },
+                { icon: 'fa-file-medical', text: '健康报告', action: 'report' },
+                { icon: 'fa-home', text: '数据统计', action: 'stats' }
+            ];
+
+            // 这里可以显示快捷操作菜单
+            MedicalApp.NotificationManager.info('快捷操作功能开发中...');
+        }
+
+        /**
+         * 打开侧边栏
+         */
+        function openSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.add('open');
+            overlay.classList.add('active');
+            
+            // 加载聊天历史
+            loadChatHistoryToSidebar();
+        }
+
+        /**
+         * 关闭侧边栏
+         */
+        function closeSidebarFunc() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            
+            sidebar.classList.remove('open');
+            overlay.classList.remove('active');
+        }
+
+        /**
+         * 加载聊天历史到侧边栏
+         */
+        function loadChatHistoryToSidebar() {
+            const historyList = document.getElementById('historyList');
+            if (!historyList) return;
+            
+            historyList.innerHTML = '';
+            
+            if (chatHistory.length === 0) {
+                historyList.innerHTML = '<p class="text-gray-500 text-sm text-center">暂无聊天记录</p>';
+                return;
+            }
+            
+            // 按日期分组
+            const groupedHistory = {};
+            chatHistory.forEach(message => {
+                const date = new Date(message.timestamp).toLocaleDateString('zh-CN');
+                if (!groupedHistory[date]) {
+                    groupedHistory[date] = [];
+                }
+                groupedHistory[date].push(message);
+            });
+            
+            // 显示分组历史
+            for (const [date, messages] of Object.entries(groupedHistory)) {
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'mb-4';
+                dateDiv.innerHTML = `<h3 class="text-sm font-medium text-gray-700 mb-2">${date}</h3>`;
+                
+                messages.forEach(message => {
+                    const messageDiv = document.createElement('div');
+                    messageDiv.className = 'p-2 bg-gray-50 rounded-lg mb-2 cursor-pointer hover:bg-gray-100 transition-colors';
+                    messageDiv.innerHTML = `
+                        <div class="flex items-center space-x-2">
+                            <div class="w-6 h-6 rounded-full flex items-center justify-center ${message.type === 'user' ? 'bg-blue-500' : 'bg-purple-500'}">
+                                <i class="fas fa-${message.type === 'user' ? 'user' : 'robot'} text-white text-xs"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm text-gray-800 truncate">${message.content}</p>
+                                <p class="text-xs text-gray-500">${new Date(message.timestamp).toLocaleTimeString('zh-CN', { hour12: false })}</p>
+                            </div>
+                        </div>
+                    `;
+                    
+                    messageDiv.addEventListener('click', function() {
+                        // 点击历史消息可以重新查看或编辑
+                        MedicalApp.NotificationManager.info('查看历史消息功能开发中...');
+                    });
+                    
+                    dateDiv.appendChild(messageDiv);
+                });
+                
+                historyList.appendChild(dateDiv);
+            }
+        }
+
+        /**
+         * 处理底部导航
+         * @param {HTMLElement} button 导航按钮
+         */
+        function handleNavigation(button) {
+            const buttons = document.querySelectorAll('.bottom-nav button');
+            buttons.forEach(btn => {
+                btn.classList.remove('text-purple-600');
+                btn.classList.add('text-gray-400');
+            });
+            
+            button.classList.remove('text-gray-400');
+            button.classList.add('text-purple-600');
+            
+            const icon = button.querySelector('i');
+            const text = button.querySelector('span').textContent;
+            
+            // 根据导航项执行相应操作
+            switch (text) {
+                case '聊天':
+                    // 当前页面，无需操作
+                    break;
+                case '数据':
+                    MedicalApp.NotificationManager.info('数据页面开发中...');
+                    break;
+                case '报告':
+                    MedicalApp.NotificationManager.info('报告页面开发中...');
+                    break;
+                case '我的':
+                    MedicalApp.NotificationManager.info('个人中心开发中...');
+                    break;
+            }
+        }
+
+        /**
+         * 导航到指定页面
+         * @param {string} page 页面名称
+         */
+        function navigateToPage(page) {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.selection();
+            }
+            
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: page
+                }, '*');
+            } else {
+                // 直接跳转
+                window.location.href = page + '.html';
+            }
+        }
+
+        /**
+         * 显示记录弹窗
+         */
+        function showRecordModal() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('medium');
+            }
+            
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'showRecordModal'
+                }, '*');
+            } else {
+                // 显示本地通知
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                    MedicalApp.NotificationManager.info('记录功能开发中...');
+                }
+            }
+        }
+
+        /**
+         * 监听来自父页面的消息
+         */
+        window.addEventListener('message', function(event) {
+            // 验证消息来源
+            if (event.origin !== window.location.origin && event.origin !== 'null') return;
+            
+            const data = event.data;
+            
+            switch (data.type) {
+                case 'updateActiveTab':
+                    // 更新活动标签状态
+                    updateActiveTab(data.page);
+                    break;
+                case 'showRecordModal':
+                    // 显示记录弹窗
+                    showRecordModal();
+                    break;
+            }
+        });
+
+        /**
+         * 显示用户引导提示
+         */
+        function showUserGuide() {
+            // 检查是否已经显示过引导
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.Utils) {
+                const hasSeenGuide = MedicalApp.Utils.storage.get('hasSeenChatGuide', false);
+                if (hasSeenGuide) return;
+
+                // 创建引导提示
+                const guideOverlay = document.createElement('div');
+                guideOverlay.style.cssText = `
+                    position: fixed;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: rgba(0,0,0,0.8);
+                    z-index: 2000;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                `;
+
+                const guideContent = document.createElement('div');
+                guideContent.style.cssText = `
+                    background: white;
+                    border-radius: 16px;
+                    padding: 24px;
+                    max-width: 320px;
+                    width: 90%;
+                    text-align: center;
+                    box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1);
+                `;
+
+                guideContent.innerHTML = `
+                    <div style="font-size: 48px; margin-bottom: 16px;">💬</div>
+                    <h3 style="margin: 0 0 16px 0; color: #1f2937; font-size: 18px; font-weight: 600;">欢迎使用会话管理功能</h3>
+                    <p style="margin: 0 0 20px 0; color: #6b7280; font-size: 14px; line-height: 1.5;">
+                        点击标题栏左侧的"会话"按钮，可以：<br>
+                        • 创建新的会话<br>
+                        • 查看历史会话<br>
+                        • 删除不需要的会话<br>
+                        • 切换不同会话聊天
+                    </p>
+                    <button id="guideCloseBtn" style="
+                        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        padding: 12px 24px;
+                        font-size: 14px;
+                        font-weight: 600;
+                        cursor: pointer;
+                        width: 100%;
+                    ">知道了</button>
+                `;
+
+                guideOverlay.appendChild(guideContent);
+                document.body.appendChild(guideOverlay);
+
+                // 绑定关闭事件
+                guideOverlay.querySelector('#guideCloseBtn').addEventListener('click', function() {
+                    document.body.removeChild(guideOverlay);
+                    MedicalApp.Utils.storage.set('hasSeenChatGuide', true);
+
+                    // 高亮标题栏会话按钮
+                    const headerChatBtn = document.getElementById('headerChatBtn');
+                    if (headerChatBtn) {
+                        headerChatBtn.classList.add('animate-pulse', 'bg-blue-50', 'border', 'border-blue-300');
+                        setTimeout(() => {
+                            headerChatBtn.classList.remove('animate-pulse', 'bg-blue-50', 'border', 'border-blue-300');
+                        }, 3000);
+                    }
+                });
+
+                // 点击背景也可以关闭
+                guideOverlay.addEventListener('click', function(e) {
+                    if (e.target === guideOverlay) {
+                        document.body.removeChild(guideOverlay);
+                        MedicalApp.Utils.storage.set('hasSeenChatGuide', true);
+                    }
+                });
+            }
+        }
+
+        /**
+         * 点赞消息
+         * @param {string} messageId 消息ID
+         * @param {HTMLElement} button 按钮元素
+         */
+        function likeMessage(messageId, button) {
+            // 切换点赞状态
+            const icon = button.querySelector('i');
+            const isLiked = icon.classList.contains('text-green-600');
+
+            if (isLiked) {
+                // 取消点赞
+                icon.classList.remove('text-green-600');
+                icon.classList.add('text-gray-400');
+                button.classList.remove('text-green-600');
+                button.classList.add('text-gray-400');
+            } else {
+                // 点赞
+                icon.classList.remove('text-gray-400');
+                icon.classList.add('text-green-600');
+                button.classList.remove('text-gray-400');
+                button.classList.add('text-green-600');
+
+                // 触觉反馈
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                    MedicalApp.HapticManager.selection();
+                }
+
+                // 显示提示
+                if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                    MedicalApp.NotificationManager.success('感谢您的点赞！');
+                }
+            }
+
+            // 保存点赞状态到本地存储
+            const likedMessages = MedicalApp.Utils.storage.get('likedMessages', {});
+            likedMessages[messageId] = !isLiked;
+            MedicalApp.Utils.storage.set('likedMessages', likedMessages);
+        }
+
+        /**
+         * 复制消息内容
+         * @param {string} messageId 消息ID
+         * @param {HTMLElement} button 按钮元素
+         */
+        function copyMessage(messageId, button) {
+            // 获取消息内容
+            const messageContainer = button.closest('.bg-white').querySelector('.markdown-content');
+            const messageText = messageContainer.textContent;
+
+            // 复制到剪贴板
+            MedicalApp.Utils.copyToClipboard(messageText).then(success => {
+                if (success) {
+                    // 触觉反馈
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                        MedicalApp.HapticManager.selection();
+                    }
+
+                    // 显示成功提示
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                        MedicalApp.NotificationManager.success('内容已复制到剪贴板');
+                    }
+
+                    // 临时改变图标颜色
+                    const icon = button.querySelector('i');
+                    icon.classList.remove('text-gray-400');
+                    icon.classList.add('text-blue-600');
+
+                    setTimeout(() => {
+                        icon.classList.remove('text-blue-600');
+                        icon.classList.add('text-gray-400');
+                    }, 1000);
+                } else {
+                    // 显示失败提示
+                    if (typeof MedicalApp !== 'undefined' && MedicalApp.NotificationManager) {
+                        MedicalApp.NotificationManager.error('复制失败，请重试');
+                    }
+                }
+            });
+        }
+
+        /**
+         * 恢复点赞状态
+         * @param {string} messageId 消息ID
+         * @param {HTMLElement} button 按钮元素
+         */
+        function restoreLikeStatus(messageId, button) {
+            const likedMessages = MedicalApp.Utils.storage.get('likedMessages', {});
+            if (likedMessages[messageId]) {
+                const icon = button.querySelector('i');
+                icon.classList.remove('text-gray-400');
+                icon.classList.add('text-green-600');
+                button.classList.remove('text-gray-400');
+                button.classList.add('text-green-600');
+            }
+        }
+
+        /**
+         * 更新活动标签状态
+         * @param {string} activePage 活动页面名称
+         */
+        function updateActiveTab(activePage) {
+            const tabItems = document.querySelectorAll('.tab-item');
+            tabItems.forEach(item => {
+                item.classList.remove('active');
+            });
+
+            // 根据页面设置活动状态
+            const pageMap = {
+                'home': 0,
+                'course': 1,
+                'chat': 3,
+                'profile': 4
+            };
+
+            const activeIndex = pageMap[activePage];
+            if (activeIndex !== undefined && tabItems[activeIndex]) {
+                tabItems[activeIndex].classList.add('active');
+            }
+        }
+    </script>
+</body>
+</html>

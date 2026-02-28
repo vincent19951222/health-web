@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统设置 - 优糖智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 医疗健康主题 - 与 dashboard.html 保持一致 */
+        :root {
+            /* 主色调 - 专业蓝 */
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+
+            /* 副色调 - 活力橙 */
+            --secondary-500: #f97316;
+            --secondary-600: #ea580c;
+
+            /* 医疗状态色 */
+            --success-500: #22c55e;
+            --warning-500: #f59e0b;
+            --danger-500: #ef4444;
+            --info-500: #06b6d4;
+
+            /* 中性色 */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 24px;
+
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 侧边栏样式 - 与 dashboard 完全一致 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: linear-gradient(180deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .sidebar-logo {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--danger-500);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        /* 用户信息区域 */
+        .sidebar-user {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .sidebar-user:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部Header */
+        .header {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .header-btn-primary {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .header-btn-primary:hover {
+            background: var(--primary-600);
+        }
+
+        .header-btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .header-btn-secondary:hover {
+            background: var(--gray-200);
+        }
+
+        /* 内容区域 */
+        .content {
+            padding: 24px 32px;
+            flex: 1;
+        }
+
+        /* 卡片样式 */
+        .card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--gray-200);
+            margin-bottom: 24px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .card-subtitle {
+            font-size: 13px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        /* 可折叠卡片 */
+        details.card summary {
+            list-style: none;
+            cursor: pointer;
+            margin-bottom: 0;
+            outline: none;
+        }
+        
+        details.card summary::-webkit-details-marker {
+            display: none;
+        }
+        
+        details.card summary .toggle-icon {
+            color: var(--gray-400);
+            transition: transform 0.3s ease;
+        }
+        
+        details.card[open] summary .toggle-icon {
+            transform: rotate(-180deg);
+        }
+        
+        details.card[open] summary {
+            margin-bottom: 16px;
+        }
+
+        /* 统计网格 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .stat-item {
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-600);
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        /* 设置列表 */
+        .settings-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .settings-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .settings-item:hover {
+            background: var(--gray-100);
+        }
+
+        .settings-item-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .settings-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+        }
+
+        .settings-icon.blue {
+            background: var(--primary-100);
+            color: var(--primary-600);
+        }
+
+        .settings-icon.green {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .settings-icon.orange {
+            background: #fff7ed;
+            color: #ea580c;
+        }
+
+        .settings-icon.red {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .settings-icon.cyan {
+            background: #ecfeff;
+            color: #0891b2;
+        }
+
+        .settings-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .settings-name {
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .settings-desc {
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        .settings-value {
+            font-size: 13px;
+            color: var(--gray-500);
+        }
+
+        /* 开关按钮 */
+        .toggle {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--gray-300);
+            border-radius: 9999px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .toggle::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: all 0.2s ease;
+        }
+
+        .toggle.on {
+            background: var(--success-500);
+        }
+
+        .toggle.on::after {
+            transform: translateX(22px);
+        }
+
+        /* 密码表单 */
+        .password-form {
+            display: grid;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .form-input {
+            height: 44px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            padding: 0 16px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px var(--primary-100);
+        }
+
+        .form-btn {
+            height: 44px;
+            background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .form-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .form-btn.danger {
+            background: var(--danger-500);
+        }
+
+        .form-btn.danger:hover {
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .form-hint {
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        /* 危险区域 */
+        .danger-card {
+            border-color: #fecaca;
+            background: linear-gradient(180deg, #fff5f5, #fff);
+        }
+
+        .danger-card .card-title {
+            color: var(--danger-500);
+        }
+
+        /* 会话管理样式 */
+        .session-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .session-item {
+            display: flex;
+            align-items: center;
+            padding: 14px;
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--gray-200);
+            gap: 14px;
+        }
+
+        .session-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-lg);
+            background: var(--primary-100);
+            color: var(--primary-600);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .session-icon.other {
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        .session-details {
+            flex: 1;
+        }
+
+        .session-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .session-meta {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .session-status {
+            font-size: 12px;
+            font-weight: 500;
+            padding: 4px 10px;
+            border-radius: 9999px;
+            background: var(--gray-100);
+            color: var(--gray-500);
+        }
+
+        .session-status.active {
+            background: #dcfce7;
+            color: #16a34a;
+        }
+
+        .logout-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 24px;
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+        }
+
+        .logout-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+        }
+
+        .logout-btn i {
+            font-size: 16px;
+        }
+
+        .logout-hint {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray-400);
+            margin-top: 12px;
+        }
+
+        /* 网格布局 */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        /* Toast 提示 */
+        .toast {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            background: var(--gray-800);
+            color: white;
+            padding: 12px 20px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            opacity: 0;
+            transform: translateY(8px);
+            transition: all 0.2s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: none;
+        }
+
+        /* 底部信息栏 */
+        .footer-bar {
+            background: white;
+            border-top: 1px solid var(--gray-200);
+            padding: 12px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--gray-500);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 64px;
+            }
+
+            .sidebar-logo h1 span,
+            .nav-section-title,
+            .nav-item span,
+            .user-info {
+                display: none;
+            }
+
+            .sidebar-logo {
+                padding: 16px;
+                display: flex;
+                justify-content: center;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .sidebar-user {
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 64px;
+            }
+
+            .content {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .header-right {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 侧边栏 - 与 dashboard 完全一致 -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>
+                <i class="fas fa-heartbeat"></i>
+                <span>优唐智能AI+</span>
+            </h1>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">健康监测</div>
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>健康概览</span>
+                </a>
+                <a href="blood-sugar.html" class="nav-item">
+                    <i class="fas fa-tint"></i>
+                    <span>血糖管理</span>
+                </a>
+                <a href="blood-pressure.html" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>血压管理</span>
+                </a>
+                <a href="glycated.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>糖化血红蛋白</span>
+                </a>
+                <a href="uric-acid.html" class="nav-item">
+                    <i class="fas fa-flask"></i>
+                    <span>尿酸检测</span>
+                </a>
+                <a href="blood-ketone.html" class="nav-item">
+                    <i class="fas fa-burn"></i>
+                    <span>血酮检测</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">智能服务</div>
+                <a href="ai-chat.html" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI助手</span>
+                    <span class="badge">新</span>
+                </a>
+                <a href="hospital.html" class="nav-item">
+                    <i class="fas fa-hospital"></i>
+                    <span>互联网医院</span>
+                </a>
+                <a href="devices.html" class="nav-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>设备管理</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <span>健康报告</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">设置</div>
+                <a href="system_settings.html" class="nav-item active">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </div>
+        </nav>
+
+        <a href="profile.html" class="sidebar-user" style="text-decoration: none; color: inherit;">
+            <div class="user-avatar">张</div>
+            <div class="user-info">
+                <div class="user-name">张先生</div>
+                <div class="user-status">健康会员</div>
+            </div>
+        </a>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 顶部Header -->
+        <header class="header">
+            <div class="header-left">
+                <h1 class="page-title">系统设置</h1>
+                <p class="page-subtitle">管理账号安全、通知偏好与隐私设置</p>
+            </div>
+            <div class="header-right">
+                <button class="header-btn header-btn-secondary" onclick="location.href='dashboard.html'">
+                    <i class="fas fa-arrow-left"></i>
+                    返回看板
+                </button>
+                <button class="header-btn header-btn-primary" onclick="toast('设置已保存')">
+                    <i class="fas fa-save"></i>
+                    保存更改
+                </button>
+            </div>
+        </header>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 账号与安全概览 -->
+            <div class="card">
+                <div class="card-header">
+                    <div>
+                        <h2 class="card-title">账号与安全概览</h2>
+                        <p class="card-subtitle">查看账号安全状态和已开启的保护项</p>
+                    </div>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">已开启保护项</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" style="color: var(--warning-500);">1</div>
+                        <div class="stat-label">待处理提醒</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value">7天</div>
+                        <div class="stat-label">最近密码更新</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- 账号安全 -->
+                <details class="card">
+                    <summary class="card-header">
+                        <h3 class="card-title">账号安全</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </summary>
+                    <div class="settings-list">
+                        <div class="settings-item">
+                            <div class="settings-item-left">
+                                <div class="settings-icon blue">
+                                    <i class="fas fa-mobile-screen-button"></i>
+                                </div>
+                                <div class="settings-text">
+                                    <div class="settings-name">已绑定手机号</div>
+                                    <div class="settings-desc">用于登录验证、找回密码和异常提醒</div>
+                                </div>
+                            </div>
+                            <div class="settings-value">138****8888</div>
+                        </div>
+                        <div class="settings-item" onclick="focusPwd()">
+                            <div class="settings-item-left">
+                                <div class="settings-icon green">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                                <div class="settings-text">
+                                    <div class="settings-name">登录密码</div>
+                                    <div class="settings-desc">修改后其他设备将重新校验登录状态</div>
+                                </div>
+                            </div>
+                            <div class="settings-value" style="color: var(--primary-500);">修改密码</div>
+                        </div>
+                    </div>
+                    <div class="password-form">
+                        <input type="password" id="oldPwd" class="form-input" placeholder="当前密码">
+                        <input type="password" id="newPwd" class="form-input" placeholder="新密码（至少 8 位）">
+                        <input type="password" id="confirmPwd" class="form-input" placeholder="确认新密码">
+                        <button class="form-btn" onclick="updatePwd()">更新密码</button>
+                        <p class="form-hint">仅为原型交互，不提交后端。</p>
+                    </div>
+                </details>
+
+                <!-- 系统偏好 -->
+                <details class="card">
+                    <summary class="card-header">
+                        <h3 class="card-title">系统偏好</h3>
+                        <i class="fas fa-chevron-down toggle-icon"></i>
+                    </summary>
+                    <div class="settings-list">
+                        <div class="settings-item">
+                            <div class="settings-item-left">
+                                <div class="settings-icon cyan">
+                                    <i class="fas fa-bell"></i>
+                                </div>
+                                <div class="settings-text">
+                                    <div class="settings-name">消息通知</div>
+                                    <div class="settings-desc">设备异常、AI 报告、亲友提醒</div>
+                                </div>
+                            </div>
+                            <button class="toggle on" onclick="toggleSetting(event, this, '消息通知')"></button>
+                        </div>
+                        <div class="settings-item">
+                            <div class="settings-item-left">
+                                <div class="settings-icon green">
+                                    <i class="fas fa-shield-halved"></i>
+                                </div>
+                                <div class="settings-text">
+                                    <div class="settings-name">隐私模式</div>
+                                    <div class="settings-desc">隐藏手机号、设备号与敏感指标</div>
+                                </div>
+                            </div>
+                            <button class="toggle" onclick="toggleSetting(event, this, '隐私模式')"></button>
+                        </div>
+                        <div class="settings-item">
+                            <div class="settings-item-left">
+                                <div class="settings-icon orange">
+                                    <i class="fas fa-triangle-exclamation"></i>
+                                </div>
+                                <div class="settings-text">
+                                    <div class="settings-name">异常登录提醒</div>
+                                    <div class="settings-desc">检测到新设备登录时提醒</div>
+                                </div>
+                            </div>
+                            <button class="toggle on" onclick="toggleSetting(event, this, '异常登录提醒')"></button>
+                        </div>
+                    </div>
+                </details>
+            </div>
+
+            <div class="grid-2">
+                <!-- 数据与支持 -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">数据与支持</h3>
+                    </div>
+                    <div class="settings-list">
+                        <div class="settings-item" onclick="toast('正在导出健康数据')">
+                            <div class="settings-item-left">
+                                <div class="settings-icon cyan">
+                                    <i class="fas fa-file-export"></i>
+                                </div>
+                                <div class="settings-text">
+                                    <div class="settings-name">导出健康数据</div>
+                                    <div class="settings-desc">导出近 90 天血糖、血压与同步记录</div>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: var(--gray-400);"></i>
+                        </div>
+                        <a href="about.html" class="settings-item" style="text-decoration: none; color: inherit;">
+                            <div class="settings-item-left">
+                                <div class="settings-icon blue">
+                                    <i class="fas fa-circle-info"></i>
+                                </div>
+                                <div class="settings-text">
+                                    <div class="settings-name">关于</div>
+                                    <div class="settings-desc">版本信息、服务协议与产品说明</div>
+                                </div>
+                            </div>
+                            <div class="settings-value">v2.6.1</div>
+                        </a>
+                        <div class="settings-item" onclick="toast('帮助中心开发中')">
+                            <div class="settings-item-left">
+                                <div class="settings-icon green">
+                                    <i class="fas fa-headset"></i>
+                                </div>
+                                <div class="settings-text">
+                                    <div class="settings-name">帮助中心</div>
+                                    <div class="settings-desc">设备绑定、异常排查与账号说明</div>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right" style="color: var(--gray-400);"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 会话管理 -->
+                <div class="card danger-card">
+                    <div class="card-header">
+                        <h3 class="card-title">会话管理</h3>
+                    </div>
+
+                    <!-- 当前会话信息 -->
+                    <div class="session-info">
+                        <div class="session-item">
+                            <div class="session-icon">
+                                <i class="fas fa-desktop"></i>
+                            </div>
+                            <div class="session-details">
+                                <div class="session-name">当前设备</div>
+                                <div class="session-meta">Windows 10 · Chrome 浏览器</div>
+                            </div>
+                            <div class="session-status active">在线</div>
+                        </div>
+                        <div class="session-item">
+                            <div class="session-icon other">
+                                <i class="fas fa-mobile-alt"></i>
+                            </div>
+                            <div class="session-details">
+                                <div class="session-name">iPhone 15 Pro</div>
+                                <div class="session-meta">上次活跃: 2小时前</div>
+                            </div>
+                            <div class="session-status">离线</div>
+                        </div>
+                    </div>
+
+                    <!-- 退出按钮 -->
+                    <button class="logout-btn" onclick="toast('退出登录功能开发中')">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>退出登录</span>
+                    </button>
+
+                    <p class="logout-hint">退出后将返回登录页，当前浏览器缓存凭据会失效</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部信息栏 -->
+        <footer class="footer-bar">
+            <span>系统设置 Web 原型页</span>
+            <span>最近更新: 2026-02-28</span>
+        </footer>
+    </main>
+
+    <!-- Toast 提示 -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        // Toast 提示
+        function toast(message) {
+            const toastEl = document.getElementById('toast');
+            toastEl.textContent = message;
+            toastEl.classList.add('show');
+            clearTimeout(toast.timer);
+            toast.timer = setTimeout(() => toastEl.classList.remove('show'), 2000);
+        }
+
+        // 切换设置
+        function toggleSetting(event, btn, name) {
+            event.stopPropagation();
+            btn.classList.toggle('on');
+            const status = btn.classList.contains('on') ? '已开启' : '已关闭';
+            toast(name + status);
+        }
+
+        // 聚焦密码输入框
+        function focusPwd() {
+            document.getElementById('oldPwd').focus();
+        }
+
+        // 更新密码
+        function updatePwd() {
+            const oldPwd = document.getElementById('oldPwd');
+            const newPwd = document.getElementById('newPwd');
+            const confirmPwd = document.getElementById('confirmPwd');
+
+            if (!oldPwd.value || !newPwd.value || !confirmPwd.value) {
+                return toast('请完整填写密码信息');
+            }
+            if (newPwd.value.length < 8) {
+                return toast('新密码至少需要 8 位');
+            }
+            if (newPwd.value !== confirmPwd.value) {
+                return toast('两次输入的新密码不一致');
+            }
+
+            oldPwd.value = '';
+            newPwd.value = '';
+            confirmPwd.value = '';
+            toast('密码修改成功（原型演示）');
+        }
+    </script>
+</body>
+
+</html>

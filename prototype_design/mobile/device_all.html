@@ -1,0 +1,714 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能设备管理 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 颜色定义 */
+        .colors {
+            /* 主色调 */
+            color: #3b82f6; /* 原 --primary-color: #667eea 改为蓝色 */
+            color: #2563eb; /* 原 --primary-dark: #5a67d8 改为深蓝色 */
+            color: #8b5cf6; /* 原 --secondary-color: #764ba2 改为紫色 */
+
+            /* 医疗主题色彩 */
+            color: #3b82f6; /* --medical-blue */
+            color: #10b981; /* --medical-green */
+            color: #ef4444; /* --medical-red */
+            color: #f59e0b; /* --medical-orange */
+            color: #8b5cf6; /* --medical-purple */
+
+            /* 中性色 */
+            color: #f9fafb; /* --gray-50 */
+            color: #f3f4f6; /* --gray-100 */
+            color: #e5e7eb; /* --gray-200 */
+            color: #d1d5db; /* --gray-300 */
+            color: #9ca3af; /* --gray-400 */
+            color: #6b7280; /* --gray-500 */
+            color: #4b5563; /* --gray-600 */
+            color: #374151; /* --gray-700 */
+            color: #1f2937; /* --gray-800 */
+            color: #111827; /* --gray-900 */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #f9fafb;
+        }
+
+        .medical-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medical-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+        }
+
+        .device-card {
+            background: white;
+            border-radius: 16px;
+            padding: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .device-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .device-card.connected {
+            border-left: 4px solid #3b82f6;
+        }
+
+        .device-card.unconnected {
+            border-left: 4px solid #d1d5db;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-connected {
+            background: rgba(16, 185, 129, 0.1);
+            color: #10b981;
+        }
+
+        .status-unconnected {
+            background: rgba(156, 163, 175, 0.1);
+            color: #6b7280;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 14px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #4b5563;
+            border: 2px solid #d1d5db;
+        }
+
+        .btn-secondary:hover {
+            background: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .connected-indicator {
+            position: relative;
+        }
+
+        .connected-indicator::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 12px;
+            height: 12px;
+            background: #10b981;
+            border-radius: 50%;
+            border: 2px solid white;
+            animation: pulse 2s infinite;
+        }
+
+        /* 底部导航栏样式 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding-bottom: 20px;
+            z-index: 1000;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .tab-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .tab-item.active {
+            color: #3b82f6;
+        }
+
+        .tab-item i {
+            font-size: 20px;
+            margin-bottom: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item span {
+            font-size: 10px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item:not(.active) i,
+        .tab-item:not(.active) span {
+            color: #9ca3af;
+        }
+
+        .tab-item.add-btn {
+            background: #3b82f6;
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 25px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .tab-item.add-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        .tab-item.add-btn i {
+            color: white;
+            font-size: 24px;
+            margin: 0;
+        }
+
+        .min-h-screen {
+            padding-bottom: 20px;
+        }
+
+        .battery-indicator {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 8px;
+            font-size: 12px;
+            color: #10b981;
+        }
+
+        .connect-btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .connect-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .connect-btn.disconnect {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+        }
+
+        .connect-btn.disconnect:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 15px -3px rgba(239, 68, 68, 0.2);
+        }
+
+        /* 分类标题样式 */
+        .category-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+        }
+
+        .category-title i {
+            margin-right: 8px;
+            color: #3b82f6;
+        }
+
+        .category-section {
+            margin-bottom: 24px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen">
+        <!-- 顶部导航栏 -->
+        <div class="bg-white shadow-sm relative">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button onclick="goBack()" class="text-gray-600 hover:text-gray-800">
+                    <i class="fas fa-chevron-left text-lg"></i>
+                </button>
+                <h1 class="text-lg font-semibold text-gray-800 absolute left-1/2 transform -translate-x-1/2">优唐智能设备</h1>
+                <div></div>
+            </div>
+        </div>
+
+        <div class="px-4 pt-6 ">
+            <!-- 多参数检测设备分类 -->
+            <div class="category-section">
+                <h2 class="category-title">
+                    <i class="fas fa-layer-group"></i>
+                    多参数检测设备
+                </h2>
+                <div class="space-y-4">
+                    <!-- 优唐医生血压/血糖/尿酸/血酮测试仪(Y916D-4G版) -->
+                    <div class="device-card connected" onclick="navigateToDeviceDetail(event, 'four-in-one')" style="cursor: pointer;">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <div class="mr-4">
+                                    <img src="../imgs/四合一血糖.png" alt="优唐医生血压/血糖/尿酸/血酮测试仪(Y916D-4G版)" class="w-16 h-16 rounded-lg object-cover">
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">优唐医生血压/血糖/尿酸/血酮测试仪(Y916D-4G版)</h4>
+                                    <p class="text-xs text-gray-500 mt-1">一机测四项，新时代智能黑科技！快速出值，语音播报。</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+
+                        <!-- 底部操作区域 -->
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                            <button onclick="event.stopPropagation(); connectDevice('four-in-one')" class="connect-btn disconnect px-2 py-2 rounded-lg text-sm font-medium transition-all duration-200 w-28">
+                                <i class="fas fa-unlink mr-1"></i>
+                                解除绑定
+                            </button>
+                            <button onclick="event.stopPropagation(); window.location.href='help.html'" class="text-gray-500 text-sm hover:text-gray-700 flex items-center">
+                                <i class="fas fa-question-circle mr-1"></i>
+                                使用帮助
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 血糖仪设备分类 -->
+            <div class="category-section">
+                <h2 class="category-title">
+                    <i class="fas fa-tint"></i>
+                    血糖仪设备
+                </h2>
+                <div class="space-y-4">
+                    <!-- 雅斯76L血糖仪(蓝牙版) -->
+                    <div class="device-card unconnected" onclick="navigateToDeviceDetail(event, 'yasu-76l')" style="cursor: pointer;">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <div class="mr-4">
+                                    <img src="../imgs/雅思.jpg" alt="优唐医生血糖仪(GLM-76L蓝牙版)" class="w-16 h-16 rounded-lg object-cover">
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">优唐医生血糖仪(GLM-76L蓝牙版)</h4>
+                                    <p class="text-xs text-gray-500 mt-1">微量采血、8秒检测、高低警示、分类记忆</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+
+                        <!-- 底部操作区域 -->
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                            <button onclick="event.stopPropagation(); connectDevice('blood-sugar-1')" class="connect-btn px-2 py-2 rounded-lg text-sm font-medium transition-all duration-200 w-28">
+                                <i class="fas fa-link mr-1"></i>
+                                去绑定
+                            </button>
+                            <button onclick="event.stopPropagation(); window.location.href='help.html'" class="text-gray-500 text-sm hover:text-gray-700 flex items-center">
+                                <i class="fas fa-question-circle mr-1"></i>
+                                使用帮助
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 爱奥乐血糖仪(GPRS版) -->
+                    <!--<div class="device-card connected" onclick="navigateToDeviceDetail(event, 'aiole-gprs')" style="cursor: pointer;">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <div class="mr-4">
+                                    <img src="../imgs/爱奥乐.jpg" alt="爱奥乐血糖仪" class="w-16 h-16 rounded-lg object-cover">
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">爱奥乐血糖仪(GPRS版)</h4>
+                                    <p class="text-xs text-gray-500 mt-1">云端数据应用服务，便捷记录，永久保存，亲友一键关注，远程查看</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>-->
+
+                        <!-- 底部操作区域 -->
+                        <!-- <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                            <button onclick="event.stopPropagation(); connectDevice('blood-sugar-2')" class="connect-btn disconnect px-2 py-2 rounded-lg text-sm font-medium transition-all duration-200 w-28">
+                                <i class="fas fa-unlink mr-1"></i>
+                                解除绑定
+                            </button>
+                            <button onclick="event.stopPropagation(); window.location.href='help.html'" class="text-gray-500 text-sm hover:text-gray-700 flex items-center">
+                                <i class="fas fa-question-circle mr-1"></i>
+                                使用帮助
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>  -->
+
+            <!-- 血压计设备分类 -->
+            <div class="category-section">
+                <h2 class="category-title">
+                    <i class="fas fa-heartbeat"></i>
+                    血压计设备
+                </h2>
+                <div class="space-y-4">
+
+                    <!-- 优唐医生血压计(爱奥乐4G版) -->
+                    <div class="device-card connected" onclick="navigateToDeviceDetail(event, 'youtang-aiole')" style="cursor: pointer;">
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="flex items-center">
+                                <div class="mr-4">
+                                    <img src="../imgs/优唐医生血压计.png" alt="优唐医生血压计(A666-4G版)" class="w-16 h-16 rounded-lg object-cover">
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">优唐医生血压计(A666-4G版)</h4>
+                                    <p class="text-xs text-gray-500 mt-1">远程监测，智能贴心A666G臂式电子血压计</p>
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-400"></i>
+                        </div>
+
+                        <!-- 底部操作区域 -->
+                        <div class="flex items-center justify-between pt-3 border-t border-gray-100">
+                            <button onclick="event.stopPropagation(); connectDevice('blood-pressure-2')" class="connect-btn disconnect px-2 py-2 rounded-lg text-sm font-medium transition-all duration-200 w-28">
+                                <i class="fas fa-unlink mr-1"></i>
+                                解除绑定
+                            </button>
+                            <button onclick="event.stopPropagation(); window.location.href='help.html'" class="text-gray-500 text-sm hover:text-gray-700 flex items-center">
+                                <i class="fas fa-question-circle mr-1"></i>
+                                使用帮助
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 咨询购买提示 -->
+        <div class="px-4 pb-6">
+            <div class="text-center">
+                <p class="text-gray-600 mb-4 mt-8">还没有智能设备？请咨询门店健康管理师购买。</p>
+                <button onclick="contactCustomerService()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                    <i class="fas fa-comments mr-2"></i>
+                    联系客服
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 返回上一页
+        function goBack() {
+            if (window.history.length > 1) {
+                window.history.back();
+            } else {
+                window.location.href = 'home.html';
+            }
+        }
+
+        // 显示设备使用帮助
+        function showHelp(deviceType) {
+            let helpContent = '';
+
+            if (deviceType === 'yasu-76l') {
+                helpContent = '雅斯76L血糖仪使用帮助：\n\n' +
+                    '【设备特点】\n' +
+                    '• 微量采血：仅需微量血样即可检测\n' +
+                    '• 8秒检测：快速出结果，等待时间短\n' +
+                    '• 高低警示：血糖值异常时会有警示提醒\n' +
+                    '• 分类记忆：可记录不同时段的测量结果\n\n' +
+                    '【使用方法】\n' +
+                    '1. 插入试纸，等待设备准备就绪\n' +
+                    '2. 采血并将血样滴在试纸上\n' +
+                    '3. 等待8秒读取结果\n' +
+                    '4. 数据会自动同步到手机APP\n\n' +
+                    '如有问题，请联系客服：400-123-4567';
+            } else if (deviceType === 'aiole-gprs') {
+                helpContent = '爱奥乐血糖仪(GPRS版)使用帮助：\n\n' +
+                    '【设备特点】\n' +
+                    '• 云端数据：测量数据自动上传云端\n' +
+                    '• 便捷记录：操作简单，记录方便\n' +
+                    '• 永久保存：数据长期保存不丢失\n' +
+                    '• 亲友关注：家人可关注您的健康数据\n' +
+                    '• 远程监控：支持远程健康监控\n\n' +
+                    '【使用方法】\n' +
+                    '1. 确保设备GPRS信号正常\n' +
+                    '2. 插入试纸并采血检测\n' +
+                    '3. 结果自动上传到云端\n' +
+                    '4. 亲友可通过APP查看数据\n\n' +
+                    '如有问题，请联系客服：400-123-4567';
+            } else if (deviceType === 'maibo-gprs') {
+                helpContent = '脉搏波血压计(GPRS版/蓝牙版)使用帮助：\n\n' +
+                    '【设备特点】\n' +
+                    '• 脉搏波技术：采用先进的脉搏波测量技术\n' +
+                    '• 多连接方式：支持GPRS和蓝牙双重连接\n' +
+                    '• 人性化设计：操作简便，测量精准\n' +
+                    '• 智能分析：提供健康数据分析\n\n' +
+                    '【使用方法】\n' +
+                    '1. 正确佩戴血压计臂带\n' +
+                    '2. 确保姿势正确，保持安静\n' +
+                    '3. 按下测量按钮开始测量\n' +
+                    '4. 等待测量结果并自动同步\n\n' +
+                    '如有问题，请联系客服：400-123-4567';
+            } else if (deviceType === 'youtang-aiole') {
+                helpContent = '优唐医生血压计(爱奥乐4G版)使用帮助：\n\n' +
+                    '【设备特点】\n' +
+                    '• 4G远程监测：支持4G网络远程数据传输\n' +
+                    '• 智能贴心：A666G臂式设计，测量舒适\n' +
+                    '• 医生指导：提供专业医生健康建议\n' +
+                    '• 数据管理：测量数据云端存储管理\n\n' +
+                    '【使用方法】\n' +
+                    '1. 确保设备4G信号正常\n' +
+                    '2. 正确佩戴臂式血压计\n' +
+                    '3. 启动测量，保持安静状态\n' +
+                    '4. 数据自动上传到医生平台\n\n' +
+                    '如有问题，请联系客服：400-123-4567';
+            } else if (deviceType === 'four-in-one') {
+                helpContent = '优唐医生血压/血糖/尿酸/血酮测试仪(Y916D-4G版)使用帮助：\n\n' +
+                    '【设备特点】\n' +
+                    '• 四项检测：血糖、血压、尿酸、血酮一机搞定\n' +
+                    '• 语音播报：测量结果语音提示\n' +
+                    '• 5秒出值：快速检测，无需长时间等待\n' +
+                    '• 智能分析：数据自动分析，健康状态一目了然\n\n' +
+                    '【使用方法】\n' +
+                    '1. 根据检测项目插入相应试纸或配件\n' +
+                    '2. 按照说明进行采血或佩戴\n' +
+                    '3. 等待5秒读取结果\n' +
+                    '4. 数据自动同步，语音播报结果\n\n' +
+                    '如有问题，请联系客服：400-123-4567';
+            }
+
+            alert(helpContent);
+        }
+
+        // 导航到设备详情页
+        function navigateToDeviceDetail(event, deviceType) {
+            // 阻止事件冒泡，避免触发绑定/解绑操作
+            event.stopPropagation();
+
+            // 检查设备是否已绑定
+            const card = event.currentTarget;
+            const button = card.querySelector('button[onclick*="connectDevice"]');
+            const isBound = button.classList.contains('disconnect');
+
+            if (!isBound) {
+                // 如果设备未绑定，提示用户先绑定设备
+                alert('请先绑定设备后再查看详情');
+                return;
+            }
+
+            // 跳转到设备详情页
+            console.log('导航到设备详情页:', deviceType);
+
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigateToDeviceDetail',
+                    deviceType: deviceType
+                }, '*');
+            } else {
+                // 在独立页面中，可以跳转到详情页
+                // window.location.href = `device_detail_${deviceType}.html`;
+                alert(`跳转到${deviceType}设备详情页（功能开发中）`);
+            }
+        }
+
+        // 连接设备
+        function connectDevice(deviceType) {
+            const button = event.target;
+            const originalText = button.innerHTML;
+
+            if (!button.classList.contains('disconnect')) {
+                if (confirm('确定要绑定该设备吗？')) {
+                    // 显示绑定中状态
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>绑定中...';
+                    button.disabled = true;
+
+                    setTimeout(() => {
+                        // 更新为已绑定状态
+                        button.innerHTML = '<i class="fas fa-unlink mr-1"></i>解除绑定';
+                        button.classList.remove('connect-btn');
+                        button.classList.add('connect-btn', 'disconnect');
+                        button.disabled = false;
+
+                        // 更新卡片状态
+                        const card = button.closest('.device-card');
+                        card.classList.remove('unconnected');
+                        card.classList.add('connected');
+
+                        alert('设备绑定成功！');
+                    }, 2000);
+                }
+            } else {
+                // 如果是已绑定状态，点击后直接解绑
+                // 显示解绑中状态
+                button.innerHTML = '<i class="fas fa-spinner fa-spin mr-1"></i>解绑中...';
+                button.disabled = true;
+
+                setTimeout(() => {
+                    // 更新为未绑定状态
+                    button.innerHTML = '<i class="fas fa-link mr-1"></i>去绑定';
+                    button.classList.remove('connect-btn', 'disconnect');
+                    button.classList.add('connect-btn');
+                    button.disabled = false;
+
+                    // 更新卡片状态
+                    const card = button.closest('.device-card');
+                    card.classList.remove('connected');
+                    card.classList.add('unconnected');
+                }, 800);
+            }
+        }
+
+        // 联系客服
+        function contactCustomerService() {
+            // 模拟联系客服功能
+            const customerServicePhone = '400-123-4567';
+            const customerServiceTime = '工作日 9:00-18:00';
+
+            if (confirm(`客服电话：${customerServicePhone}\n服务时间：${customerServiceTime}\n\n是否拨打电话联系客服？`)) {
+                // 在实际应用中，这里可以调用拨号功能
+                alert(`正在拨打客服电话：${customerServicePhone}`);
+            }
+        }
+
+        // 页面加载完成后的初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 添加淡入动画
+            const cards = document.querySelectorAll('.medical-card, .device-card');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('fade-in');
+                }, index * 100);
+            });
+
+            // 检查是否有连接的设备信息
+            const connectedDevice = localStorage.getItem('connectedDevice');
+            if (connectedDevice) {
+                console.log('已连接设备:', connectedDevice);
+            }
+        });
+    </script>
+
+    <!-- 全局错误处理 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message);
+            // 阻止错误弹窗，但不影响页面显示
+            return true;
+        });
+
+        // 安全的getElementById包装函数
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // 安全的textContent设置函数
+        function safeSetText(id, text) {
+            const element = document.getElementById(id);
+            if (element && text !== undefined && text !== null) {
+                element.textContent = text;
+            }
+            return element;
+        }
+        // 安全的震动函数（避免iframe中的跨域限制）
+        function safeVibrate(duration) {
+            try {
+                // 检查是否支持震动API
+                if (navigator.vibrate && window.self === window.top) {
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // 忽略震动API错误
+                console.debug('Vibrate not available:', e.message);
+            }
+        }
+
+    </script>
+</body>
+</html>

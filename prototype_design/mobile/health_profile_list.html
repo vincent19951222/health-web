@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>健康档案 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --gradient-primary: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            --color-primary: #3b82f6;
+            --color-accent: #f59e0b;
+            --color-success: #10b981;
+            --color-danger: #ef4444;
+            --bg-page: #f9fafb;
+            --text-main: #1f2937;
+            --text-sub: #6b7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* 隐藏滚动条 */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        html,
+        body {
+            overflow-x: hidden;
+            max-width: 100vw;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        /* Header */
+        .page-header {
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            border-bottom: 1px solid #e5e7eb;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+        }
+
+        .back-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-main);
+            font-size: 18px;
+            border-radius: 12px;
+            transition: background 0.2s;
+        }
+
+        .back-btn:active {
+            background: #f3f4f6;
+        }
+
+        .header-title {
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--text-main);
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            padding: 20px 16px;
+            padding-bottom: 180px;
+        }
+
+        /* 档案卡片 */
+        .profile-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .profile-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .profile-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        .profile-card:active {
+            transform: scale(0.98);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .card-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--color-primary);
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .card-info {
+            flex: 1;
+            margin-left: 14px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .card-time {
+            font-size: 12px;
+            color: var(--text-sub);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .delete-btn {
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #9ca3af;
+            border-radius: 10px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .delete-btn:hover {
+            background: #fef2f2;
+            color: var(--color-danger);
+        }
+
+        .delete-btn:active {
+            transform: scale(0.9);
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 4px 12px;
+            background-color: #ecfdf5;
+            color: var(--color-success);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .status-badge i {
+            margin-right: 4px;
+            font-size: 12px;
+        }
+
+        /* 空状态 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            color: var(--color-primary);
+            font-size: 32px;
+        }
+
+        .empty-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 14px;
+            color: var(--text-sub);
+            line-height: 1.5;
+        }
+
+        /* 浮动按钮 */
+        .float-btn-container {
+            position: fixed;
+            bottom: 100px;
+            left: 16px;
+            right: 16px;
+            z-index: 40;
+        }
+
+        .float-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient-primary);
+            color: white;
+            font-weight: 700;
+            font-size: 16px;
+            border-radius: 16px;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.35);
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .float-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(59, 130, 246, 0.4);
+        }
+
+        .float-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 底部导航栏 */
+        .tab-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 83px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-around;
+            padding-bottom: 20px;
+            z-index: 1000;
+        }
+
+        .tab-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+        }
+
+        .tab-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        .tab-item i {
+            font-size: 20px;
+            margin-bottom: 2px;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item span {
+            font-size: 10px;
+            font-weight: 500;
+            color: #9ca3af;
+            transition: all 0.3s ease;
+        }
+
+        .tab-item.active i,
+        .tab-item.active span {
+            color: var(--color-primary);
+        }
+
+        /* 删除确认弹窗 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 24px;
+            width: 100%;
+            max-width: 320px;
+            text-align: center;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            background: #fef2f2;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            color: var(--color-danger);
+            font-size: 24px;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 8px;
+        }
+
+        .modal-desc {
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-btn.cancel {
+            background: #f3f4f6;
+            color: var(--text-main);
+        }
+
+        .modal-btn.cancel:hover {
+            background: #e5e7eb;
+        }
+
+        .modal-btn.confirm {
+            background: var(--color-danger);
+            color: white;
+        }
+
+        .modal-btn.confirm:hover {
+            background: #dc2626;
+        }
+
+        .modal-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* 动画 */
+        .fade-in {
+            animation: fadeIn 0.3s ease;
+        }
+
+        .slide-in {
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <div class="page-header">
+        <button class="back-btn" onclick="handleBack()">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <h1 class="header-title">健康档案</h1>
+        <div style="width: 40px;"></div>
+    </div>
+
+    <!-- 主内容区域 -->
+    <div class="main-content" id="mainContent">
+        <!-- 档案列表将通过 JS 动态渲染 -->
+    </div>
+
+    <!-- 浮动新建按钮 -->
+    <div class="float-btn-container">
+        <button class="float-btn" onclick="createNewProfile()">
+            <i class="fas fa-plus"></i>
+            <span>新建健康档案</span>
+        </button>
+    </div>
+
+    <!-- 底部导航栏 -->
+    <div class="tab-bar">
+        <div class="tab-item" onclick="navigateToPage('home')">
+            <i class="fas fa-home"></i>
+            <span>首页</span>
+        </div>
+        <div class="tab-item" onclick="navigateToPage('chat')">
+            <i class="fas fa-robot"></i>
+            <span>问AI</span>
+        </div>
+        <div class="tab-item active" onclick="navigateToPage('profile')">
+            <i class="fas fa-user"></i>
+            <span>我的</span>
+        </div>
+    </div>
+
+    <!-- 删除确认弹窗 -->
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-trash-alt"></i>
+            </div>
+            <h3 class="modal-title">确认删除</h3>
+            <p class="modal-desc">确定要删除这份健康档案吗？此操作不可恢复。</p>
+            <div class="modal-actions">
+                <button class="modal-btn cancel" onclick="closeDeleteModal()">取消</button>
+                <button class="modal-btn confirm" onclick="confirmDelete()">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ========== 数据管理 ==========
+        const STORAGE_KEY = 'health_profiles_list';
+        let profiles = [];
+        let deleteTargetId = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfiles();
+            // 如果没有数据，添加模拟数据
+            if (profiles.length === 0) {
+                initMockData();
+            }
+            renderProfiles();
+        });
+
+        // 加载档案列表
+        function loadProfiles() {
+            const saved = localStorage.getItem(STORAGE_KEY);
+            if (saved) {
+                try {
+                    profiles = JSON.parse(saved);
+                } catch (e) {
+                    profiles = [];
+                }
+            }
+        }
+
+        // 保存档案列表
+        function saveProfiles() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(profiles));
+        }
+
+        // ========== 渲染逻辑 ==========
+        function renderProfiles() {
+            const container = document.getElementById('mainContent');
+
+            if (profiles.length === 0) {
+                container.innerHTML = renderEmptyState();
+                return;
+            }
+
+            // 按创建时间倒序排列
+            const sortedProfiles = [...profiles].sort((a, b) =>
+                new Date(b.createdAt) - new Date(a.createdAt)
+            );
+
+            let html = '';
+            sortedProfiles.forEach((profile, index) => {
+                html += renderProfileCard(profile, index);
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderEmptyState() {
+            return `
+                <div class="empty-state fade-in">
+                    <div class="empty-icon">
+                        <i class="fas fa-folder-open"></i>
+                    </div>
+                    <h3 class="empty-title">暂无健康档案</h3>
+                    <p class="empty-desc">点击下方按钮创建您的第一份健康档案<br>记录您的健康状况</p>
+                </div>
+            `;
+        }
+
+        function renderProfileCard(profile, index) {
+            const createdDate = formatDate(profile.createdAt);
+            const progress = profile.progress || 0;
+
+            return `
+                <div class="profile-card slide-in" style="animation-delay: ${index * 0.05}s" onclick="openProfile('${profile.id}')">
+                    <div class="card-header">
+                        <div class="card-icon">
+                            <i class="fas fa-file-medical"></i>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-title">${profile.name}</div>
+                            <div class="card-time">
+                                <i class="fas fa-calendar-alt"></i>
+                                创建于 ${createdDate}
+                            </div>
+                        </div>
+                        <button class="delete-btn" onclick="event.stopPropagation(); showDeleteModal('${profile.id}')">
+                            <i class="fas fa-trash-alt"></i>
+                        </button>
+                    </div>
+                    <div class="status-badge">
+                        <i class="fas fa-check-circle"></i> 已提交
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== 操作函数 ==========
+        function createNewProfile() {
+            // 生成新档案
+            const newId = 'profile_' + Date.now();
+            const userName = '张先生'; // 可从用户信息中获取
+
+            const newProfile = {
+                id: newId,
+                name: userName + '的健康档案',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                progress: 0,
+                data: {
+                    section_1: {}, section_2: {}, section_3: [], section_4: [],
+                    section_5: '', section_6: '', section_7: {}, section_8: {}
+                }
+            };
+
+            profiles.push(newProfile);
+            saveProfiles();
+
+            // 跳转到档案编辑页
+            navigateToProfileDetail(newId);
+        }
+
+        function openProfile(id) {
+            navigateToProfileDetail(id);
+        }
+
+        function navigateToProfileDetail(id) {
+            const targetUrl = `new_health_profile.html?id=${id}`;
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'navigate', page: 'new_health_profile', params: { id } }, '*');
+            }
+            window.location.href = targetUrl;
+        }
+
+        // ========== 删除相关 ==========
+        function showDeleteModal(id) {
+            deleteTargetId = id;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            deleteTargetId = null;
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        function confirmDelete() {
+            if (!deleteTargetId) return;
+
+            profiles = profiles.filter(p => p.id !== deleteTargetId);
+            saveProfiles();
+            renderProfiles();
+            closeDeleteModal();
+        }
+
+        // ========== 导航函数 ==========
+        function handleBack() {
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'navigate', page: 'profile' }, '*');
+            }
+            window.location.href = 'profile.html';
+        }
+
+        function navigateToPage(page) {
+            if (window.parent !== window) {
+                window.parent.postMessage({ type: 'navigate', page: page }, '*');
+            } else {
+                window.location.href = page + '.html';
+            }
+        }
+
+        // ========== 工具函数 ==========
+        function formatDate(isoString) {
+            const date = new Date(isoString);
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+        // 添加模拟数据
+        function initMockData() {
+            const mockProfile = {
+                id: 'profile_mock_1',
+                name: '张先生的健康档案',
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString(),
+                progress: 100,
+                // 模拟填满的数据
+                data: {
+                    basicInfo: { name: '张三', gender: 'male', age: 45 },
+                    history: { diabetes: true, hypertension: false },
+                    lifestyle: { smoking: false, drinking: true },
+                    // ... 更多模拟数据 ...
+                }
+            };
+            profiles.push(mockProfile);
+            saveProfiles();
+        }
+    </script>
+
+    <!-- 全局错误处理 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message);
+            // 阻止错误弹窗，但不影响页面显示
+            return true;
+        });
+
+        // 安全的getElementById包装函数
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // 安全的textContent设置函数
+        function safeSetText(id, text) {
+            const element = document.getElementById(id);
+            if (element && text !== undefined && text !== null) {
+                element.textContent = text;
+            }
+            return element;
+        }
+        // 安全的震动函数（避免iframe中的跨域限制）
+        function safeVibrate(duration) {
+            try {
+                // 检查是否支持震动API
+                if (navigator.vibrate && window.self === window.top) {
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // 忽略震动API错误
+                console.debug('Vibrate not available:', e.message);
+            }
+        }
+
+    </script>
+</body>
+
+</html>

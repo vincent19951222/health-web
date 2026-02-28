@@ -1,0 +1,1585 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>血糖数据 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 全局样式 */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* 主容器布局 */
+        .app-container {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* 标签栏样式 */
+        .tab-button {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            font-size: 16px;
+            font-weight: 600;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .tab-button.active {
+            color: #3b82f6;
+            border-bottom: 2px solid #3b82f6;
+        }
+
+        .tab-button:hover:not(.active) {
+            color: #374151;
+            background: rgba(107, 114, 128, 0.1);
+        }
+
+        /* 内容区域样式 - 简化版本 */
+        .tab-content {
+            display: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 血糖趋势图样式 */
+        .trend-chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .trend-chart-area {
+            height: 200px;
+            display: flex;
+            align-items: end;
+            padding: 20px 10px 20px 40px;
+            border-bottom: 1px solid #e5e7eb;
+            position: relative;
+        }
+
+        .trend-chart-y-axis {
+            position: absolute;
+            left: 0;
+            top: 20px;
+            bottom: 20px;
+            width: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 10px;
+            color: #6b7280;
+        }
+
+        .trend-chart-bars {
+            position: relative;
+            flex: 1;
+            height: 100%;
+            padding: 0 2px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .trend-chart-bar {
+            background: linear-gradient(to top, #3b82f6, #60a5fa);
+            border-radius: 2px 2px 0 0;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            position: relative;
+            min-height: 2px;
+            flex: 1;
+            min-width: 3px;
+            max-width: 6px;
+        }
+
+        .trend-chart-labels {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #6b7280;
+            padding-left: 40px;
+        }
+
+        /* 表格样式 */
+        .data-table {
+            font-size: 14px;
+            border-collapse: collapse;
+        }
+
+        .data-table th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            padding: 8px 4px;
+            font-size: 12px;
+        }
+
+        .data-table td {
+            padding: 8px 4px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: #f8fafc;
+        }
+
+        .data-table tbody tr:nth-child(odd) {
+            background-color: white;
+        }
+
+        /* 月份切换器样式 */
+        .month-selector {
+            background: white;
+            border-radius: 12px;
+            padding: 12px;
+            margin: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .month-display {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        /* 状态标签样式 */
+        .status-normal {
+            color: #10b981;
+            font-weight: 600;
+        }
+
+        .status-high {
+            color: #ef4444;
+            font-weight: 600;
+        }
+
+        .status-low {
+            color: #fb923c;
+            font-weight: 600;
+        }
+
+        /* 统计卡片样式 */
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            transition: transform 0.2s ease;
+        }
+
+        /* 设备图标样式 */
+        .device-indicator {
+            display: inline-flex;
+            align-items: center;
+            color: #3b82f6;
+            margin-left: 6px;
+            vertical-align: middle;
+            font-size: 12px;
+        }
+
+        .stat-card:hover {
+            transform: scale(1.02);
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 640px) {
+            .stat-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+            }
+
+            .tab-container {
+                padding: 8px;
+            }
+
+            .tab-button {
+                font-size: 16px;
+                padding: 10px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 白色标题栏 -->
+        <div class="bg-white text-gray-800 border-b border-gray-200">
+            <div class="flex justify-between items-center px-4 py-3">
+                <button onclick="window.location.href='home.html'" class="text-gray-600">
+                    <i class="fas fa-chevron-left text-xl"></i>
+                </button>
+                <div class="flex-1 text-center">
+                    <h1 class="text-lg font-semibold">血压数据</h1>
+                </div>
+                <div class="w-6"></div>
+            </div>
+        </div>
+
+        <!-- 主要标签 -->
+        <div class="bg-white border-b border-gray-200">
+            <div class="flex">
+                <button class="tab-button active" data-tab="curve" onclick="switchTab('curve')">
+                    曲线
+                </button>
+                <button class="tab-button" data-tab="list" onclick="switchTab('list')">
+                    记录
+                </button>
+            </div>
+        </div>
+
+        <!-- 四个主要标签页的容器 -->
+        <div class="flex-1" style="margin-top: 0;">
+            <!-- 血糖曲线内容 -->
+            <div id="curve-content" class="tab-content show" style="display: block; min-height: 100vh; background: #f5f5f5;">
+                <!-- 日期选择器 -->
+                <div class="date-selector bg-white mx-4 mt-4 rounded-lg shadow-sm overflow-hidden">
+                    <div class="flex items-center justify-between px-4 py-3">
+                        <button class="text-gray-400 hover:text-gray-600" onclick="previousDate()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="flex items-center space-x-2 cursor-pointer" onclick="openDatePicker()">
+                            <span id="curveDateDisplay" class="date-display text-lg font-medium text-gray-900">2024年9月13日</span>
+                            <i class="dropdown-icon fas fa-chevron-down text-gray-400"></i>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600" onclick="nextDate()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 日期范围选择器 -->
+                <div class="tab-container bg-gray-100 mx-4 mt-4 rounded-lg shadow-sm overflow-hidden">
+                    <div class="flex">
+                        <div class="tab flex-1 text-center py-3 px-4 rounded-lg font-medium cursor-pointer transition-all text-gray-500 hover:text-gray-700">
+                            周
+                        </div>
+                        <div class="tab flex-1 text-center py-3 px-4 rounded-lg font-medium cursor-pointer transition-all active bg-white text-gray-900 shadow-sm">
+                            月
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 统计信息卡片 -->
+                <div class="bg-white mx-4 mt-4 rounded-lg shadow-sm p-4">
+                    <div class="grid grid-cols-4 gap-4">
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-600">128</div>
+                            <div class="text-xs text-gray-500 mb-1">平均</div>
+                            <div class="text-xs text-gray-500">收缩压</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600">82</div>
+                            <div class="text-xs text-gray-500 mb-1">平均</div>
+                            <div class="text-xs text-gray-500">舒张压</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-green-600">23</div><div class="text-xs text-gray-500 mb-1">平均</div>
+                            <div class="text-xs text-gray-500">脉压差</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-purple-600">87</div>
+                            <div class="text-xs text-gray-500 mb-1">平均</div>
+                            <div class="text-xs text-gray-500">心率</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600">168</div>
+                            <div class="text-xs text-gray-500 mb-1">最高</div>
+                            <div class="text-xs text-gray-500">收缩压</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-600">90</div>
+                            <div class="text-xs text-gray-500 mb-1">最低</div>
+                            <div class="text-xs text-gray-500">舒张压</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-red-600">111</div><div class="text-xs text-gray-500 mb-1">最高</div>
+                            <div class="text-xs text-gray-500">舒张压</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="text-2xl font-bold text-blue-600">59</div>
+                            <div class="text-xs text-gray-500 mb-1">最低</div>
+                            <div class="text-xs text-gray-500">舒张压</div>
+                        </div>
+                    </div>
+                </div>
+
+              <!-- 收缩压趋势图卡片 -->
+                <div class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl mx-4 mt-4 p-3 shadow-sm border border-white border-opacity-50">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-medium text-gray-700">收缩压趋势</h4>
+                        <div class="bg-red-100 px-2 py-0 rounded-full">
+                        </div>
+                    </div>
+
+                    <!-- 图表容器 -->
+                    <div class="relative h-32 mb-3">
+                        <!-- Y轴标签 -->
+                        <div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-400 pr-2">
+                            <span>180</span>
+                            <span>140</span>
+                            <span>100</span>
+                            <span>60</span>
+                        </div>
+
+                        <!-- 图表区域 -->
+                        <div class="ml-6 h-full relative">
+                            <!-- 网格线 -->
+                            <div class="absolute inset-0">
+                                <div class="h-full flex flex-col justify-between">
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                </div>
+                            </div>
+
+                            <!-- 收缩压折线图 -->
+                            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 300 120" preserveAspectRatio="none">
+                                <!-- 正常范围参考线 -->
+                                <line x1="0" y1="80" x2="300" y2="80" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <line x1="0" y1="60" x2="300" y2="60" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <line x1="0" y1="40" x2="300" y2="40" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <!-- 标准范围标签 -->
+                                <text x="5" y="80" fill="#10b981" font-size="8" font-weight="500">60</text>
+                                <text x="5" y="60" fill="#10b981" font-size="8" font-weight="500">90</text>
+                                <text x="5" y="40" fill="#10b981" font-size="8" font-weight="500">140</text>
+                                <!-- 收缩压趋势线 -->
+                                <polyline
+                                    id="systolic-trend-line"
+                                    points="0,70 50,55 100,65 150,50 200,60 250,45 300,55"
+                                    fill="none"
+                                    stroke="#ef4444"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"/>
+                                <!-- 数据点 -->
+                                <g id="systolic-data-points">
+                                    <circle cx="0" cy="70" r="3" fill="#ef4444"/>
+                                    <circle cx="50" cy="55" r="3" fill="#ef4444"/>
+                                    <circle cx="100" cy="65" r="3" fill="#ef4444"/>
+                                    <circle cx="150" cy="50" r="3" fill="#ef4444"/>
+                                    <circle cx="200" cy="60" r="3" fill="#ef4444"/>
+                                    <circle cx="250" cy="45" r="3" fill="#ef4444"/>
+                                    <circle cx="300" cy="55" r="3" fill="#ef4444"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- X轴标签 -->
+                    <div class="flex justify-between text-xs text-gray-400 px-6">
+                        <span>00:00</span>
+                        <span>06:00</span>
+                        <span>12:00</span>
+                        <span>18:00</span>
+                        <span>24:00</span>
+                    </div>
+                </div>
+
+                <!-- 舒张压趋势图卡片 -->
+                <div class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl mx-4 mt-4 p-3 shadow-sm border border-white border-opacity-50">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-medium text-gray-700">舒张压趋势</h4>
+                        <div class="bg-blue-100 px-2 py-0 rounded-full">
+                        </div>
+                    </div>
+
+                    <!-- 图表容器 -->
+                    <div class="relative h-32 mb-3">
+                        <!-- Y轴标签 -->
+                        <div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-400 pr-2">
+                            <span>120</span>
+                            <span>90</span>
+                            <span>60</span>
+                            <span>30</span>
+                        </div>
+
+                        <!-- 图表区域 -->
+                        <div class="ml-6 h-full relative">
+                            <!-- 网格线 -->
+                            <div class="absolute inset-0">
+                                <div class="h-full flex flex-col justify-between">
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                </div>
+                            </div>
+
+                            <!-- 舒张压折线图 -->
+                            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 300 120" preserveAspectRatio="none">
+                                <!-- 正常范围参考线 -->
+                                <line x1="0" y1="80" x2="300" y2="80" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <line x1="0" y1="60" x2="300" y2="60" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <!-- 标准范围标签 -->
+                                <text x="5" y="80" fill="#10b981" font-size="8" font-weight="500">60</text>
+                                <text x="5" y="60" fill="#10b981" font-size="8" font-weight="500">90</text>
+                                <!-- 舒张压趋势线 -->
+                                <polyline
+                                    id="diastolic-trend-line"
+                                    points="0,85 50,75 100,80 150,70 200,78 250,72 300,76"
+                                    fill="none"
+                                    stroke="#3b82f6"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"/>
+                                <!-- 数据点 -->
+                                <g id="diastolic-data-points">
+                                    <circle cx="0" cy="85" r="3" fill="#3b82f6"/>
+                                    <circle cx="50" cy="75" r="3" fill="#3b82f6"/>
+                                    <circle cx="100" cy="80" r="3" fill="#3b82f6"/>
+                                    <circle cx="150" cy="70" r="3" fill="#3b82f6"/>
+                                    <circle cx="200" cy="78" r="3" fill="#3b82f6"/>
+                                    <circle cx="250" cy="72" r="3" fill="#3b82f6"/>
+                                    <circle cx="300" cy="76" r="3" fill="#3b82f6"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- X轴标签 -->
+                    <div class="flex justify-between text-xs text-gray-400 px-6">
+                        <span>00:00</span>
+                        <span>06:00</span>
+                        <span>12:00</span>
+                        <span>18:00</span>
+                        <span>24:00</span>
+                    </div>
+                </div>
+
+                <!-- 心率趋势图卡片 -->
+                <div class="bg-white bg-opacity-90 backdrop-blur-sm rounded-xl mx-4 mt-4 p-3 shadow-sm border border-white border-opacity-50 mb-6">
+                    <div class="flex items-center justify-between mb-3">
+                        <h4 class="text-sm font-medium text-gray-700">心率趋势</h4>
+                        <div class="bg-purple-100 px-2 py-0 rounded-full">
+                        </div>
+                    </div>
+
+                    <!-- 图表容器 -->
+                    <div class="relative h-32 mb-3">
+                        <!-- Y轴标签 -->
+                        <div class="absolute left-0 top-0 bottom-0 flex flex-col justify-between text-xs text-gray-400 pr-2">
+                            <span>120</span>
+                            <span>90</span>
+                            <span>60</span>
+                            <span>30</span>
+                        </div>
+
+                        <!-- 图表区域 -->
+                        <div class="ml-6 h-full relative">
+                            <!-- 网格线 -->
+                            <div class="absolute inset-0">
+                                <div class="h-full flex flex-col justify-between">
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                    <div class="border-t border-gray-200 border-opacity-50"></div>
+                                </div>
+                            </div>
+
+                            <!-- 心率折线图 -->
+                            <svg class="absolute inset-0 w-full h-full" viewBox="0 0 300 120" preserveAspectRatio="none">
+                                <!-- 正常范围参考线 -->
+                                <line x1="0" y1="60" x2="300" y2="60" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <line x1="0" y1="40" x2="300" y2="40" stroke="#10b981" stroke-width="1" stroke-dasharray="3,3" opacity="0.5"/>
+                                <!-- 标准范围标签 -->
+                                <text x="5" y="60" fill="#10b981" font-size="8" font-weight="500">60</text>
+                                <text x="5" y="40" fill="#10b981" font-size="8" font-weight="500">100</text>
+                                <!-- 心率趋势线 -->
+                                <polyline
+                                    id="heart-rate-trend-line"
+                                    points="0,65 50,55 100,60 150,50 200,58 250,52 300,56"
+                                    fill="none"
+                                    stroke="#8b5cf6"
+                                    stroke-width="2"
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"/>
+                                <!-- 数据点 -->
+                                <g id="heart-rate-data-points">
+                                    <circle cx="0" cy="65" r="3" fill="#8b5cf6"/>
+                                    <circle cx="50" cy="55" r="3" fill="#8b5cf6"/>
+                                    <circle cx="100" cy="60" r="3" fill="#8b5cf6"/>
+                                    <circle cx="150" cy="50" r="3" fill="#8b5cf6"/>
+                                    <circle cx="200" cy="58" r="3" fill="#8b5cf6"/>
+                                    <circle cx="250" cy="52" r="3" fill="#8b5cf6"/>
+                                    <circle cx="300" cy="56" r="3" fill="#8b5cf6"/>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- X轴标签 -->
+                    <div class="flex justify-between text-xs text-gray-400 px-6">
+                        <span>00:00</span>
+                        <span>06:00</span>
+                        <span>12:00</span>
+                        <span>18:00</span>
+                        <span>24:00</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 血糖表格内容 -->
+            <div id="table-content" class="tab-content" style="display: none; min-height: 100vh; background: #f5f5f5;">
+                <!-- 月份切换器 -->
+                <div class="bg-white mx-2 rounded-lg shadow-sm overflow-hidden mt-4">
+                    <div class="flex items-center justify-between px-4 py-3">
+                        <button class="text-gray-400 hover:text-gray-600" onclick="previousMonth()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="flex items-center space-x-2">
+                            <span id="monthDisplay" class="text-lg font-medium text-gray-900">2024年9月</span>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600" onclick="nextMonth()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 表格 -->
+                <div class="bg-white mx-2 rounded-lg shadow-sm overflow-hidden mt-4">
+                    <!-- 表格头部 -->
+                    <div class="bg-gray-0 px-4 py-4 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-center text-gray-700">血糖数据表</h3>
+                    </div>
+
+                    <!-- 表格内容 -->
+                    <div class="overflow-x-auto">
+                        <table class="w-full data-table" style="table-layout: auto; min-width: 300px;">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th style="width: 20px;" class="text-xs font-medium text-gray-500">日期</th>
+                                    <th style="width: 32px;" class="text-xs font-medium text-gray-500">凌晨</th>
+                                    <th style="width: 32px;" class="text-xs font-medium text-gray-500">早餐前</th>
+                                    <th style="width: 32px;" class="text-xs font-medium text-gray-500">早餐后</th>
+                                    <th style="width: 32px;" class="text-xs font-medium text-gray-500">午餐前</th>
+                                    <th style="width: 30px;" class="text-xs font-medium text-gray-500">午餐后</th>
+                                    <th style="width: 30px;" class="text-xs font-medium text-gray-500">晚餐前</th>
+                                    <th style="width: 30px;" class="text-xs font-medium text-gray-500">晚餐后</th>
+                                    <th style="width: 3px;" class="text-xs font-medium text-gray-500">睡前</th>
+                                </tr>
+                            </thead>
+                            <tbody id="bloodSugarTableBody">
+                                <!-- 动态生成的血糖数据将在这里显示 -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 记录列表内容 -->
+            <div id="list-content" class="tab-content" style="display: none; min-height: 100vh; background: #f5f5f5;">
+                <!-- 记录列表 - 血压卡片 -->
+                <div class="space-y-3 px-4 pt-4 pb-6">
+                        <!-- 血压记录卡片 1 -->
+                        <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="text-sm font-medium text-gray-900 flex items-center">
+                                    <i class="far fa-clock text-gray-400 mr-1"></i>
+                                    2024年9月13日 06:30
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">收缩压</p>
+                                    <p class="text-lg font-semibold" style="color: #fb923c;" class="flex items-center justify-center">
+                                        85
+                                        <i class="fas fa-arrow-down text-xs ml-1"></i>
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center border-l border-r border-gray-200">
+                                    <p class="text-xs text-gray-500 mb-1">舒张压</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        82
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">心率</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        --
+                                    </p>
+                                    <p class="text-xs text-gray-400">bpm</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <div class="flex items-start">
+                                    <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">
+                                        <i class="fas fa-smile mr-1"></i>无不适
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 血压记录卡片 2 -->
+                        <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="text-sm font-medium text-gray-900 flex items-center">
+                                    <i class="far fa-clock text-gray-400 mr-1"></i>
+                                    2024年9月13日 08:15
+                                    <i class="fas fa-mobile-alt text-blue-500 text-xs ml-2" title="设备上传"></i>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">收缩压</p>
+                                    <p class="text-lg font-semibold text-red-600 flex items-center justify-center">
+                                        142
+                                        <i class="fas fa-arrow-up text-xs ml-1"></i>
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center border-l border-r border-gray-200">
+                                    <p class="text-xs text-gray-500 mb-1">舒张压</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        88
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">心率</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        85
+                                    </p>
+                                    <p class="text-xs text-gray-400">bpm</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <div class="flex items-start">
+                                    <span class="px-2 py-1 bg-yellow-100 text-yellow-600 text-xs rounded-full">
+                                        <i class="fas fa-dizzy mr-1"></i>头晕
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 血压记录卡片 3 -->
+                        <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="text-sm font-medium text-gray-900 flex items-center">
+                                    <i class="far fa-clock text-gray-400 mr-1"></i>
+                                    2024年9月13日 14:30
+                                    <i class="fas fa-mobile-alt text-blue-500 text-xs ml-2" title="设备上传"></i>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">收缩压</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        118
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center border-l border-r border-gray-200">
+                                    <p class="text-xs text-gray-500 mb-1">舒张压</p>
+                                    <p class="text-lg font-semibold" style="color: #fb923c;" class="flex items-center justify-center">
+                                        58
+                                        <i class="fas fa-arrow-down text-xs ml-1"></i>
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">心率</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        --
+                                    </p>
+                                    <p class="text-xs text-gray-400">bpm</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <div class="flex items-start">
+                                    <span class="px-2 py-1 bg-blue-100 text-blue-600 text-xs rounded-full">
+                                        <i class="fas fa-tint mr-1"></i>尿多
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 血压记录卡片 4 -->
+                        <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="text-sm font-medium text-gray-900 flex items-center">
+                                    <i class="far fa-clock text-gray-400 mr-1"></i>
+                                    2024年9月13日 19:45
+                                    <i class="fas fa-mobile-alt text-blue-500 text-xs ml-2" title="设备上传"></i>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">收缩压</p>
+                                    <p class="text-lg font-semibold text-red-600 flex items-center justify-center">
+                                        155
+                                        <i class="fas fa-arrow-up text-xs ml-1"></i>
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center border-l border-r border-gray-200">
+                                    <p class="text-xs text-gray-500 mb-1">舒张压</p>
+                                    <p class="text-lg font-semibold text-red-600 flex items-center justify-center">
+                                        95
+                                        <i class="fas fa-arrow-up text-xs ml-1"></i>
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">心率</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        92
+                                    </p>
+                                    <p class="text-xs text-gray-400">bpm</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <div class="flex items-start">
+                                    <span class="px-2 py-1 bg-red-100 text-red-600 text-xs rounded-full">
+                                        <i class="fas fa-head-side-virus mr-1"></i>头痛
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 血压记录卡片 5 -->
+                        <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                            <div class="flex justify-between items-start mb-3">
+                                <div class="text-sm font-medium text-gray-900 flex items-center">
+                                    <i class="far fa-clock text-gray-400 mr-1"></i>
+                                    2024年9月13日 22:00
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3">
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">收缩压</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        120
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center border-l border-r border-gray-200">
+                                    <p class="text-xs text-gray-500 mb-1">舒张压</p>
+                                    <p class="text-lg font-semibold text-blue-600 flex items-center justify-center">
+                                        80
+                                    </p>
+                                    <p class="text-xs text-gray-400">mmHg</p>
+                                </div>
+                                <div class="text-center">
+                                    <p class="text-xs text-gray-500 mb-1">心率</p>
+                                    <p class="text-lg font-semibold" style="color: #fb923c;" class="flex items-center justify-center">
+                                        55
+                                        <i class="fas fa-arrow-down text-xs ml-1"></i>
+                                    </p>
+                                    <p class="text-xs text-gray-400">bpm</p>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-gray-100">
+                                <div class="flex items-start">
+                                    <span class="px-2 py-1 bg-green-100 text-green-600 text-xs rounded-full">
+                                        <i class="fas fa-smile mr-1"></i>无不适
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+
+            <!-- 血糖目标内容 -->
+            <div id="target-content" class="tab-content" style="display: none; min-height: 100vh; background: #f5f5f5;">
+                <!-- 目标设置卡片 -->
+                <div class="bg-white mx-4 mt-2 rounded-lg shadow-sm p-4">
+                    <!-- 目标设置头部 -->
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-medium text-gray-900">血糖目标设置</h3>
+                        <button id="editTargetBtn" onclick="toggleEditMode()" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                            修改目标
+                        </button>
+                    </div>
+
+                    <!-- 目标值表格 -->
+                    <div class="overflow-hidden border border-gray-200 rounded-lg">
+                        <table class="w-full" id="targetTableBody">
+                            <thead>
+                                <tr>
+                                    <th class="text-left py-3 px-4 text-sm font-medium text-gray-700">测量节点</th>
+                                    <th class="text-center py-3 px-4 text-sm font-medium text-gray-700 bg-gray-100">推荐值</th>
+                                    <th class="text-center py-3 px-4 text-sm font-medium text-gray-700 bg-blue-50">目标值</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <tr class="border-t border-gray-200">
+                                    <td class="py-3 px-4">
+                                        <div class="font-medium text-gray-900">空腹</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-gray-50">
+                                        <div class="text-sm text-gray-700 font-medium">4.4-7.0</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-blue-50">
+                                        <span id="target-value-2" class="text-sm text-gray-900 font-medium">4.4-7.0</span>
+                                        <input type="text" id="target-input-2" value="4.4-7.0" class="w-24 text-center border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" style="display: none;">
+                                    </td>
+                                </tr>
+                                <tr class="border-t border-gray-200">
+                                    <td class="py-3 px-4">
+                                        <div class="font-medium text-gray-900">餐前</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-gray-50">
+                                        <div class="text-sm text-gray-700 font-medium">4.0-7.8</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-blue-50">
+                                        <span id="target-value-3" class="text-sm text-gray-900 font-medium">4.0-7.8</span>
+                                        <input type="text" id="target-input-3" value="4.0-7.8" class="w-24 text-center border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" style="display: none;">
+                                    </td>
+                                </tr>
+                                <tr class="border-t border-gray-200">
+                                    <td class="py-3 px-4">
+                                        <div class="font-medium text-gray-900">餐后</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-gray-50">
+                                        <div class="text-sm text-gray-700 font-medium">4.0-10.0</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-blue-50">
+                                        <span id="target-value-4" class="text-sm text-gray-900 font-medium">4.0-10.0</span>
+                                        <input type="text" id="target-input-4" value="4.0-10.0" class="w-24 text-center border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" style="display: none;">
+                                    </td>
+                                </tr>
+                                <tr class="border-t border-gray-200">
+                                    <td class="py-3 px-4">
+                                        <div class="font-medium text-gray-900">睡前</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-gray-50">
+                                        <div class="text-sm text-gray-700 font-medium">4.0-10.0</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-blue-50">
+                                        <span id="target-value-5" class="text-sm text-gray-900 font-medium">4.0-10.0</span>
+                                        <input type="text" id="target-input-5" value="4.0-10.0" class="w-24 text-center border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" style="display: none;">
+                                    </td>
+                                </tr>
+                                                                <tr class="border-t border-gray-200">
+                                    <td class="py-3 px-4">
+                                        <div class="font-medium text-gray-900">凌晨</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-gray-50">
+                                        <div class="text-sm text-gray-700 font-medium">4.0-10.0</div>
+                                    </td>
+                                    <td class="py-3 px-4 text-center bg-blue-50">
+                                        <span id="target-value-1" class="text-sm text-gray-900 font-medium">4.0-10.0</span>
+                                        <input type="text" id="target-input-1" value="4.0-10.0" class="w-24 text-center border border-blue-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white" style="display: none;">
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- 保存按钮 -->
+                    <div class="mt-4" id="saveSection" style="display: none;">
+                        <button onclick="saveTargets()" class="w-full bg-blue-500 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-600 transition-colors">
+                            保存目标设置
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 温馨提示卡片 -->
+                <div class="bg-white mx-4 mt-2 rounded-lg shadow-sm p-4 mb-4">
+                    <h4 class="font-medium text-gray-900 mb-3 flex items-center">
+                        <i class="fas fa-info-circle text-gray-600 mr-2"></i>
+                        温馨提示
+                    </h4>
+                    <div class="space-y-2 text-sm text-gray-700">
+                        <p>1、血糖推荐值是根据您填写的年龄、身高、体重、糖尿病类型等情况，进行智能分析得出，个人信息越精准，推荐值越符合您的个体需求。您也可以修改为医生或健康管理师建议您的控糖目标。</p>
+                        <p>2、血糖控制需要根据自身情况合理设置，谨防过高或过低，造成低血糖等问题。如不确定，请咨询您的健康管理师。</p>
+                        <p>3、以上数据内容仅供参考，不作为诊断治疗依据。</p>
+                    </div>
+                </div>
+
+                <!-- 联系客服按钮 -->
+                <div class="px-4 pb-6">
+                    <div class="text-center">
+                        <p class="text-gray-600 mb-4 mt-6">对血糖目标设置有疑问？请联系客服获取专业指导。</p>
+                        <button onclick="contactCustomerService()" class="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-3 rounded-full font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200">
+                            <i class="fas fa-comments mr-2"></i>
+                            联系客服
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 血糖趋势图相关函数
+        /**
+         * 计算血糖值在SVG图表中的Y坐标
+         * @param {number} value - 血糖值
+         * @param {number} height - 图表高度
+         * @returns {number} Y坐标
+         */
+        function calculateBloodSugarY(value, height = 120) {
+            // 血糖值范围：0-15 mmol/L
+            // SVG坐标系：Y轴从上到下增加，所以血糖值越大，Y坐标越小
+            const minSugar = 0;
+            const maxSugar = 15;
+            const padding = 10; // 上下边距
+            const chartHeight = height - 2 * padding;
+            // 计算血糖值在图表中的相对位置（0-1之间）
+            const relativePosition = (value - minSugar) / (maxSugar - minSugar);
+            // 转换为SVG坐标：血糖值越大，Y坐标越小（越靠上）
+            return padding + (1 - relativePosition) * chartHeight;
+        }
+
+        /**
+         * 获取血糖值对应的颜色
+         * @param {number} value - 血糖值
+         * @returns {string} 颜色值
+         */
+        function getBloodSugarColor(value) {
+            if (value < 4.4) {
+                return '#f97316'; // 偏低 - 橙色
+            } else if (value > 10.0) {
+                return '#ef4444'; // 偏高 - 红色
+            } else {
+                return '#10b981'; // 正常 - 绿色
+            }
+        }
+
+        /**
+         * 生成模拟血糖数据
+         * @returns {Array} 血糖数据数组
+         */
+        function generateBloodSugarData() {
+            const data = [];
+            // 生成一天内的血糖数据（每4小时一个点）
+            for (let i = 0; i <= 24; i += 4) {
+                // 生成不同时间段的典型血糖值
+                let value;
+                const hour = i;
+                if (hour >= 0 && hour < 6) {
+                    // 凌晨：较低血糖
+                    value = parseFloat((Math.random() * 2 + 4.0).toFixed(1));
+                } else if (hour >= 6 && hour < 9) {
+                    // 早餐后：血糖上升
+                    value = parseFloat((Math.random() * 3 + 6.0).toFixed(1));
+                } else if (hour >= 9 && hour < 12) {
+                    // 上午：血糖逐渐下降
+                    value = parseFloat((Math.random() * 2 + 5.0).toFixed(1));
+                } else if (hour >= 12 && hour < 15) {
+                    // 午餐后：血糖上升
+                    value = parseFloat((Math.random() * 3 + 6.5).toFixed(1));
+                } else if (hour >= 15 && hour < 18) {
+                    // 下午：血糖逐渐下降
+                    value = parseFloat((Math.random() * 2 + 5.5).toFixed(1));
+                } else if (hour >= 18 && hour < 21) {
+                    // 晚餐后：血糖上升
+                    value = parseFloat((Math.random() * 3 + 6.8).toFixed(1));
+                } else {
+                    // 睡前：血糖趋于平稳
+                    value = parseFloat((Math.random() * 2 + 5.0).toFixed(1));
+                }
+
+                const x = (i / 24) * 300; // X坐标（0-300）
+                const y = calculateBloodSugarY(value);
+
+                data.push({ x, y, value, hour });
+            }
+            return data;
+        }
+
+        /**
+         * 更新血糖趋势图
+         */
+        function updateBloodSugarChart() {
+            try {
+                const data = generateBloodSugarData();
+
+                // 更新趋势线
+                const trendLine = document.getElementById('blood-sugar-trend-line');
+                if (trendLine) {
+                    const points = data.map(point => `${point.x},${point.y}`).join(' ');
+                    trendLine.setAttribute('points', points);
+                }
+
+                // 更新数据点
+                const dataPointsGroup = document.getElementById('blood-sugar-data-points');
+                if (dataPointsGroup) {
+                    dataPointsGroup.innerHTML = '';
+                    data.forEach((point, index) => {
+                        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+                        circle.setAttribute('cx', point.x);
+                        circle.setAttribute('cy', point.y);
+                        circle.setAttribute('r', '3');
+                        circle.setAttribute('fill', getBloodSugarColor(point.value));
+                        circle.setAttribute('stroke', '#ffffff');
+                        circle.setAttribute('stroke-width', '1');
+                        dataPointsGroup.appendChild(circle);
+                    });
+                }
+
+                // 计算达标率
+                let compliantCount = 0;
+                let totalCount = data.length;
+                data.forEach(point => {
+                    if (point.value >= 4.4 && point.value <= 10.0) {
+                        compliantCount++;
+                    }
+                });
+                const complianceRate = Math.round((compliantCount / totalCount) * 100);
+
+                // 更新达标率显示
+                const complianceRateElement = document.getElementById('glucose-compliance-rate');
+                if (complianceRateElement) {
+                    complianceRateElement.textContent = complianceRate;
+                }
+
+                console.log('血糖趋势图已更新，数据点：', data.length);
+                console.log('达标率计算：', compliantCount, '/', totalCount, '=', complianceRate + '%');
+            } catch (error) {
+                console.error('更新血糖趋势图时出错：', error);
+            }
+        }
+
+        // 日期切换功能
+        let currentDate = new Date(2024, 8, 13); // 2024年9月13日
+
+        function previousDate() {
+            currentDate.setDate(currentDate.getDate() - 1);
+            updateDateDisplay();
+            updateBloodSugarChart(); // 更新对应日期的血糖数据
+        }
+
+        function nextDate() {
+            currentDate.setDate(currentDate.getDate() + 1);
+            updateDateDisplay();
+            updateBloodSugarChart(); // 更新对应日期的血糖数据
+        }
+
+        function updateDateDisplay() {
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1;
+            const day = currentDate.getDate();
+            const dateStr = `${year}年${month}月${day}日`;
+            document.getElementById('curveDateDisplay').textContent = dateStr;
+        }
+
+        function openDatePicker() {
+            // 创建一个简单的日期选择器
+            const input = document.createElement('input');
+            input.type = 'date';
+            input.value = currentDate.toISOString().split('T')[0];
+
+            input.onchange = function() {
+                currentDate = new Date(this.value);
+                updateDateDisplay();
+                updateBloodSugarChart(); // 更新对应日期的血糖数据
+            };
+
+            input.click();
+        }
+
+        // 月份切换功能
+        let currentMonth = 8; // 2024年9月 (0-11)
+        let currentYear = 2024;
+
+        function previousMonth() {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            updateMonthDisplay();
+            generateBloodSugarTable(); // 重新生成表格数据
+        }
+
+        function nextMonth() {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            updateMonthDisplay();
+            generateBloodSugarTable(); // 重新生成表格数据
+        }
+
+        function updateMonthDisplay() {
+            const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+            document.getElementById('monthDisplay').textContent = currentYear + '年' + monthNames[currentMonth];
+        }
+
+        // 标签切换功能 - 完全重写，使用直接样式控制
+        function switchTab(tabName) {
+            console.log('切换到标签:', tabName);
+
+            // 隐藏所有标签内容
+            const allTabs = ['curve', 'table', 'list', 'target'];
+            allTabs.forEach(tab => {
+                const content = document.getElementById(tab + '-content');
+                if (content) {
+                    content.style.display = 'none';
+                }
+            });
+
+            // 重置所有标签按钮样式
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // 显示选中的标签内容
+            const selectedContent = document.getElementById(tabName + '-content');
+            if (selectedContent) {
+                selectedContent.style.display = 'block';
+                console.log('显示选中内容:', tabName);
+            }
+
+            // 激活选中的标签按钮
+            const activeButton = document.querySelector(`[data-tab="${tabName}"]`);
+            if (activeButton) {
+                activeButton.classList.add('active');
+                console.log('激活标签按钮:', tabName);
+            }
+        }
+
+        // 更新图表X轴和参考线函数
+        function updateChartAxisAndLines(viewType) {
+            // 收缩压参考线位置计算 (180-140-100-60范围)
+            const systolic90Y = 180 - (90 - 60) * (180 / (180 - 60)); // 90mmHg位置
+            const systolic140Y = 180 - (140 - 60) * (180 / (180 - 60)); // 140mmHg位置
+
+            // 舒张压参考线位置计算 (120-90-60-30范围)
+            const diastolic60Y = 120 - (60 - 30) * (120 / (120 - 30)); // 60mmHg位置
+            const diastolic90Y = 120 - (90 - 30) * (120 / (120 - 30)); // 90mmHg位置
+
+            // 心率参考线位置计算 (120-90-60-30范围)
+            const heartRate60Y = 120 - (60 - 30) * (120 / (120 - 30)); // 60bpm位置
+            const heartRate100Y = 120 - (100 - 30) * (120 / (120 - 30)); // 100bpm位置
+
+            // 生成X轴标签
+            let xLabels = [];
+            if (viewType === 'week') {
+                // 周视图：显示连续7天日期，基于当前选择的日期
+                const baseDate = new Date(currentDate);
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date(baseDate);
+                    date.setDate(baseDate.getDate() - i);
+                    const month = date.getMonth() + 1;
+                    const day = date.getDate();
+                    xLabels.push(`${month}/${day}`);
+                }
+            } else {
+                // 月视图：显示5/10/15/20/25/30
+                xLabels = ['5', '10', '15', '20', '25', '30'];
+            }
+
+            // 更新收缩压图表参考线
+            const systolicChart = document.querySelector('#systolic-trend-line').parentElement.parentElement;
+            if (systolicChart) {
+                // 更新参考线位置
+                const refLine1 = systolicChart.querySelector('line[stroke="#10b981"]');
+                const refLine2 = systolicChart.querySelector('line[stroke="#ef4444"]');
+                const refText1 = systolicChart.querySelector('text[fill="#10b981"]');
+                const refText2 = systolicChart.querySelector('text[fill="#ef4444"]');
+
+                if (refLine1) {
+                    refLine1.setAttribute('y1', systolic90Y);
+                    refLine1.setAttribute('y2', systolic90Y);
+                }
+                if (refLine2) {
+                    refLine2.setAttribute('y1', systolic140Y);
+                    refLine2.setAttribute('y2', systolic140Y);
+                }
+                if (refText1) {
+                    refText1.setAttribute('y', systolic90Y);
+                    refText1.textContent = '90';
+                }
+                if (refText2) {
+                    refText2.setAttribute('y', systolic140Y);
+                    refText2.textContent = '140';
+                }
+            }
+
+            // 更新舒张压图表参考线
+            const diastolicChart = document.querySelector('#diastolic-trend-line').parentElement.parentElement;
+            if (diastolicChart) {
+                const refLine1 = diastolicChart.querySelector('line[stroke="#10b981"]');
+                const refLine2 = diastolicChart.querySelector('line[stroke="#ef4444"]');
+                const refText1 = diastolicChart.querySelector('text[fill="#10b981"]');
+                const refText2 = diastolicChart.querySelector('text[fill="#ef4444"]');
+
+                if (refLine1) {
+                    refLine1.setAttribute('y1', diastolic60Y);
+                    refLine1.setAttribute('y2', diastolic60Y);
+                }
+                if (refLine2) {
+                    refLine2.setAttribute('y1', diastolic90Y);
+                    refLine2.setAttribute('y2', diastolic90Y);
+                }
+                if (refText1) {
+                    refText1.setAttribute('y', diastolic60Y);
+                    refText1.textContent = '60';
+                }
+                if (refText2) {
+                    refText2.setAttribute('y', diastolic90Y);
+                    refText2.textContent = '90';
+                }
+            }
+
+            // 更新心率图表参考线
+            const heartRateChart = document.querySelector('#heart-rate-trend-line').parentElement.parentElement;
+            if (heartRateChart) {
+                const refLine1 = heartRateChart.querySelector('line[stroke="#10b981"]');
+                const refLine2 = heartRateChart.querySelector('line[stroke="#f59e0b"]');
+                const refText1 = heartRateChart.querySelector('text[fill="#10b981"]');
+                const refText2 = heartRateChart.querySelector('text[fill="#f59e0b"]');
+
+                if (refLine1) {
+                    refLine1.setAttribute('y1', heartRate60Y);
+                    refLine1.setAttribute('y2', heartRate60Y);
+                }
+                if (refLine2) {
+                    refLine2.setAttribute('y1', heartRate100Y);
+                    refLine2.setAttribute('y2', heartRate100Y);
+                }
+                if (refText1) {
+                    refText1.setAttribute('y', heartRate60Y);
+                    refText1.textContent = '60';
+                }
+                if (refText2) {
+                    refText2.setAttribute('y', heartRate100Y);
+                    refText2.textContent = '100';
+                }
+            }
+
+            // 更新所有图表的X轴标签
+            const xLabelContainers = document.querySelectorAll('.flex.justify-between.text-xs.text-gray-400.px-6');
+            xLabelContainers.forEach(container => {
+                container.innerHTML = xLabels.map(label => `<span>${label}</span>`).join('');
+            });
+        }
+
+        // 页面初始化 - 简化版本
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('页面开始初始化...');
+
+            // 隐藏所有标签页
+            const allTabs = ['curve', 'table', 'list', 'target'];
+            allTabs.forEach(tab => {
+                const content = document.getElementById(tab + '-content');
+                if (content) {
+                    content.style.display = 'none';
+                }
+            });
+
+            // 确保默认显示曲线标签
+            switchTab('curve');
+
+            // 初始化血糖数据表格
+            generateBloodSugarTable();
+
+            // 初始化血糖趋势图
+            setTimeout(() => {
+                updateBloodSugarChart();
+                console.log('血糖趋势图初始化完成');
+            }, 100);
+
+            // 日期范围选择器点击事件
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // 重置所有标签样式
+                    tabs.forEach(t => {
+                        t.classList.remove('active', 'bg-white', 'text-gray-900', 'shadow-sm');
+                        t.classList.add('text-gray-500');
+                    });
+
+                    // 激活当前标签
+                    this.classList.add('active', 'bg-white', 'text-gray-900', 'shadow-sm');
+                    this.classList.remove('text-gray-500');
+
+                    // 更新图表X轴和参考线
+                    const viewType = this.textContent.trim() === '周' ? 'week' : 'month';
+                    updateChartAxisAndLines(viewType);
+                });
+            });
+
+            // 初始化为月视图
+            updateChartAxisAndLines('month');
+        });
+
+        /**
+         * 生成血糖数据表格
+         */
+        function generateBloodSugarTable() {
+            const tableBody = document.getElementById('bloodSugarTableBody');
+            if (!tableBody) return;
+
+            // 获取当前日期
+            const today = new Date();
+            const todayYear = today.getFullYear();
+            const todayMonth = today.getMonth();
+            const todayDay = today.getDate();
+
+            // 清空表格内容
+            tableBody.innerHTML = '';
+
+            // 确定要显示的年月和最大日期
+            let maxDay;
+
+            // 如果不是当前月份，显示该月的所有天数
+            if (currentYear !== todayYear || currentMonth !== todayMonth) {
+                // 获取该月的最后一天
+                maxDay = new Date(currentYear, currentMonth + 1, 0).getDate();
+            } else {
+                // 当前月份，只显示到今天
+                maxDay = todayDay;
+            }
+
+            // 生成从最大日期到1号的所有日期（倒序）
+            for (let day = maxDay; day >= 1; day--) {
+                const row = generateBloodSugarRow(day);
+                tableBody.appendChild(row);
+            }
+        }
+
+        /**
+         * 生成单行血糖数据
+         * @param {number} day 日期
+         * @returns {HTMLElement} 表格行元素
+         */
+        function generateBloodSugarRow(day) {
+            const row = document.createElement('tr');
+
+            // 日期列
+            const dateCell = document.createElement('td');
+            dateCell.className = 'text-sm';
+            dateCell.textContent = day;
+            row.appendChild(dateCell);
+
+            // 8个时间段的血糖数据
+            const timeSlots = ['凌晨', '早餐前', '早餐后', '午餐前', '午餐后', '晚餐前', '晚餐后', '睡前'];
+
+            timeSlots.forEach(() => {
+                const cell = document.createElement('td');
+                cell.className = 'text-sm';
+
+                // 随机生成血糖数据（70%概率有数据，30%概率为空）
+                if (Math.random() < 0.7) {
+                    const bloodSugar = generateRandomBloodSugar();
+                    cell.textContent = bloodSugar.value;
+                    cell.classList.add(bloodSugar.status);
+                } else {
+                    cell.textContent = '-';
+                }
+
+                row.appendChild(cell);
+            });
+
+            return row;
+        }
+
+        /**
+         * 生成随机血糖值和状态
+         * @returns {Object} 包含血糖值和状态的对象
+         */
+        function generateRandomBloodSugar() {
+            // 生成4.0-12.0之间的血糖值
+            const value = (Math.random() * 8 + 4).toFixed(1);
+            const numValue = parseFloat(value);
+
+            // 根据血糖值确定状态
+            let status = 'status-normal';
+            if (numValue < 4.4) {
+                status = 'status-low';
+            } else if (numValue > 10.0) {
+                status = 'status-high';
+            }
+
+            return {
+                value: value,
+                status: status
+            };
+        }
+
+        // 展开/收起日记录功能
+        function toggleDailyGroup(date) {
+            const records = document.getElementById('records-' + date);
+            const icon = document.getElementById('icon-' + date);
+
+            if (records.style.display === 'none') {
+                records.style.display = 'block';
+                icon.classList.remove('fa-chevron-right');
+                icon.classList.add('fa-chevron-down');
+            } else {
+                records.style.display = 'none';
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-right');
+            }
+        }
+
+        // 血糖目标编辑模式切换
+        let isEditMode = false;
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            const editBtn = document.getElementById('editTargetBtn');
+            const saveSection = document.getElementById('saveSection');
+
+            for (let i = 1; i <= 9; i++) {
+                const valueSpan = document.getElementById('target-value-' + i);
+                const inputField = document.getElementById('target-input-' + i);
+
+                if (isEditMode) {
+                    valueSpan.style.display = 'none';
+                    inputField.style.display = 'inline-block';
+                    editBtn.textContent = '取消修改';
+                    saveSection.style.display = 'block';
+                } else {
+                    valueSpan.style.display = 'inline';
+                    inputField.style.display = 'none';
+                    editBtn.textContent = '修改目标';
+                    saveSection.style.display = 'none';
+                }
+            }
+        }
+
+        // 保存血糖目标
+        function saveTargets() {
+            for (let i = 1; i <= 9; i++) {
+                const valueSpan = document.getElementById('target-value-' + i);
+                const inputField = document.getElementById('target-input-' + i);
+
+                // 更新显示的值
+                valueSpan.textContent = inputField.value;
+            }
+
+            // 退出编辑模式
+            toggleEditMode();
+
+            // 显示保存成功提示
+            showSuccessMessage('血糖目标已保存');
+        }
+
+        // 显示成功消息
+        function showSuccessMessage(message) {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        // 联系客服函数
+        function contactCustomerService() {
+            // 模拟联系客服功能
+            const customerServicePhone = '400-123-4567';
+            const customerServiceTime = '工作日 9:00-18:00';
+            if (confirm(`客服电话：${customerServicePhone}\n服务时间：${customerServiceTime}\n\n是否拨打电话联系客服？`)) {
+                // 在实际应用中，这里可以调用拨号功能
+                alert(`正在拨打客服电话：${customerServicePhone}`);
+            }
+        }
+
+        /**
+         * 导航到血糖智能设备页面
+         */
+        function navigateToBloodSugarDevice() {
+            // 触觉反馈
+            if (typeof MedicalApp !== 'undefined' && MedicalApp.HapticManager) {
+                MedicalApp.HapticManager.impact('light');
+            }
+
+            // 如果在iframe中，发送消息给父页面
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigateToPage',
+                    page: 'blood_sugar_device'
+                }, '*');
+            } else {
+                // 直接导航到血糖智能设备页面
+                window.location.href = 'blood_sugar_device.html';
+            }
+        }
+    </script>
+
+    <!-- 全局错误处理 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message);
+            // 阻止错误弹窗，但不影响页面显示
+            return true;
+        });
+
+        // 安全的getElementById包装函数
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // 安全的textContent设置函数
+        function safeSetText(id, text) {
+            const element = document.getElementById(id);
+            if (element && text !== undefined && text !== null) {
+                element.textContent = text;
+            }
+            return element;
+        }
+        // 安全的震动函数（避免iframe中的跨域限制）
+        function safeVibrate(duration) {
+            try {
+                // 检查是否支持震动API
+                if (navigator.vibrate && window.self === window.top) {
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // 忽略震动API错误
+                console.debug('Vibrate not available:', e.message);
+            }
+        }
+
+    </script>
+</body>
+</html>

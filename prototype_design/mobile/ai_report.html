@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的AI报告 - 控糖助手</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 糖尿病控糖管理平台 - 统一样式文件 */
+
+        /* 根据UI_design.md的设计规则定义颜色 */
+        /* 主色调 */
+        .primary-color { color: #3b82f6; }
+        .primary-dark { color: #2563eb; }
+        .secondary-color { color: #f97316; }
+        .secondary-dark { color: #ea580c; }
+
+        /* 医疗主题色彩 */
+        .medical-blue { color: #3b82f6; }
+        .medical-green { color: #22c55e; }
+        .medical-red { color: #ef4444; }
+        .medical-orange { color: #f59e0b; }
+        .medical-purple { color: #8b5cf6; }
+
+        /* 中性色 */
+        .gray-50 { color: #f9fafb; }
+        .gray-100 { color: #f3f4f6; }
+        .gray-200 { color: #e5e7eb; }
+        .gray-300 { color: #d1d5db; }
+        .gray-400 { color: #9ca3af; }
+        .gray-500 { color: #6b7280; }
+        .gray-600 { color: #4b5563; }
+        .gray-700 { color: #374151; }
+        .gray-800 { color: #1f2937; }
+        .gray-900 { color: #111827; }
+
+        /* 隐藏所有滚动条 */
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        *::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* 通用样式 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1f2937;
+            background-color: #f9fafb;
+        }
+
+        .step-container {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .step-content {
+            padding: 16px;
+        }
+
+        /* 头部样式 */
+        .header {
+            background: white;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+        }
+
+        .back-btn {
+            color: #6b7280;
+            transition: color 0.2s ease;
+            cursor: pointer;
+        }
+
+        .back-btn:hover {
+            color: #374151;
+        }
+
+        .back-btn i {
+            font-size: 18px;
+        }
+
+        .header-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        .header-spacer {
+            width: 24px;
+            height: 24px;
+        }
+
+  
+        /* 报告卡片样式 */
+        .report-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 1px solid #e5e7eb;
+            overflow: hidden;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .report-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .report-type-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+  
+        /* 详情展开样式 */
+        .report-details {
+            padding: 16px;
+            border-top: 1px solid #f3f4f6;
+            display: none;
+        }
+
+        .report-details.expanded {
+            display: block;
+        }
+
+        .detail-section {
+            margin-bottom: 16px;
+        }
+
+        .detail-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .detail-content {
+            color: #6b7280;
+            font-size: 14px;
+            line-height: 1.5;
+            margin-left: 24px;
+        }
+
+        /* 空状态样式 */
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #9ca3af;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        /* 加载状态样式 */
+        .loading-state {
+            text-align: center;
+            padding: 40px;
+            color: #6b7280;
+        }
+
+        .spinner {
+            border: 3px solid #f3f4f6;
+            border-top: 3px solid #3b82f6;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 16px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 展开指示器样式 */
+        .expand-indicator {
+            transition: transform 0.3s ease;
+        }
+
+        .expand-indicator.expanded {
+            transform: rotate(180deg);
+        }
+
+        /* 点击区域样式 */
+        .clickable-area {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .clickable-area:active {
+            background: rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="step-container">
+        <!-- 头部 -->
+        <div class="header">
+            <div class="header-content">
+                <button onclick="goBack()" class="back-btn">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h1 class="header-title">我的AI报告</h1>
+                <div class="header-spacer"></div>
+            </div>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="step-content">
+            <!-- 日期范围选择器 -->
+        <div class="tab-container bg-gray-100 mx-2 mt-4 rounded-lg shadow-sm overflow-hidden">
+            <div class="flex">
+                <div id="btnWeekly" class="tab flex-1 text-center py-3 px-4 rounded-lg font-medium cursor-pointer transition-all active bg-white text-gray-900 shadow-sm" onclick="selectPeriod('weekly')">
+                    周
+                </div>
+                <div id="btnMonthly" class="tab flex-1 text-center py-3 px-4 rounded-lg font-medium cursor-pointer transition-all text-gray-500 hover:text-gray-700" onclick="selectPeriod('monthly')">
+                    月
+                </div>
+                <div id="btnYearly" class="tab flex-1 text-center py-3 px-4 rounded-lg font-medium cursor-pointer transition-all text-gray-500 hover:text-gray-700" onclick="selectPeriod('yearly')">
+                    年
+                </div>
+            </div>
+        </div>
+
+        <!-- 日期选择器 -->
+        <div id="dateSelector" class="date-selector bg-white mx-2 mt-4 mb-6 rounded-lg shadow-sm overflow-hidden">
+            <div class="flex items-center justify-between px-4 py-3">
+                <button class="text-gray-400 hover:text-gray-600" onclick="previousPeriod()">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div class="flex items-center space-x-2 cursor-pointer" onclick="openDatePicker()">
+                    <span id="currentDate" class="date-display text-lg font-medium text-gray-900">2024年9月</span>
+                    <i class="dropdown-icon fas fa-chevron-down text-gray-400"></i>
+                </div>
+                <button class="text-gray-400 hover:text-gray-600" onclick="nextPeriod()">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 年模式下的间距占位符 -->
+        <div id="yearlySpacer" class="mb-6" style="display: none;"></div>
+
+            <!-- 报告列表 -->
+            <div id="reportsList">
+                <!-- 报告项将通过JavaScript动态生成 -->
+            </div>
+
+            <!-- 空状态 -->
+            <div id="emptyState" class="empty-state" style="display: none;">
+                <div class="empty-icon">
+                    <i class="fas fa-file-medical"></i>
+                </div>
+                <h3 class="text-lg font-medium text-gray-500 mb-2">暂无AI报告</h3>
+                <p class="text-sm text-gray-400">请继续记录健康数据<br>系统将为您生成个性化AI报告</p>
+            </div>
+
+            <!-- 加载状态 -->
+            <div id="loadingState" class="loading-state" style="display: none;">
+                <div class="spinner"></div>
+                <p>正在加载报告...</p>
+            </div>
+            </div>
+        </div>
+
+    <script>
+        // 全局变量
+        let currentPeriod = 'weekly';
+        let currentDate = new Date();
+        let reports = [];
+
+        // 初始化页面
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateDisplay();
+            loadReports();
+        });
+
+        // 返回上一页
+        function goBack() {
+            window.history.back();
+        }
+
+        // 刷新报告
+        function refreshReports() {
+            loadReports();
+        }
+
+        // 选择周期类型
+        function selectPeriod(period) {
+            currentPeriod = period;
+
+            // 更新按钮状态 - 使用血糖分析页面的样式
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active', 'bg-white', 'text-gray-900', 'shadow-sm');
+                tab.classList.add('text-gray-500');
+            });
+
+            // 激活当前标签
+            const activeTab = document.getElementById('btn' + period.charAt(0).toUpperCase() + period.slice(1));
+            activeTab.classList.add('active', 'bg-white', 'text-gray-900', 'shadow-sm');
+            activeTab.classList.remove('text-gray-500');
+
+            // 根据模式显示或隐藏日期选择器
+            const dateSelector = document.getElementById('dateSelector');
+            const yearlySpacer = document.getElementById('yearlySpacer');
+
+            if (period === 'yearly') {
+                dateSelector.style.display = 'none';
+                yearlySpacer.style.display = 'block';
+            } else {
+                dateSelector.style.display = 'block';
+                yearlySpacer.style.display = 'none';
+            }
+
+            // 重置到当前日期
+            currentDate = new Date();
+            updateDateDisplay();
+            loadReports();
+        }
+
+        // 上一个周期
+        function previousPeriod() {
+            switch(currentPeriod) {
+                case 'weekly':
+                    currentDate.setMonth(currentDate.getMonth() - 1);
+                    break;
+                case 'monthly':
+                    currentDate.setFullYear(currentDate.getFullYear() - 1);
+                    break;
+            }
+            updateDateDisplay();
+            loadReports();
+        }
+
+        // 下一个周期
+        function nextPeriod() {
+            const now = new Date();
+            switch(currentPeriod) {
+                case 'weekly':
+                    if (currentDate < now) {
+                        currentDate.setMonth(currentDate.getMonth() + 1);
+                    }
+                    break;
+                case 'monthly':
+                    if (currentDate < now) {
+                        currentDate.setFullYear(currentDate.getFullYear() + 1);
+                    }
+                    break;
+            }
+            updateDateDisplay();
+            loadReports();
+        }
+
+        // 更新日期显示
+        function updateDateDisplay() {
+            const dateElement = document.getElementById('currentDate');
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth() + 1;
+
+            switch(currentPeriod) {
+                case 'weekly':
+                    dateElement.textContent = `${year}年${month}月`;
+                    break;
+                case 'monthly':
+                    dateElement.textContent = `${year}年`;
+                    break;
+                case 'yearly':
+                    dateElement.textContent = `${year}年`;
+                    break;
+            }
+        }
+
+        // 打开日期选择器
+        function openDatePicker() {
+            // 根据当前周期类型创建合适的日期选择器
+            let input = document.createElement('input');
+
+            if (currentPeriod === 'weekly') {
+                // 周选择器 - 使用年月输入
+                input.type = 'month';
+                const year = currentDate.getFullYear();
+                const month = String(currentDate.getMonth() + 1).padStart(2, '0');
+                input.value = `${year}-${month}`;
+
+                input.onchange = function() {
+                    const [year, month] = this.value.split('-').map(Number);
+                    currentDate = new Date(year, month - 1, 1);
+                    updateDateDisplay();
+                    loadReports();
+                };
+            } else if (currentPeriod === 'monthly') {
+                // 月选择器 - 使用年选择器
+                input.type = 'number';
+                input.min = '2020';
+                input.max = '2030';
+                input.value = currentDate.getFullYear();
+
+                input.onchange = function() {
+                    const year = parseInt(this.value);
+                    currentDate = new Date(year, 0, 1);
+                    updateDateDisplay();
+                    loadReports();
+                };
+            }
+
+            if (input.type) {
+                input.click();
+            }
+        }
+
+        // 获取周数
+        function getWeekNumber(date) {
+            const firstDayOfYear = new Date(date.getFullYear(), 0, 1);
+            const pastDaysOfYear = (date - firstDayOfYear) / 86400000;
+            return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7);
+        }
+
+        // 加载报告数据
+        function loadReports() {
+            const reportsList = document.getElementById('reportsList');
+            const emptyState = document.getElementById('emptyState');
+            const loadingState = document.getElementById('loadingState');
+
+            // 显示加载状态
+            loadingState.style.display = 'block';
+            reportsList.style.display = 'none';
+            emptyState.style.display = 'none';
+
+            // 模拟网络请求延迟
+            setTimeout(() => {
+                reports = generateMockReports();
+
+                if (reports.length === 0) {
+                    // 显示空状态
+                    emptyState.style.display = 'block';
+                    reportsList.style.display = 'none';
+                } else {
+                    // 显示报告列表
+                    reportsList.innerHTML = reports.map(report => createReportCard(report)).join('');
+                    reportsList.style.display = 'block';
+                }
+
+                loadingState.style.display = 'none';
+            }, 1000);
+        }
+
+        // 生成模拟报告数据
+        function generateMockReports() {
+            const mockReports = [];
+
+            switch(currentPeriod) {
+                case 'weekly':
+                    // 生成当前月份的所有周报告
+                    const year = currentDate.getFullYear();
+                    const month = currentDate.getMonth();
+
+                    // 获取当月第一天和最后一天
+                    const firstDay = new Date(year, month, 1);
+                    const lastDay = new Date(year, month + 1, 0);
+
+                    // 生成当月所有周报告（周一生成，按生成月份归类）
+                    const weeklyReports = [];
+                    const now = new Date();
+
+                    // 找出当月所有的周一，每个周一生成一个周报告
+                    for (let day = 1; day <= lastDay.getDate(); day++) {
+                        const currentDate = new Date(year, month, day);
+                        const dayOfWeek = currentDate.getDay(); // 0=周日, 1=周一, ..., 6=周六
+
+                        // 如果是周一，且这个周一已经过去
+                        if (dayOfWeek === 1 && currentDate <= now) {
+                            // 计算这个周是当月的第几周
+                            const firstWeekOfMonth = getWeekNumber(firstDay);
+                            const currentWeekNum = getWeekNumber(currentDate);
+                            const weekOfMonth = currentWeekNum - firstWeekOfMonth + 1;
+
+                            // 计算周日日期
+                            const sunday = new Date(currentDate);
+                            sunday.setDate(currentDate.getDate() + 6);
+
+                            // 获取年份周数
+                            const yearWeekNumber = getWeekNumber(currentDate);
+
+                            weeklyReports.push({
+                                id: `weekly_${year}_${month}_${weekOfMonth}`,
+                                title: '健康周报告',
+                                date: currentDate, // 周一的日期
+                                type: 'weekly',
+                                weekNumber: weekOfMonth, // 当月第几周
+                                yearWeekNumber: yearWeekNumber, // 年份第几周
+                                overview: `根据您${year}年第${yearWeekNumber}周的健康数据分析，您的整体健康状况良好，血压和血糖控制较为稳定，建议继续保持当前的生活习惯。`,
+                                healthScore: 85 - weekOfMonth * 3,
+                                suggestions: [
+                                    '建议增加有氧运动，每周至少150分钟',
+                                    '保持规律作息，确保充足睡眠',
+                                    '注意饮食平衡，减少高糖食物摄入'
+                                ],
+                                riskFactors: [
+                                    '血压波动较大，需要加强监测',
+                                    '血糖控制不够稳定，注意饮食调节'
+                                ],
+                                improvements: [
+                                    '建议调整饮食结构，增加蔬菜水果摄入',
+                                    '建立规律的运动习惯，提高身体代谢能力'
+                                ]
+                            });
+                        }
+                    }
+
+                    // 按年份周数倒序排序（最新的周排在最前面）
+                    weeklyReports.sort((a, b) => b.yearWeekNumber - a.yearWeekNumber);
+                    mockReports.push(...weeklyReports);
+                    break;
+
+                case 'monthly':
+                    // 生成当前年份的所有月报告
+                    const currentYear = currentDate.getFullYear();
+
+                    // 从当前月份往前生成报告
+                    for (let i = 0; i < 12; i++) {
+                        const monthNum = (11 - i);
+                        const reportDate = new Date(currentYear, monthNum, 1);
+
+                        // 只生成到当前月份为止的报告
+                        if (reportDate <= new Date()) {
+                            mockReports.push({
+                                id: `monthly_${currentYear}_${monthNum}`,
+                                title: '健康月报告',
+                                date: reportDate,
+                                type: 'monthly',
+                                overview: `${currentYear}年${monthNum + 1}月的健康数据显示您的整体状况稳步改善。各项指标中，血压控制良好，血糖水平有所改善，建议继续保持健康的生活方式。`,
+                                healthScore: 85 - i * 5,
+                                suggestions: [
+                                    '坚持每日运动，保持良好的身体状态',
+                                    '定期监测健康指标，及时发现异常',
+                                    '保持心理健康，适当进行放松活动'
+                                ],
+                                riskFactors: [
+                                    '体重略有上升，需要控制饮食',
+                                    '睡眠质量有待改善'
+                                ],
+                                improvements: [
+                                    '制定科学的饮食计划，控制热量摄入',
+                                    '改善睡眠环境，提高睡眠质量'
+                                ]
+                            });
+                        }
+                    }
+                    break;
+
+                case 'yearly':
+                    // 生成所有年份的年报告
+                    for (let i = 0; i < 5; i++) {
+                        const reportYear = new Date().getFullYear() - i;
+                        const reportDate = new Date(reportYear, 0, 1);
+
+                        mockReports.push({
+                            id: `yearly_${reportYear}`,
+                            title: '健康年报告',
+                            date: reportDate,
+                            type: 'yearly',
+                            overview: `${reportYear}年的健康数据综合分析显示，您的整体健康状况保持良好。通过坚持健康的生活方式和定期监测，各项关键指标都控制在合理范围内。`,
+                            healthScore: 85 - i * 8,
+                            suggestions: [
+                                '继续保持健康的生活方式',
+                                '定期进行全面体检',
+                                '加强心理健康管理'
+                            ],
+                            riskFactors: [
+                                '年龄增长带来的自然风险',
+                                '需要关注慢性病预防'
+                            ],
+                            improvements: [
+                                '优化饮食结构，增加营养摄入',
+                                '建立更完善的健康管理体系'
+                            ]
+                        });
+                    }
+                    break;
+            }
+
+            return mockReports;
+        }
+
+        // 创建报告卡片
+        function createReportCard(report) {
+            const formattedDate = formatDate(report.date);
+            let title = `健康${getTypeLabel(report.type)}`;
+
+            // 为周报告添加周数信息
+            if (report.type === 'weekly' && report.yearWeekNumber) {
+                // 使用年份周数命名，如"2024年第48周报告"
+                const year = report.date.getFullYear();
+                title = `${year}年第${report.yearWeekNumber}周报告`;
+            }
+            // 为月报告添加月份信息
+            else if (report.type === 'monthly') {
+                const year = report.date.getFullYear();
+                const month = report.date.getMonth() + 1;
+                title = `${year}年${month}月报告`;
+            }
+            // 为年报告添加年份信息
+            else if (report.type === 'yearly') {
+                const year = report.date.getFullYear();
+                title = `${year}年报告`;
+            }
+
+            return `
+                <div class="report-card">
+                    <div class="report-header">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-lg font-semibold">${title}</h3>
+                            <p class="text-sm opacity-80">${formattedDate}</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4">
+                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">${report.overview}</p>
+
+                        <div class="flex justify-center">
+                            <button onclick="goToReportDetail('${report.id}')" class="flex items-center gap-2 px-4 py-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                                <span class="text-sm">查看详情</span>
+                                <i class="fas fa-chevron-right text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // 格式化日期
+        function formatDate(date) {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
+  
+        // 获取类型标签
+        function getTypeLabel(type) {
+            switch(type) {
+                case 'weekly': return '周报告';
+                case 'monthly': return '月报告';
+                case 'yearly': return '年报告';
+                default: return '报告';
+            }
+        }
+
+        // 跳转到报告详情页
+        function goToReportDetail(reportId) {
+            // 解析报告ID获取报告类型
+            const reportType = reportId.split('_')[0]; // weekly, monthly, yearly
+
+            // 跳转到详情页面并传递参数
+            const detailUrl = `ai_report_detail.html?reportId=${reportId}&type=${reportType}`;
+
+            if (window.parent !== window) {
+                window.parent.postMessage({
+                    type: 'navigate',
+                    page: 'ai_report_detail',
+                    url: detailUrl
+                }, '*');
+            } else {
+                window.location.href = detailUrl;
+            }
+        }
+    </script>
+
+    <!-- 全局错误处理 -->
+    <script>
+        window.addEventListener('error', function(e) {
+            console.error('JavaScript Error:', e.message);
+            // 阻止错误弹窗，但不影响页面显示
+            return true;
+        });
+
+        // 安全的getElementById包装函数
+        function safeGetElement(id) {
+            return document.getElementById(id);
+        }
+
+        // 安全的textContent设置函数
+        function safeSetText(id, text) {
+            const element = document.getElementById(id);
+            if (element && text !== undefined && text !== null) {
+                element.textContent = text;
+            }
+            return element;
+        }
+        // 安全的震动函数（避免iframe中的跨域限制）
+        function safeVibrate(duration) {
+            try {
+                // 检查是否支持震动API
+                if (navigator.vibrate && window.self === window.top) {
+                    navigator.vibrate(duration);
+                }
+            } catch (e) {
+                // 忽略震动API错误
+                console.debug('Vibrate not available:', e.message);
+            }
+        }
+
+    </script>
+</body>
+</html>

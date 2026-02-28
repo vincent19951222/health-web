@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>尿酸检测 - 优糖智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 医疗健康主题 - Web端尿酸检测页面 */
+        :root {
+            /* 主色调 - 专业蓝 */
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+
+            /* 尿酸主题色 - 靛蓝色 */
+            --ua-primary: #6366f1;
+            --ua-secondary: #4f46e5;
+            --ua-light: #eef2ff;
+
+            /* 医疗状态色 */
+            --success-500: #22c55e;
+            --warning-500: #f59e0b;
+            --danger-500: #ef4444;
+            --info-500: #06b6d4;
+
+            /* 中性色 */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 24px;
+
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            min-height: 100vh;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: linear-gradient(180deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .sidebar-logo {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--danger-500);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        /* 用户信息区域 */
+        .sidebar-user {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .sidebar-user:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* 主内容区 */
+        .main-content {
+            margin-left: 240px;
+            padding: 24px;
+            min-height: 100vh;
+        }
+
+        /* 页面头部 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .page-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .page-subtitle {
+            color: var(--gray-500);
+            font-size: 14px;
+            margin-top: 4px;
+        }
+
+        /* 尿酸主卡片 - 靛蓝色渐变 */
+        .ua-main-card {
+            background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
+            border-radius: var(--radius-2xl);
+            padding: 32px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .ua-main-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .ua-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 24px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ua-card-title {
+            font-size: 18px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .ua-card-time {
+            font-size: 13px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* 模式切换按钮 */
+        .mode-toggle {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mode-btn {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: transparent;
+            color: white;
+        }
+
+        .mode-btn.active {
+            background: white;
+            color: #6366f1;
+            border-color: white;
+        }
+
+        .mode-btn:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        /* 圆环显示 */
+        .ring-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 32px 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .ua-ring {
+            width: 180px;
+            height: 180px;
+            position: relative;
+        }
+
+        .ua-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .ua-ring .ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 14;
+        }
+
+        .ua-ring .ring-progress {
+            fill: none;
+            stroke-width: 14;
+            stroke-linecap: round;
+            stroke: #a5b4fc;
+            stroke-dasharray: 452;
+            stroke-dashoffset: 135;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .ring-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .ring-value .number {
+            font-size: 44px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .ring-value .unit {
+            font-size: 12px;
+            opacity: 0.8;
+            margin-top: 4px;
+        }
+
+        /* 性别参考 */
+        .gender-reference {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 16px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-xl);
+        }
+
+        .gender-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .gender-item i {
+            font-size: 14px;
+        }
+
+        /* 状态信息 */
+        .status-info {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            opacity: 0.9;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .status-dot.normal { background: #4ade80; }
+        .status-dot.warning { background: #fbbf24; }
+        .status-dot.danger { background: #f87171; }
+
+        /* 统计网格 */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-100);
+        }
+
+        .stat-card-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+            color: var(--gray-500);
+            font-size: 13px;
+        }
+
+        .stat-card-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .stat-card-unit {
+            font-size: 14px;
+            color: var(--gray-500);
+            font-weight: 400;
+        }
+
+        .stat-card-trend {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .stat-card-trend.up { color: var(--danger-500); }
+        .stat-card-trend.down { color: var(--success-500); }
+        .stat-card-trend.stable { color: var(--gray-400); }
+
+        /* 操作按钮区 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .action-btn {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border-radius: var(--radius-xl);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #6366f1, #4f46e5);
+            color: white;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .action-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        .action-btn i {
+            font-size: 18px;
+        }
+
+        /* 趋势图表卡片 */
+        .chart-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-100);
+            margin-bottom: 24px;
+        }
+
+        .chart-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .chart-tabs {
+            display: flex;
+            gap: 4px;
+            background: var(--gray-100);
+            padding: 4px;
+            border-radius: var(--radius-lg);
+        }
+
+        .chart-tab {
+            padding: 6px 12px;
+            border-radius: var(--radius-md);
+            font-size: 12px;
+            color: var(--gray-600);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            background: transparent;
+        }
+
+        .chart-tab.active {
+            background: white;
+            color: var(--gray-900);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-container {
+            height: 280px;
+            position: relative;
+        }
+
+        /* SVG 趋势图 */
+        .trend-chart {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chart-line {
+            fill: none;
+            stroke-width: 3;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke: #6366f1;
+        }
+
+        .chart-area {
+            fill: #6366f1;
+            opacity: 0.1;
+        }
+
+        .chart-grid-line {
+            stroke: var(--gray-200);
+            stroke-width: 1;
+        }
+
+        .chart-label {
+            font-size: 11px;
+            fill: var(--gray-400);
+        }
+
+        .chart-dot {
+            r: 5;
+            stroke-width: 2;
+            stroke: white;
+            fill: #6366f1;
+        }
+
+        /* 参考线 */
+        .reference-line {
+            stroke: #22c55e;
+            stroke-width: 1.5;
+            stroke-dasharray: 5, 5;
+        }
+
+        .reference-line-upper {
+            stroke: #f59e0b;
+            stroke-width: 1.5;
+            stroke-dasharray: 5, 5;
+        }
+
+        /* 图例 */
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid var(--gray-100);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--gray-600);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .legend-line {
+            width: 20px;
+            height: 2px;
+        }
+
+        /* 参考范围卡片 */
+        .reference-card {
+            background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(99, 102, 241, 0.2);
+        }
+
+        .reference-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4338ca;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .reference-items {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .reference-item {
+            text-align: center;
+            padding: 12px;
+            background: white;
+            border-radius: var(--radius-lg);
+        }
+
+        .reference-label {
+            font-size: 12px;
+            color: #6366f1;
+            margin-bottom: 4px;
+        }
+
+        .reference-value {
+            font-size: 14px;
+            font-weight: 600;
+            color: #4338ca;
+        }
+
+        /* 历史记录卡片 */
+        .history-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-100);
+        }
+
+        .history-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .history-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .view-all-btn {
+            color: var(--primary-500);
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .view-all-btn:hover {
+            color: var(--primary-600);
+        }
+
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .history-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            background: var(--gray-100);
+        }
+
+        .history-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            font-size: 18px;
+        }
+
+        .history-icon.normal {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+        }
+
+        .history-icon.warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b;
+        }
+
+        .history-icon.danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .history-content {
+            flex: 1;
+        }
+
+        .history-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+        }
+
+        .history-meta {
+            font-size: 12px;
+            color: var(--gray-500);
+            margin-top: 2px;
+        }
+
+        .history-time {
+            font-size: 12px;
+            color: var(--gray-400);
+        }
+
+        /* 健康提示卡片 */
+        .tips-card {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .tips-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #92400e;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tips-list {
+            font-size: 13px;
+            color: #78350f;
+            line-height: 1.8;
+        }
+
+        .tips-list li {
+            margin-bottom: 4px;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 64px;
+            }
+
+            .sidebar-logo h1 span,
+            .nav-section-title,
+            .nav-item span,
+            .user-info {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 64px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 0;
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .ua-ring {
+                width: 150px;
+                height: 150px;
+            }
+
+            .ring-value .number {
+                font-size: 36px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .reference-items {
+                grid-template-columns: 1fr;
+            }
+
+            .gender-reference {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>
+                <i class="fas fa-heartbeat"></i>
+                <span>优唐智能AI+</span>
+            </h1>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">健康监测</div>
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>健康概览</span>
+                </a>
+                <a href="blood-sugar.html" class="nav-item">
+                    <i class="fas fa-tint"></i>
+                    <span>血糖管理</span>
+                </a>
+                <a href="blood-pressure.html" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>血压管理</span>
+                </a>
+                <a href="glycated.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>糖化血红蛋白</span>
+                </a>
+                <a href="uric-acid.html" class="nav-item active">
+                    <i class="fas fa-flask"></i>
+                    <span>尿酸检测</span>
+                </a>
+                <a href="blood-ketone.html" class="nav-item">
+                    <i class="fas fa-burn"></i>
+                    <span>血酮检测</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">智能服务</div>
+                <a href="ai-chat.html" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI助手</span>
+                    <span class="badge">新</span>
+                </a>
+                <a href="hospital.html" class="nav-item">
+                    <i class="fas fa-hospital"></i>
+                    <span>互联网医院</span>
+                </a>
+                <a href="devices.html" class="nav-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>设备管理</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <span>健康报告</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">设置</div>
+                <a href="system_settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </div>
+        </nav>
+
+        <a href="profile.html" class="sidebar-user" style="text-decoration: none; color: inherit;">
+            <div class="user-avatar">张</div>
+            <div class="user-info">
+                <div class="user-name">张先生</div>
+                <div class="user-status">健康会员</div>
+            </div>
+        </a>
+    </aside>
+
+    <!-- 主内容区 -->
+    <main class="main-content">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <div>
+                <h1 class="page-title">尿酸检测</h1>
+                <p class="page-subtitle">监测尿酸水平，预防痛风风险</p>
+            </div>
+            <div class="header-actions">
+                <button class="mode-btn active" style="background: white; color: #6366f1;">
+                    <i class="fas fa-chart-bar"></i> 数据统计
+                </button>
+            </div>
+        </div>
+
+        <!-- 尿酸主卡片 -->
+        <div class="ua-main-card">
+            <div class="ua-card-header">
+                <div>
+                    <div class="ua-card-title">今日尿酸</div>
+                    <div class="ua-card-time">最后测量：今天 07:30</div>
+                </div>
+                <div class="mode-toggle">
+                    <button class="mode-btn active">设备测量</button>
+                    <button class="mode-btn">手动记录</button>
+                </div>
+            </div>
+
+            <!-- 圆环显示 -->
+            <div class="ring-container">
+                <div class="ua-ring">
+                    <svg viewBox="0 0 160 160">
+                        <circle class="ring-bg" cx="80" cy="80" r="72"></circle>
+                        <circle class="ring-progress" cx="80" cy="80" r="72"></circle>
+                    </svg>
+                    <div class="ring-value">
+                        <div class="number">368</div>
+                        <div class="unit">μmol/L</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 性别参考 -->
+            <div class="gender-reference">
+                <div class="gender-item">
+                    <i class="fas fa-mars" style="color: #93c5fd;"></i>
+                    <span>男性正常：150-416 μmol/L</span>
+                </div>
+                <div class="gender-item">
+                    <i class="fas fa-venus" style="color: #f9a8d4;"></i>
+                    <span>女性正常：89-357 μmol/L</span>
+                </div>
+            </div>
+
+            <!-- 状态信息 -->
+            <div class="status-info">
+                <div class="status-item">
+                    <span class="status-dot normal"></span>
+                    <span>尿酸正常</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 统计网格 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <i class="fas fa-chart-line"></i>
+                    <span>7日平均</span>
+                </div>
+                <div class="stat-card-value">375 <span class="stat-card-unit">μmol/L</span></div>
+                <div class="stat-card-trend stable">
+                    <i class="fas fa-minus"></i> 较上周持平
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>最高值</span>
+                </div>
+                <div class="stat-card-value">398 <span class="stat-card-unit">μmol/L</span></div>
+                <div class="stat-card-trend">
+                    <span style="color: var(--gray-400);">近7天</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>最低值</span>
+                </div>
+                <div class="stat-card-value">352 <span class="stat-card-unit">μmol/L</span></div>
+                <div class="stat-card-trend">
+                    <span style="color: var(--gray-400);">近7天</span>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-header">
+                    <i class="fas fa-check-circle"></i>
+                    <span>达标率</span>
+                </div>
+                <div class="stat-card-value">92<span class="stat-card-unit">%</span></div>
+                <div class="stat-card-trend down">
+                    <i class="fas fa-arrow-up"></i> 较上周 +3%
+                </div>
+            </div>
+        </div>
+
+        <!-- 参考范围 -->
+        <div class="reference-card">
+            <div class="reference-title">
+                <i class="fas fa-info-circle"></i>
+                尿酸参考范围
+            </div>
+            <div class="reference-items">
+                <div class="reference-item">
+                    <div class="reference-label">正常范围</div>
+                    <div class="reference-value" style="color: #16a34a;">150-416 μmol/L</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">偏高</div>
+                    <div class="reference-value" style="color: #dc2626;">&gt;420 μmol/L</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-label">痛风风险</div>
+                    <div class="reference-value" style="color: #dc2626;">&gt;480 μmol/L</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 健康提示 -->
+        <div class="tips-card">
+            <div class="tips-title">
+                <i class="fas fa-lightbulb"></i>
+                健康提示
+            </div>
+            <ul class="tips-list">
+                <li>• 多喝水，每天至少2000ml，促进尿酸排泄</li>
+                <li>• 限制高嘌呤食物：动物内脏、海鲜、浓肉汤等</li>
+                <li>• 适量运动，控制体重，避免过度劳累</li>
+                <li>• 限制饮酒，特别是啤酒和白酒</li>
+            </ul>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="action-buttons">
+            <button class="action-btn primary">
+                <i class="fas fa-flask"></i>
+                设备测量
+            </button>
+            <button class="action-btn secondary">
+                <i class="fas fa-edit"></i>
+                手动记录
+            </button>
+        </div>
+
+        <!-- 趋势图表 -->
+        <div class="chart-card">
+            <div class="chart-card-header">
+                <h3 class="chart-card-title">近7天尿酸趋势</h3>
+                <div class="chart-tabs">
+                    <button class="chart-tab active">7天</button>
+                    <button class="chart-tab">14天</button>
+                    <button class="chart-tab">30天</button>
+                </div>
+            </div>
+            <div class="chart-container">
+                <svg class="trend-chart" viewBox="0 0 800 250" preserveAspectRatio="xMidYMid meet">
+                    <!-- 网格线 -->
+                    <line class="chart-grid-line" x1="60" y1="40" x2="780" y2="40" />
+                    <line class="chart-grid-line" x1="60" y1="90" x2="780" y2="90" />
+                    <line class="chart-grid-line" x1="60" y1="140" x2="780" y2="140" />
+                    <line class="chart-grid-line" x1="60" y1="190" x2="780" y2="190" />
+
+                    <!-- 参考线 (正常上限 416) -->
+                    <line class="reference-line-upper" x1="60" y1="80" x2="780" y2="80" />
+
+                    <!-- Y轴标签 -->
+                    <text class="chart-label" x="50" y="44" text-anchor="end">500</text>
+                    <text class="chart-label" x="50" y="94" text-anchor="end">420</text>
+                    <text class="chart-label" x="50" y="144" text-anchor="end">350</text>
+                    <text class="chart-label" x="50" y="194" text-anchor="end">280</text>
+
+                    <!-- X轴标签 -->
+                    <text class="chart-label" x="120" y="220" text-anchor="middle">周一</text>
+                    <text class="chart-label" x="220" y="220" text-anchor="middle">周二</text>
+                    <text class="chart-label" x="320" y="220" text-anchor="middle">周三</text>
+                    <text class="chart-label" x="420" y="220" text-anchor="middle">周四</text>
+                    <text class="chart-label" x="520" y="220" text-anchor="middle">周五</text>
+                    <text class="chart-label" x="620" y="220" text-anchor="middle">周六</text>
+                    <text class="chart-label" x="720" y="220" text-anchor="middle">周日</text>
+
+                    <!-- 面积图 -->
+                    <path class="chart-area" d="M120,150 L220,140 L320,160 L420,135 L520,145 L620,130 L720,140 L720,200 L120,200 Z" />
+
+                    <!-- 折线 -->
+                    <path class="chart-line" d="M120,150 L220,140 L320,160 L420,135 L520,145 L620,130 L720,140" />
+
+                    <!-- 数据点 -->
+                    <circle class="chart-dot" cx="120" cy="150" />
+                    <circle class="chart-dot" cx="220" cy="140" />
+                    <circle class="chart-dot" cx="320" cy="160" />
+                    <circle class="chart-dot" cx="420" cy="135" />
+                    <circle class="chart-dot" cx="520" cy="145" />
+                    <circle class="chart-dot" cx="620" cy="130" />
+                    <circle class="chart-dot" cx="720" cy="140" />
+                </svg>
+            </div>
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <span class="legend-dot" style="background: #6366f1;"></span>
+                    <span>尿酸值</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-line" style="background: #f59e0b;"></span>
+                    <span>正常上限 420 μmol/L</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="history-card">
+            <div class="history-card-header">
+                <h3 class="history-card-title">最近记录</h3>
+                <a href="#" class="view-all-btn">
+                    查看全部 <i class="fas fa-chevron-right"></i>
+                </a>
+            </div>
+            <div class="history-list">
+                <div class="history-item">
+                    <div class="history-icon normal">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="history-content">
+                        <div class="history-value">368 μmol/L</div>
+                        <div class="history-meta">正常 · 低于420 μmol/L</div>
+                    </div>
+                    <div class="history-time">今天 07:30</div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon normal">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="history-content">
+                        <div class="history-value">375 μmol/L</div>
+                        <div class="history-meta">正常 · 低于420 μmol/L</div>
+                    </div>
+                    <div class="history-time">昨天 07:45</div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon warning">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="history-content">
+                        <div class="history-value">425 μmol/L</div>
+                        <div class="history-meta">偏高 · 超过正常范围</div>
+                    </div>
+                    <div class="history-time">前天 08:00</div>
+                </div>
+                <div class="history-item">
+                    <div class="history-icon normal">
+                        <i class="fas fa-flask"></i>
+                    </div>
+                    <div class="history-content">
+                        <div class="history-value">398 μmol/L</div>
+                        <div class="history-meta">正常 · 低于420 μmol/L</div>
+                    </div>
+                    <div class="history-time">3天前 07:30</div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 模式切换
+        document.querySelectorAll('.mode-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // 图表标签切换
+        document.querySelectorAll('.chart-tab').forEach(tab => {
+            tab.addEventListener('click', function () {
+                document.querySelectorAll('.chart-tab').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+
+</html>
