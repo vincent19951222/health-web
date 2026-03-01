@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>手动记录血压 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 医疗健康主题 - Web端手动记录血压页面 */
+
+        :root {
+            /* 主色调 - 专业蓝 */
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+
+            /* 副色调 - 活力橙 */
+            --secondary-500: #f97316;
+            --secondary-600: #ea580c;
+
+            /* 医疗状态色 */
+            --success-500: #22c55e;
+            --warning-500: #f59e0b;
+            --danger-500: #ef4444;
+            --info-500: #06b6d4;
+
+            /* 中性色 */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 24px;
+
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 侧边栏样式 - 复用dashboard */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: linear-gradient(180deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .sidebar-logo {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--danger-500);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        /* 用户信息区域 */
+        .sidebar-user {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .sidebar-user:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部Header */
+        .header {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            color: var(--gray-600);
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: var(--gray-200);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        /* 内容区域 - 自适应占满 */
+        .content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        /* 左侧 - 血压值输入区域 */
+        .left-panel {
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 72px);
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        /* 血压双圆环容器 */
+        .blood-pressure-container {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-bottom: 32px;
+        }
+
+        .pressure-input-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .pressure-label {
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+        }
+
+        .pressure-label .sub-label {
+            font-size: 13px;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        /* 血压值输入 - 圆环样式 */
+        .blood-pressure-circle-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+        }
+
+        .blood-pressure-circle {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            position: relative;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .blood-pressure-circle::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
+            background: white;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        /* 进度环 */
+        .progress-ring {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, #ef4444 0deg, #e5e7eb 0deg);
+            mask: radial-gradient(circle at center, transparent 90px, black 90px);
+            -webkit-mask: radial-gradient(circle at center, transparent 90px, black 90px);
+            z-index: 2;
+        }
+
+        .progress-ring.systolic {
+            background: conic-gradient(from 0deg, #ef4444 0deg, #e5e7eb 0deg);
+        }
+
+        .progress-ring.diastolic {
+            background: conic-gradient(from 0deg, #3b82f6 0deg, #e5e7eb 0deg);
+        }
+
+        /* 可拖动的圆点 */
+        .drag-handle {
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            top: 50%;
+            left: 50%;
+            transform-origin: center;
+            cursor: grab;
+            z-index: 20;
+        }
+
+        .drag-dot {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+            transition: all 0.2s ease;
+        }
+
+        .drag-dot.systolic {
+            background: #ef4444;
+            border: 4px solid white;
+        }
+
+        .drag-dot.diastolic {
+            background: #3b82f6;
+            border: 4px solid white;
+        }
+
+        .drag-handle:hover .drag-dot {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+        }
+
+        .drag-handle.dragging .drag-dot {
+            transform: translate(-50%, -50%) scale(1.15);
+        }
+
+        /* 中心数值显示 */
+        .center-display {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .center-value {
+            font-size: 44px;
+            font-weight: 800;
+            line-height: 1;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .center-value.systolic {
+            color: #ef4444;
+        }
+
+        .center-value.diastolic {
+            color: #3b82f6;
+        }
+
+        .center-value:hover {
+            transform: scale(1.05);
+        }
+
+        .center-unit {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-top: 6px;
+        }
+
+        .center-hint {
+            font-size: 12px;
+            color: var(--gray-400);
+            margin-top: 4px;
+        }
+
+        /* 参考范围提示 */
+        .reference-info {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            padding: 20px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .reference-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: white;
+        }
+
+        .reference-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .reference-dot.normal { background: #10b981; }
+        .reference-dot.warning { background: #f59e0b; }
+        .reference-dot.danger { background: #ef4444; }
+
+        /* 右侧 - 表单区域 */
+        .right-panel {
+            background: white;
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* 表单区块 */
+        .form-section {
+            margin-bottom: 32px;
+        }
+
+        .form-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .form-section-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .form-section-title i {
+            color: var(--secondary-500);
+        }
+
+        /* 表单行 */
+        .form-row {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .form-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray-700);
+            min-width: 80px;
+        }
+
+        .form-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            color: var(--gray-800);
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--secondary-500);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        /* 心率输入 */
+        .heart-rate-input {
+            width: 100px;
+            padding: 10px 14px;
+            border: 2px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 16px;
+            font-weight: 600;
+            text-align: center;
+            transition: all 0.2s ease;
+        }
+
+        .heart-rate-input:focus {
+            outline: none;
+            border-color: var(--secondary-500);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        /* 个体状态选择 */
+        .status-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .status-option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+            font-size: 14px;
+        }
+
+        .status-option:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        .status-option.selected {
+            background: #fff7ed;
+            border-color: var(--secondary-500);
+            color: #c2410c;
+        }
+
+        .status-option i {
+            font-size: 16px;
+        }
+
+        /* 备注输入 */
+        .note-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--gray-200);
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            color: var(--gray-800);
+            resize: vertical;
+            min-height: 100px;
+            transition: all 0.2s ease;
+        }
+
+        .note-input:focus {
+            outline: none;
+            border-color: var(--secondary-500);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+        }
+
+        /* 底部操作区 */
+        .action-bar {
+            margin-top: auto;
+            padding-top: 24px;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 14px 32px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: var(--gray-100);
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-200);
+            border-color: var(--gray-400);
+        }
+
+        .btn-primary {
+            flex: 1;
+            background: linear-gradient(135deg, var(--secondary-500) 0%, var(--secondary-600) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
+        }
+
+        /* 数值输入弹窗 */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: var(--radius-xl);
+            max-width: 400px;
+            width: 90%;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--gray-200);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+        }
+
+        .modal-close:hover {
+            background: var(--gray-200);
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        /* 数字键盘 */
+        .number-display {
+            text-align: center;
+            padding: 20px;
+            background: var(--gray-50);
+            border-radius: var(--radius-lg);
+            margin-bottom: 20px;
+        }
+
+        .number-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        .number-unit {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        .number-keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .key-btn {
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            background: var(--gray-100);
+            color: var(--gray-700);
+        }
+
+        .key-btn:hover {
+            background: var(--gray-200);
+        }
+
+        .key-btn:active {
+            background: var(--gray-300);
+        }
+
+        .key-btn.confirm {
+            background: var(--secondary-500);
+            color: white;
+        }
+
+        .key-btn.confirm:hover {
+            background: var(--secondary-600);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .left-panel {
+                min-height: auto;
+                padding: 32px;
+            }
+
+            .blood-pressure-container {
+                gap: 32px;
+            }
+
+            .blood-pressure-circle-container {
+                width: 180px;
+                height: 180px;
+            }
+
+            .blood-pressure-circle {
+                width: 180px;
+                height: 180px;
+            }
+
+            .progress-ring {
+                width: 180px;
+                height: 180px;
+                mask: radial-gradient(circle at center, transparent 74px, black 74px);
+                -webkit-mask: radial-gradient(circle at center, transparent 74px, black 74px);
+            }
+
+            .center-value {
+                font-size: 36px;
+            }
+
+            .reference-info {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 64px;
+            }
+
+            .sidebar-logo h1 span,
+            .nav-section-title,
+            .nav-item span,
+            .user-info {
+                display: none;
+            }
+
+            .sidebar-logo {
+                padding: 16px;
+                display: flex;
+                justify-content: center;
+            }
+
+            .nav-item {
+                justify-content: center;
+                padding: 12px;
+            }
+
+            .sidebar-user {
+                justify-content: center;
+            }
+
+            .main-content {
+                margin-left: 64px;
+            }
+
+            .blood-pressure-container {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .status-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>
+                <i class="fas fa-heartbeat"></i>
+                <span>优唐智能AI+</span>
+            </h1>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">健康监测</div>
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>健康概览</span>
+                </a>
+                <a href="blood-sugar.html" class="nav-item">
+                    <i class="fas fa-tint"></i>
+                    <span>血糖管理</span>
+                </a>
+                <a href="blood-pressure.html" class="nav-item active">
+                    <i class="fas fa-heart"></i>
+                    <span>血压管理</span>
+                </a>
+                <a href="glycated.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>糖化血红蛋白</span>
+                </a>
+                <a href="uric-acid.html" class="nav-item">
+                    <i class="fas fa-flask"></i>
+                    <span>尿酸检测</span>
+                </a>
+                <a href="blood-ketone.html" class="nav-item">
+                    <i class="fas fa-burn"></i>
+                    <span>血酮检测</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">智能服务</div>
+                <a href="ai-chat.html" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI助手</span>
+                    <span class="badge">新</span>
+                </a>
+                <a href="hospital.html" class="nav-item">
+                    <i class="fas fa-hospital"></i>
+                    <span>互联网医院</span>
+                </a>
+                <a href="devices.html" class="nav-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>设备管理</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <span>健康报告</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">设置</div>
+                <a href="system_settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </div>
+        </nav>
+
+        <a href="profile.html" class="sidebar-user">
+            <div class="user-avatar">张</div>
+            <div class="user-info">
+                <div class="user-name">张先生</div>
+                <div class="user-status">健康会员</div>
+            </div>
+        </a>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 顶部Header -->
+        <header class="header">
+            <div class="header-left">
+                <a href="blood-pressure.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="page-title">手动记录血压</h2>
+            </div>
+        </header>
+
+        <!-- 内容区域 - 左右分栏 -->
+        <div class="content">
+            <!-- 左侧 - 血压值输入区域 -->
+            <div class="left-panel fade-in">
+                <div class="panel-title">输入血压值</div>
+
+                <div class="blood-pressure-container">
+                    <!-- 收缩压 -->
+                    <div class="pressure-input-group">
+                        <div class="pressure-label">
+                            收缩压
+                            <span class="sub-label">(高压)</span>
+                        </div>
+                        <div class="blood-pressure-circle-container">
+                            <div class="blood-pressure-circle" id="systolicCircle">
+                                <!-- 进度环 -->
+                                <div class="progress-ring systolic" id="systolicProgressRing"></div>
+                                <!-- 中心数值 -->
+                                <div class="center-display">
+                                    <div class="center-value systolic" id="systolicValue" onclick="showNumberInput('systolic')">120</div>
+                                    <div class="center-unit">mmHg</div>
+                                    <div class="center-hint">点击输入</div>
+                                </div>
+                                <!-- 可拖动的圆点 -->
+                                <div class="drag-handle" id="systolicDragHandle">
+                                    <div class="drag-dot systolic"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 舒张压 -->
+                    <div class="pressure-input-group">
+                        <div class="pressure-label">
+                            舒张压
+                            <span class="sub-label">(低压)</span>
+                        </div>
+                        <div class="blood-pressure-circle-container">
+                            <div class="blood-pressure-circle" id="diastolicCircle">
+                                <!-- 进度环 -->
+                                <div class="progress-ring diastolic" id="diastolicProgressRing"></div>
+                                <!-- 中心数值 -->
+                                <div class="center-display">
+                                    <div class="center-value diastolic" id="diastolicValue" onclick="showNumberInput('diastolic')">80</div>
+                                    <div class="center-unit">mmHg</div>
+                                    <div class="center-hint">点击输入</div>
+                                </div>
+                                <!-- 可拖动的圆点 -->
+                                <div class="drag-handle" id="diastolicDragHandle">
+                                    <div class="drag-dot diastolic"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 参考范围提示 -->
+                <div class="reference-info">
+                    <div class="reference-item">
+                        <span class="reference-dot normal"></span>
+                        <span>正常: 90-120 / 60-80 mmHg</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-dot warning"></span>
+                        <span>偏高: 120-139 / 80-89 mmHg</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-dot danger"></span>
+                        <span>高血压: ≥140 / ≥90 mmHg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧 - 表单区域 -->
+            <div class="right-panel fade-in">
+                <!-- 记录时间 -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-calendar-alt"></i>
+                        记录时间
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">日期时间</label>
+                        <input type="datetime-local" class="form-input" id="recordDateTime">
+                    </div>
+                </div>
+
+                <!-- 心率输入 -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-heartbeat"></i>
+                        心率 <span style="font-weight: 400; color: var(--gray-500); font-size: 12px;">（可选）</span>
+                    </div>
+                    <div class="form-row">
+                        <label class="form-label">心率值</label>
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <input type="number" class="heart-rate-input" id="heartRateInput" placeholder="--" min="40" max="200">
+                            <span style="color: var(--gray-500); font-size: 14px;">次/分</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 个体状态 -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-user-check"></i>
+                        个体状态 <span style="font-weight: 400; color: var(--gray-500); font-size: 12px;">（可选）</span>
+                    </div>
+                    <div class="status-grid" id="statusGrid">
+                        <div class="status-option" data-status="无不适">
+                            <i class="fas fa-smile" style="color: #22c55e;"></i>
+                            <span>无不适</span>
+                        </div>
+                        <div class="status-option" data-status="头晕">
+                            <i class="fas fa-dizzy" style="color: #8b5cf6;"></i>
+                            <span>头晕</span>
+                        </div>
+                        <div class="status-option" data-status="头痛">
+                            <i class="fas fa-head-side-cough" style="color: #ef4444;"></i>
+                            <span>头痛</span>
+                        </div>
+                        <div class="status-option" data-status="心悸">
+                            <i class="fas fa-heartbeat" style="color: #ef4444;"></i>
+                            <span>心悸</span>
+                        </div>
+                        <div class="status-option" data-status="胸闷">
+                            <i class="fas fa-lungs" style="color: #f59e0b;"></i>
+                            <span>胸闷</span>
+                        </div>
+                        <div class="status-option" data-status="乏力">
+                            <i class="fas fa-battery-quarter" style="color: #f97316;"></i>
+                            <span>乏力</span>
+                        </div>
+                        <div class="status-option" data-status="出汗">
+                            <i class="fas fa-tint" style="color: #06b6d4;"></i>
+                            <span>出汗</span>
+                        </div>
+                        <div class="status-option" data-status="失眠">
+                            <i class="fas fa-moon" style="color: #6366f1;"></i>
+                            <span>失眠</span>
+                        </div>
+                        <div class="status-option" data-status="其他">
+                            <i class="fas fa-ellipsis-h" style="color: #6b7280;"></i>
+                            <span>其他</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 备注 -->
+                <div class="form-section">
+                    <div class="form-section-title">
+                        <i class="fas fa-sticky-note"></i>
+                        备注 <span style="font-weight: 400; color: var(--gray-500); font-size: 12px;">（可选）</span>
+                    </div>
+                    <textarea class="note-input" id="noteInput" placeholder="例如：服药后测量、运动后休息10分钟等..."></textarea>
+                </div>
+
+                <!-- 底部操作区 -->
+                <div class="action-bar">
+                    <a href="blood-pressure.html" class="btn btn-secondary">
+                        取消
+                    </a>
+                    <button class="btn btn-primary" onclick="saveRecord()">
+                        <i class="fas fa-check"></i>
+                        保存记录
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- 数值输入弹窗 -->
+    <div class="modal-overlay" id="numberInputModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">输入收缩压</h3>
+                <button class="modal-close" onclick="hideNumberInput()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="number-display">
+                    <div class="number-value" id="numberDisplay">120</div>
+                    <div class="number-unit">mmHg</div>
+                </div>
+                <div class="number-keypad">
+                    <button class="key-btn" onclick="inputNumber('1')">1</button>
+                    <button class="key-btn" onclick="inputNumber('2')">2</button>
+                    <button class="key-btn" onclick="inputNumber('3')">3</button>
+                    <button class="key-btn" onclick="inputNumber('4')">4</button>
+                    <button class="key-btn" onclick="inputNumber('5')">5</button>
+                    <button class="key-btn" onclick="inputNumber('6')">6</button>
+                    <button class="key-btn" onclick="inputNumber('7')">7</button>
+                    <button class="key-btn" onclick="inputNumber('8')">8</button>
+                    <button class="key-btn" onclick="inputNumber('9')">9</button>
+                    <button class="key-btn" onclick="inputNumber('0')">0</button>
+                    <button class="key-btn" onclick="deleteNumber()">
+                        <i class="fas fa-backspace"></i>
+                    </button>
+                    <button class="key-btn confirm" onclick="confirmNumberInput()">
+                        确定
+                    </button>
+                </div>
+                <div class="flex gap-3 mt-4">
+                    <button class="btn btn-secondary flex-1" onclick="hideNumberInput()">取消</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 变量初始化
+        let systolicValue = 120;    // 收缩压（高压）
+        let diastolicValue = 80;    // 舒张压（低压）
+        let selectedStatuses = [];
+
+        // 拖动相关变量
+        let isDragging = false;
+        let activeDragCircle = ''; // 'systolic' 或 'diastolic'
+        let systolicCurrentAngle = 0;
+        let diastolicCurrentAngle = 0;
+
+        // 数值输入相关
+        let currentInputType = '';
+        let tempNumberInput = '';
+
+        // 页面初始化
+        function initializePage() {
+            // 设置当前时间
+            const now = new Date();
+            const dateTimeStr = now.toISOString().slice(0, 16);
+            document.getElementById('recordDateTime').value = dateTimeStr;
+
+            // 初始化状态选择
+            initializeStatusOptions();
+
+            // 初始化拖动控制
+            initializeDragControls();
+
+            // 初始化角度（根据初始值计算）
+            const systolicProgress = (systolicValue - 70) / (250 - 70);
+            systolicCurrentAngle = systolicProgress * 270;
+
+            const diastolicProgress = (diastolicValue - 40) / (150 - 40);
+            diastolicCurrentAngle = diastolicProgress * 270;
+
+            // 更新显示
+            updateDisplay();
+            updateDragHandlePosition('systolic');
+            updateDragHandlePosition('diastolic');
+        }
+
+        // 初始化状态选择
+        function initializeStatusOptions() {
+            const options = document.querySelectorAll('.status-option');
+            options.forEach(option => {
+                option.addEventListener('click', function() {
+                    this.classList.toggle('selected');
+                    const status = this.dataset.status;
+                    if (this.classList.contains('selected')) {
+                        if (!selectedStatuses.includes(status)) {
+                            selectedStatuses.push(status);
+                        }
+                    } else {
+                        selectedStatuses = selectedStatuses.filter(s => s !== status);
+                    }
+                });
+            });
+        }
+
+        // 圆环拖动功能
+        function initializeDragControls() {
+            const systolicDragHandle = document.getElementById('systolicDragHandle');
+            const diastolicDragHandle = document.getElementById('diastolicDragHandle');
+
+            // 收缩压拖动事件
+            systolicDragHandle.addEventListener('mousedown', (e) => startDrag(e, 'systolic'));
+            systolicDragHandle.addEventListener('touchstart', (e) => startDrag(e, 'systolic'), { passive: false });
+
+            // 舒张压拖动事件
+            diastolicDragHandle.addEventListener('mousedown', (e) => startDrag(e, 'diastolic'));
+            diastolicDragHandle.addEventListener('touchstart', (e) => startDrag(e, 'diastolic'), { passive: false });
+
+            // 全局事件
+            document.addEventListener('mousemove', drag);
+            document.addEventListener('mouseup', endDrag);
+            document.addEventListener('touchmove', drag, { passive: false });
+            document.addEventListener('touchend', endDrag);
+        }
+
+        function startDrag(e, circleType) {
+            e.preventDefault();
+            isDragging = true;
+            activeDragCircle = circleType;
+
+            const dragHandle = document.getElementById(circleType + 'DragHandle');
+            dragHandle.classList.add('dragging');
+            document.body.style.cursor = 'grabbing';
+        }
+
+        function drag(e) {
+            if (!isDragging) return;
+            e.preventDefault();
+
+            const circle = document.getElementById(activeDragCircle + 'Circle');
+            const rect = circle.getBoundingClientRect();
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+
+            let clientX, clientY;
+            if (e.type === 'touchmove') {
+                clientX = e.touches[0].clientX;
+                clientY = e.touches[0].clientY;
+            } else {
+                clientX = e.clientX;
+                clientY = e.clientY;
+            }
+
+            // 计算角度
+            const mathAngle = Math.atan2(clientY - centerY, clientX - centerX) * 180 / Math.PI;
+            let currentAngle = mathAngle + 90; // 转换为CSS角度
+
+            // 限制角度范围（0-270度）
+            if (currentAngle < 0) currentAngle = 0;
+            if (currentAngle > 270) currentAngle = 270;
+
+            if (activeDragCircle === 'systolic') {
+                systolicCurrentAngle = currentAngle;
+                updateSystolicValueFromAngle();
+            } else {
+                diastolicCurrentAngle = currentAngle;
+                updateDiastolicValueFromAngle();
+            }
+
+            updateDragHandlePosition(activeDragCircle);
+        }
+
+        function endDrag() {
+            if (!isDragging) return;
+            isDragging = false;
+
+            if (activeDragCircle) {
+                const dragHandle = document.getElementById(activeDragCircle + 'DragHandle');
+                dragHandle.classList.remove('dragging');
+            }
+
+            activeDragCircle = '';
+            document.body.style.cursor = 'default';
+        }
+
+        function updateSystolicValueFromAngle() {
+            // 将角度转换为收缩压值 (0-270度 = 70-250)
+            const progress = systolicCurrentAngle / 270;
+            systolicValue = Math.round(70 + progress * 180);
+            systolicValue = Math.max(70, Math.min(250, systolicValue));
+            updateDisplay();
+        }
+
+        function updateDiastolicValueFromAngle() {
+            // 将角度转换为舒张压值 (0-270度 = 40-150)
+            const progress = diastolicCurrentAngle / 270;
+            diastolicValue = Math.round(40 + progress * 110);
+            diastolicValue = Math.max(40, Math.min(150, diastolicValue));
+            updateDisplay();
+        }
+
+        function updateDragHandlePosition(circleType) {
+            const dragHandle = document.getElementById(circleType + 'DragHandle');
+            const radius = 90; // 圆点半径，适应220px容器
+            const centerX = 110;
+            const centerY = 110;
+
+            const currentAngle = circleType === 'systolic' ? systolicCurrentAngle : diastolicCurrentAngle;
+            // 将CSS角度转换为数学角度
+            const mathAngle = (currentAngle - 90) * Math.PI / 180;
+            const x = centerX + radius * Math.cos(mathAngle);
+            const y = centerY + radius * Math.sin(mathAngle);
+
+            dragHandle.style.left = x + 'px';
+            dragHandle.style.top = y + 'px';
+            dragHandle.style.transform = 'translate(-50%, -50%)';
+        }
+
+        function updateDisplay() {
+            // 更新收缩压显示
+            document.getElementById('systolicValue').textContent = systolicValue;
+            updateSystolicProgress();
+
+            // 更新舒张压显示
+            document.getElementById('diastolicValue').textContent = diastolicValue;
+            updateDiastolicProgress();
+        }
+
+        function updateSystolicProgress() {
+            const progress = (systolicValue - 70) / (250 - 70);
+            const degrees = progress * 270;
+            const progressRing = document.getElementById('systolicProgressRing');
+            progressRing.style.background = `conic-gradient(from 0deg, #ef4444 0deg, #ef4444 ${degrees}deg, #e5e7eb ${degrees}deg, #e5e7eb 360deg)`;
+        }
+
+        function updateDiastolicProgress() {
+            const progress = (diastolicValue - 40) / (150 - 40);
+            const degrees = progress * 270;
+            const progressRing = document.getElementById('diastolicProgressRing');
+            progressRing.style.background = `conic-gradient(from 0deg, #3b82f6 0deg, #3b82f6 ${degrees}deg, #e5e7eb ${degrees}deg, #e5e7eb 360deg)`;
+        }
+
+        // 数值输入弹窗
+        function showNumberInput(type) {
+            currentInputType = type;
+            const modal = document.getElementById('numberInputModal');
+            const modalTitle = document.getElementById('modalTitle');
+
+            if (type === 'systolic') {
+                modalTitle.textContent = '输入收缩压（高压）';
+                tempNumberInput = systolicValue.toString();
+            } else {
+                modalTitle.textContent = '输入舒张压（低压）';
+                tempNumberInput = diastolicValue.toString();
+            }
+
+            document.getElementById('numberDisplay').textContent = tempNumberInput;
+            modal.classList.add('show');
+        }
+
+        function hideNumberInput() {
+            document.getElementById('numberInputModal').classList.remove('show');
+        }
+
+        function inputNumber(num) {
+            if (tempNumberInput === '0' && num !== '0') {
+                tempNumberInput = num;
+            } else if (tempNumberInput.length < 3) {
+                tempNumberInput += num;
+            }
+
+            document.getElementById('numberDisplay').textContent = tempNumberInput || '0';
+        }
+
+        function deleteNumber() {
+            if (tempNumberInput.length > 1) {
+                tempNumberInput = tempNumberInput.substring(0, tempNumberInput.length - 1);
+            } else {
+                tempNumberInput = '0';
+            }
+            document.getElementById('numberDisplay').textContent = tempNumberInput;
+        }
+
+        function confirmNumberInput() {
+            const value = parseInt(tempNumberInput);
+
+            if (currentInputType === 'systolic') {
+                if (value >= 70 && value <= 250) {
+                    systolicValue = value;
+                    const progress = (value - 70) / (250 - 70);
+                    systolicCurrentAngle = progress * 270;
+                    updateDisplay();
+                    updateDragHandlePosition('systolic');
+                    hideNumberInput();
+                } else {
+                    alert('收缩压应在 70-250 mmHg 范围内');
+                }
+            } else {
+                if (value >= 40 && value <= 150) {
+                    diastolicValue = value;
+                    const progress = (value - 40) / (150 - 40);
+                    diastolicCurrentAngle = progress * 270;
+                    updateDisplay();
+                    updateDragHandlePosition('diastolic');
+                    hideNumberInput();
+                } else {
+                    alert('舒张压应在 40-150 mmHg 范围内');
+                }
+            }
+        }
+
+        // 保存记录
+        function saveRecord() {
+            // 验证血压值
+            if (systolicValue < 70 || systolicValue > 250) {
+                alert('收缩压应在 70-250 mmHg 范围内');
+                return;
+            }
+
+            if (diastolicValue < 40 || diastolicValue > 150) {
+                alert('舒张压应在 40-150 mmHg 范围内');
+                return;
+            }
+
+            const recordDateTime = document.getElementById('recordDateTime').value;
+            const heartRate = document.getElementById('heartRateInput').value;
+            const note = document.getElementById('noteInput').value;
+
+            // 格式化日期时间显示
+            let formattedDateTime = '';
+            if (recordDateTime) {
+                const date = new Date(recordDateTime);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                formattedDateTime = `${year}年${month}月${day}日 ${hours}:${minutes}`;
+            } else {
+                const now = new Date();
+                const year = now.getFullYear();
+                const month = now.getMonth() + 1;
+                const day = now.getDate();
+                const hours = now.getHours().toString().padStart(2, '0');
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                formattedDateTime = `${year}年${month}月${day}日 ${hours}:${minutes}`;
+            }
+
+            // 创建记录对象
+            const record = {
+                systolic: systolicValue,
+                diastolic: diastolicValue,
+                heartRate: heartRate ? parseInt(heartRate) : null,
+                timestamp: recordDateTime || new Date().toISOString(),
+                statuses: selectedStatuses,
+                note: note
+            };
+
+            // 保存到本地存储
+            let records = JSON.parse(localStorage.getItem('bloodPressureRecords') || '[]');
+            records.push(record);
+            localStorage.setItem('bloodPressureRecords', JSON.stringify(records));
+
+            // 跳转到结果页面，传递参数
+            const params = new URLSearchParams({
+                systolic: systolicValue,
+                diastolic: diastolicValue,
+                dateTime: formattedDateTime
+            });
+
+            if (heartRate) {
+                params.append('heartRate', heartRate);
+            }
+
+            window.location.href = `blood-pressure-result.html?${params.toString()}`;
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+
+</html>

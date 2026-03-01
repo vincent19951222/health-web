@@ -1,6 +1,18 @@
+"use client";
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export default function Sidebar() {
+    const pathname = usePathname();
+
+    const isActive = (path: string) => {
+        if (path === '/dashboard') {
+            return pathname === '/dashboard';
+        }
+        return pathname.startsWith(path);
+    };
+
     return (
         <aside className="sidebar">
             <div className="sidebar-logo">
@@ -13,11 +25,11 @@ export default function Sidebar() {
             <nav className="sidebar-nav">
                 <div className="nav-section">
                     <div className="nav-section-title">健康监测</div>
-                    <Link href="/dashboard" className="nav-item active">
+                    <Link href="/dashboard" className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}>
                         <i className="fas fa-th-large"></i>
                         <span>健康概览</span>
                     </Link>
-                    <Link href="#" className="nav-item">
+                    <Link href="/blood-sugar" className={`nav-item ${isActive('/blood-sugar') ? 'active' : ''}`}>
                         <i className="fas fa-tint"></i>
                         <span>血糖管理</span>
                     </Link>

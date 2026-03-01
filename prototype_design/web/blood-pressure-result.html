@@ -1,0 +1,1224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>血压记录结果 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        /* 医疗健康主题 - Web端血压记录结果页面 */
+
+        :root {
+            /* 主色调 - 专业蓝 */
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+
+            /* 血压主题色 - 活力橙 */
+            --secondary-500: #f97316;
+            --secondary-600: #ea580c;
+
+            /* 收缩压色 - 红 */
+            --systolic-color: #ef4444;
+            /* 舒张压色 - 蓝 */
+            --diastolic-color: #3b82f6;
+
+            /* 医疗状态色 */
+            --success-500: #22c55e;
+            --warning-500: #f59e0b;
+            --danger-500: #ef4444;
+            --info-500: #06b6d4;
+
+            /* 中性色 */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 24px;
+
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: var(--gray-800);
+            background: var(--gray-50);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: linear-gradient(180deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .sidebar-logo {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--danger-500);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        /* 用户信息区域 */
+        .sidebar-user {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .sidebar-user:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* 主内容区域 */
+        .main-content {
+            margin-left: 240px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 顶部Header */
+        .header {
+            background: white;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--gray-200);
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--gray-100);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            color: var(--gray-600);
+            text-decoration: none;
+        }
+
+        .back-btn:hover {
+            background: var(--gray-200);
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--gray-900);
+        }
+
+        /* 内容区域 */
+        .content {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+        }
+
+        /* 左侧面板 */
+        .left-panel {
+            background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: calc(100vh - 72px);
+        }
+
+        .result-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 32px;
+            text-align: center;
+        }
+
+        /* 血压双圆环容器 */
+        .bp-result-container {
+            display: flex;
+            justify-content: center;
+            gap: 48px;
+            margin-bottom: 32px;
+        }
+
+        .bp-result-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bp-label {
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            opacity: 0.9;
+        }
+
+        .bp-label .sub-label {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        /* 结果圆环 */
+        .result-circle-container {
+            position: relative;
+            width: 160px;
+            height: 160px;
+        }
+
+        .result-circle {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            position: relative;
+            background: white;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .result-circle::before {
+            content: '';
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            bottom: 12px;
+            background: white;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .result-ring {
+            position: absolute;
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            mask: radial-gradient(circle at center, transparent 64px, black 64px);
+            -webkit-mask: radial-gradient(circle at center, transparent 64px, black 64px);
+            z-index: 2;
+        }
+
+        .result-ring.systolic {
+            background: conic-gradient(from 0deg, #ef4444 0deg, #ef4444 0deg, #e5e7eb 0deg);
+        }
+
+        .result-ring.diastolic {
+            background: conic-gradient(from 0deg, #3b82f6 0deg, #3b82f6 0deg, #e5e7eb 0deg);
+        }
+
+        .result-center {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .result-value {
+            font-size: 40px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .result-value.systolic {
+            color: #ef4444;
+        }
+
+        .result-value.diastolic {
+            color: #3b82f6;
+        }
+
+        .result-unit {
+            font-size: 14px;
+            color: var(--gray-500);
+            margin-top: 4px;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 9999px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 24px;
+        }
+
+        .status-badge.normal {
+            background: rgba(34, 197, 94, 0.15);
+            color: #16a34a;
+        }
+
+        .status-badge.warning {
+            background: rgba(245, 158, 11, 0.15);
+            color: #d97706;
+        }
+
+        .status-badge.danger {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+        }
+
+        /* 记录信息 */
+        .record-info {
+            text-align: center;
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .record-datetime {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .record-heart-rate {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* 参考范围 */
+        .reference-info {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .reference-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: white;
+        }
+
+        .reference-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .reference-dot.normal { background: #10b981; }
+        .reference-dot.warning { background: #f59e0b; }
+        .reference-dot.danger { background: #ef4444; }
+
+        /* 右侧面板 */
+        .right-panel {
+            background: var(--gray-50);
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            overflow-y: auto;
+            height: calc(100vh - 72px);
+        }
+
+        /* AI提示卡片 */
+        .ai-reminder-card {
+            background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 20px 24px;
+        }
+
+        .ai-reminder-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .ai-reminder-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .ai-reminder-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #9a3412;
+        }
+
+        .ai-reminder-content {
+            font-size: 14px;
+            color: #7c2d12;
+            line-height: 1.6;
+        }
+
+        /* AI分析报告 */
+        .ai-report-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--gray-100);
+        }
+
+        .ai-report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .ai-report-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-report-title i {
+            color: var(--secondary-500);
+        }
+
+        .ai-report-content {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.8;
+        }
+
+        .ai-report-content h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--gray-900);
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        .ai-report-content h3:first-child {
+            margin-top: 0;
+        }
+
+        .ai-report-content ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+
+        .ai-report-content li {
+            margin-bottom: 6px;
+        }
+
+        .ai-report-content p {
+            margin-bottom: 12px;
+        }
+
+        .ai-report-content strong {
+            color: var(--gray-900);
+        }
+
+        /* 反馈按钮 */
+        .feedback-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-top: 1px solid var(--gray-100);
+            border-bottom: 1px solid var(--gray-100);
+        }
+
+        .feedback-label {
+            font-size: 14px;
+            color: var(--gray-600);
+        }
+
+        .feedback-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .feedback-btn {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: var(--radius-lg);
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: 1px solid var(--gray-200);
+            background: white;
+            color: var(--gray-600);
+        }
+
+        .feedback-btn:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        .feedback-btn.positive:hover {
+            background: #f0fdf4;
+            border-color: #86efac;
+            color: #16a34a;
+        }
+
+        .feedback-btn.negative:hover {
+            background: #fef2f2;
+            border-color: #fecaca;
+            color: #dc2626;
+        }
+
+        /* 在线咨询卡片 */
+        .consult-card {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            border-radius: var(--radius-xl);
+            padding: 20px 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .consult-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .consult-content {
+            flex: 1;
+        }
+
+        .consult-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 4px;
+        }
+
+        .consult-desc {
+            font-size: 13px;
+            color: #3b82f6;
+        }
+
+        .consult-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .consult-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+        }
+
+        /* 操作按钮 */
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px 24px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-300);
+        }
+
+        .btn-secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-400);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-500) 0%, var(--secondary-600) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 1200px) {
+            .content {
+                grid-template-columns: 1fr;
+            }
+
+            .left-panel {
+                min-height: auto;
+                padding: 32px;
+            }
+
+            .right-panel {
+                height: auto;
+                min-height: auto;
+            }
+
+            .bp-result-container {
+                gap: 32px;
+            }
+
+            .result-circle-container {
+                width: 140px;
+                height: 140px;
+            }
+
+            .result-circle {
+                width: 140px;
+                height: 140px;
+            }
+
+            .result-ring {
+                width: 140px;
+                height: 140px;
+                mask: radial-gradient(circle at center, transparent 56px, black 56px);
+                -webkit-mask: radial-gradient(circle at center, transparent 56px, black 56px);
+            }
+
+            .result-value {
+                font-size: 32px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 64px;
+            }
+
+            .sidebar-logo h1 span,
+            .nav-section-title,
+            .nav-item span,
+            .user-info {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 64px;
+            }
+
+            .bp-result-container {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+
+        /* 动画效果 */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>
+                <i class="fas fa-heartbeat"></i>
+                <span>优唐智能AI+</span>
+            </h1>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">健康监测</div>
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>健康概览</span>
+                </a>
+                <a href="blood-sugar.html" class="nav-item">
+                    <i class="fas fa-tint"></i>
+                    <span>血糖管理</span>
+                </a>
+                <a href="blood-pressure.html" class="nav-item active">
+                    <i class="fas fa-heart"></i>
+                    <span>血压管理</span>
+                </a>
+                <a href="glycated.html" class="nav-item">
+                    <i class="fas fa-chart-line"></i>
+                    <span>糖化血红蛋白</span>
+                </a>
+                <a href="uric-acid.html" class="nav-item">
+                    <i class="fas fa-flask"></i>
+                    <span>尿酸检测</span>
+                </a>
+                <a href="blood-ketone.html" class="nav-item">
+                    <i class="fas fa-burn"></i>
+                    <span>血酮检测</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">智能服务</div>
+                <a href="ai-chat.html" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI助手</span>
+                    <span class="badge">新</span>
+                </a>
+                <a href="hospital.html" class="nav-item">
+                    <i class="fas fa-hospital"></i>
+                    <span>互联网医院</span>
+                </a>
+                <a href="devices.html" class="nav-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>设备管理</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <span>健康报告</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">设置</div>
+                <a href="system_settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </div>
+        </nav>
+
+        <a href="profile.html" class="sidebar-user">
+            <div class="user-avatar">张</div>
+            <div class="user-info">
+                <div class="user-name">张先生</div>
+                <div class="user-status">健康会员</div>
+            </div>
+        </a>
+    </aside>
+
+    <!-- 主内容区域 -->
+    <main class="main-content">
+        <!-- 顶部Header -->
+        <header class="header">
+            <div class="header-left">
+                <a href="blood-pressure.html" class="back-btn">
+                    <i class="fas fa-arrow-left"></i>
+                </a>
+                <h2 class="page-title">血压记录结果</h2>
+            </div>
+        </header>
+
+        <!-- 内容区域 -->
+        <div class="content">
+            <!-- 左侧面板 -->
+            <div class="left-panel fade-in">
+                <div class="result-title">血压测量结果</div>
+
+                <!-- 血压双圆环 -->
+                <div class="bp-result-container">
+                    <!-- 收缩压 -->
+                    <div class="bp-result-group">
+                        <div class="bp-label">
+                            收缩压 <span class="sub-label">(高压)</span>
+                        </div>
+                        <div class="result-circle-container">
+                            <div class="result-circle">
+                                <div class="result-ring systolic" id="systolicRing"></div>
+                                <div class="result-center">
+                                    <div class="result-value systolic" id="systolicValue">120</div>
+                                    <div class="result-unit">mmHg</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 舒张压 -->
+                    <div class="bp-result-group">
+                        <div class="bp-label">
+                            舒张压 <span class="sub-label">(低压)</span>
+                        </div>
+                        <div class="result-circle-container">
+                            <div class="result-circle">
+                                <div class="result-ring diastolic" id="diastolicRing"></div>
+                                <div class="result-center">
+                                    <div class="result-value diastolic" id="diastolicValue">80</div>
+                                    <div class="result-unit">mmHg</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 状态标签 -->
+                <div class="status-badge normal" id="statusBadge">
+                    <i class="fas fa-check-circle"></i>
+                    <span id="statusText">血压正常</span>
+                </div>
+
+                <!-- 记录信息 -->
+                <div class="record-info">
+                    <div class="record-datetime" id="recordDatetime">2025年2月28日 14:30</div>
+                    <div class="record-heart-rate" id="recordHeartRate">
+                        <i class="fas fa-heartbeat"></i> 心率：72 次/分
+                    </div>
+                </div>
+
+                <!-- 参考范围 -->
+                <div class="reference-info">
+                    <div class="reference-item">
+                        <span class="reference-dot normal"></span>
+                        <span>正常: &lt;120/80 mmHg</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-dot warning"></span>
+                        <span>正常高值: 120-139/80-89 mmHg</span>
+                    </div>
+                    <div class="reference-item">
+                        <span class="reference-dot danger"></span>
+                        <span>高血压: ≥140/90 mmHg</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧面板 -->
+            <div class="right-panel fade-in">
+                <!-- AI提示卡片 -->
+                <div class="ai-reminder-card">
+                    <div class="ai-reminder-header">
+                        <div class="ai-reminder-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <div class="ai-reminder-title">AI健康提醒</div>
+                    </div>
+                    <div class="ai-reminder-content" id="aiReminder">
+                        您的血压值在正常范围内，继续保持健康的生活方式。建议每天定时测量血压，保持规律作息，适量运动，低盐饮食。
+                    </div>
+                </div>
+
+                <!-- AI分析报告 -->
+                <div class="ai-report-card">
+                    <div class="ai-report-header">
+                        <div class="ai-report-title">
+                            <i class="fas fa-file-medical-alt"></i>
+                            AI分析报告
+                        </div>
+                    </div>
+                    <div class="ai-report-content" id="aiReport">
+                        <h3>📊 血压分析</h3>
+                        <p>您的血压值为 <strong>120/80 mmHg</strong>，处于<strong>正常范围</strong>。这是理想的血压水平。</p>
+
+                        <h3>💡 健康建议</h3>
+                        <ul>
+                            <li><strong>饮食方面</strong>：保持低盐、低脂饮食，多吃蔬菜水果</li>
+                            <li><strong>运动方面</strong>：建议每周进行150分钟中等强度有氧运动</li>
+                            <li><strong>作息方面</strong>：保证充足睡眠，避免熬夜</li>
+                            <li><strong>监测建议</strong>：建议每天固定时间测量血压</li>
+                        </ul>
+
+                        <h3>⚠️ 注意事项</h3>
+                        <p>如出现头晕、头痛、胸闷等不适症状，请及时就医。定期体检，关注心血管健康。</p>
+                    </div>
+                </div>
+
+                <!-- 反馈按钮 -->
+                <div class="feedback-section">
+                    <div class="feedback-label">这份报告对您有帮助吗？</div>
+                    <div class="feedback-buttons">
+                        <button class="feedback-btn positive" onclick="submitFeedback('positive')">
+                            <i class="fas fa-thumbs-up"></i>
+                            有帮助
+                        </button>
+                        <button class="feedback-btn negative" onclick="submitFeedback('negative')">
+                            <i class="fas fa-thumbs-down"></i>
+                            需改进
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 在线咨询 -->
+                <div class="consult-card">
+                    <div class="consult-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="consult-content">
+                        <div class="consult-title">需要专业医生指导？</div>
+                        <div class="consult-desc">在线咨询专业医生，获取个性化健康建议</div>
+                    </div>
+                    <button class="consult-btn" onclick="window.location.href='hospital.html'">
+                        立即咨询
+                    </button>
+                </div>
+
+                <!-- 操作按钮 -->
+                <div class="action-buttons">
+                    <a href="blood-pressure.html" class="btn btn-secondary">
+                        <i class="fas fa-list"></i>
+                        查看记录
+                    </a>
+                    <a href="blood-pressure-manual.html" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        继续记录
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // 页面初始化
+        function initializePage() {
+            // 从URL获取参数
+            const urlParams = new URLSearchParams(window.location.search);
+            const systolic = parseInt(urlParams.get('systolic')) || 120;
+            const diastolic = parseInt(urlParams.get('diastolic')) || 80;
+            const dateTime = urlParams.get('dateTime') || '2025年2月28日 14:30';
+            const heartRate = urlParams.get('heartRate');
+
+            // 更新显示
+            document.getElementById('systolicValue').textContent = systolic;
+            document.getElementById('diastolicValue').textContent = diastolic;
+            document.getElementById('recordDatetime').textContent = dateTime;
+
+            // 更新心率显示
+            if (heartRate) {
+                document.getElementById('recordHeartRate').innerHTML = `<i class="fas fa-heartbeat"></i> 心率：${heartRate} 次/分`;
+            } else {
+                document.getElementById('recordHeartRate').style.display = 'none';
+            }
+
+            // 更新进度环
+            updateProgressRings(systolic, diastolic);
+
+            // 更新状态
+            updateStatus(systolic, diastolic);
+
+            // 生成AI报告
+            generateAIReport(systolic, diastolic, heartRate);
+        }
+
+        // 更新进度环
+        function updateProgressRings(systolic, diastolic) {
+            // 收缩压进度 (70-250范围)
+            const systolicProgress = Math.min(1, Math.max(0, (systolic - 70) / 180));
+            const systolicDegrees = systolicProgress * 270;
+            document.getElementById('systolicRing').style.background =
+                `conic-gradient(from 0deg, #ef4444 0deg, #ef4444 ${systolicDegrees}deg, #e5e7eb ${systolicDegrees}deg, #e5e7eb 360deg)`;
+
+            // 舒张压进度 (40-150范围)
+            const diastolicProgress = Math.min(1, Math.max(0, (diastolic - 40) / 110));
+            const diastolicDegrees = diastolicProgress * 270;
+            document.getElementById('diastolicRing').style.background =
+                `conic-gradient(from 0deg, #3b82f6 0deg, #3b82f6 ${diastolicDegrees}deg, #e5e7eb ${diastolicDegrees}deg, #e5e7eb 360deg)`;
+        }
+
+        // 更新状态
+        function updateStatus(systolic, diastolic) {
+            const statusBadge = document.getElementById('statusBadge');
+            const statusText = document.getElementById('statusText');
+
+            let status, text;
+            if (systolic >= 140 || diastolic >= 90) {
+                status = 'danger';
+                text = '血压偏高';
+            } else if (systolic >= 120 || diastolic >= 80) {
+                status = 'warning';
+                text = '正常高值';
+            } else {
+                status = 'normal';
+                text = '血压正常';
+            }
+
+            statusBadge.className = `status-badge ${status}`;
+            statusBadge.innerHTML = `<i class="fas fa-${status === 'normal' ? 'check' : status === 'warning' ? 'exclamation' : 'times'}-circle"></i><span>${text}</span>`;
+        }
+
+        // 生成AI报告
+        function generateAIReport(systolic, diastolic, heartRate) {
+            const aiReminder = document.getElementById('aiReminder');
+            const aiReport = document.getElementById('aiReport');
+
+            let status, statusText, advice;
+
+            if (systolic >= 140 || diastolic >= 90) {
+                status = '偏高';
+                statusText = '您的血压值偏高，需要引起重视';
+                advice = '建议尽快咨询医生，可能需要调整生活方式或药物治疗。';
+            } else if (systolic >= 120 || diastolic >= 80) {
+                status = '正常高值';
+                statusText = '您的血压处于正常高值范围';
+                advice = '建议注意生活方式调整，预防高血压的发生。';
+            } else {
+                status = '正常';
+                statusText = '您的血压值在正常范围内';
+                advice = '继续保持健康的生活方式，定期监测血压。';
+            }
+
+            // 更新AI提醒
+            aiReminder.textContent = `${statusText}。${advice}`;
+
+            // 生成详细报告
+            let heartRateSection = '';
+            if (heartRate) {
+                let hrStatus = heartRate >= 60 && heartRate <= 100 ? '正常' : (heartRate < 60 ? '偏低' : '偏高');
+                heartRateSection = `
+                    <h3>❤️ 心率分析</h3>
+                    <p>您的心率为 <strong>${heartRate} 次/分</strong>，属于<strong>${hrStatus}</strong>范围。</p>
+                `;
+            }
+
+            aiReport.innerHTML = `
+                <h3>📊 血压分析</h3>
+                <p>您的血压值为 <strong>${systolic}/${diastolic} mmHg</strong>，处于<strong>${status}</strong>范围。</p>
+
+                ${heartRateSection}
+
+                <h3>💡 健康建议</h3>
+                <ul>
+                    <li><strong>饮食方面</strong>：保持低盐、低脂饮食，多吃蔬菜水果，减少油腻食物</li>
+                    <li><strong>运动方面</strong>：建议每周进行150分钟中等强度有氧运动，如快走、游泳</li>
+                    <li><strong>作息方面</strong>：保证充足睡眠（7-8小时），避免熬夜和过度劳累</li>
+                    <li><strong>情绪管理</strong>：保持心情舒畅，避免过度紧张和焦虑</li>
+                    <li><strong>监测建议</strong>：建议每天固定时间测量血压，记录变化趋势</li>
+                </ul>
+
+                <h3>⚠️ 注意事项</h3>
+                <p>如出现头晕、头痛、胸闷、心悸等不适症状，请及时就医。${status === '偏高' ? '建议尽快预约医生进行专业评估。' : '定期体检，关注心血管健康。'}</p>
+            `;
+        }
+
+        // 提交反馈
+        function submitFeedback(type) {
+            const btn = event.target.closest('.feedback-btn');
+            if (type === 'positive') {
+                btn.style.background = '#f0fdf4';
+                btn.style.borderColor = '#86efac';
+                btn.style.color = '#16a34a';
+                alert('感谢您的反馈！我们会继续努力提供更好的服务。');
+            } else {
+                btn.style.background = '#fef2f2';
+                btn.style.borderColor = '#fecaca';
+                btn.style.color = '#dc2626';
+                alert('感谢您的反馈！我们会认真改进，提供更优质的服务。');
+            }
+        }
+
+        // 页面加载完成后初始化
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+
+</html>

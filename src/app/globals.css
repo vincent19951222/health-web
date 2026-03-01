@@ -70,4 +70,6 @@ body {
 
 /* 引入各层样式 */
 @import "../styles/layout.css";
+@import "../styles/blood-sugar-main.css";
+@import "../styles/blood-sugar-analysis.css";
 @import "../styles/components.css";

@@ -1,0 +1,1088 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>记录结果 - 糖化血红蛋白 - 优唐智能AI+</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 医疗健康主题 - Web端糖化血红蛋白记录结果页面 */
+
+        :root {
+            /* 主色调 - 专业蓝 */
+            --primary-50: #eff6ff;
+            --primary-100: #dbeafe;
+            --primary-500: #3b82f6;
+            --primary-600: #2563eb;
+            --primary-700: #1d4ed8;
+
+            /* 糖化血红蛋白主题色 - 紫罗兰 */
+            --ghb-primary: #8b5cf6;
+            --ghb-secondary: #7c3aed;
+            --ghb-dark: #6d28d9;
+            --ghb-light: #f5f3ff;
+
+            /* 医疗状态色 */
+            --success-500: #22c55e;
+            --warning-500: #f59e0b;
+            --danger-500: #ef4444;
+            --info-500: #06b6d4;
+
+            /* 中性色 */
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+
+            /* 圆角 */
+            --radius-sm: 6px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 24px;
+
+            /* 阴影 */
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: var(--gray-50);
+            color: var(--gray-800);
+            min-height: 100vh;
+        }
+
+        /* 侧边栏样式 */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 240px;
+            background: linear-gradient(180deg, #1e40af 0%, #3b82f6 100%);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            z-index: 100;
+            box-shadow: var(--shadow-xl);
+        }
+
+        .sidebar-logo {
+            padding: 24px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sidebar-logo h1 {
+            font-size: 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sidebar-nav {
+            flex: 1;
+            padding: 16px 12px;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 24px;
+        }
+
+        .nav-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.5);
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 16px;
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 4px;
+            text-decoration: none;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            font-weight: 600;
+        }
+
+        .nav-item i {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .nav-item span {
+            font-size: 14px;
+        }
+
+        .nav-item .badge {
+            margin-left: auto;
+            background: var(--danger-500);
+            color: white;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            font-weight: 600;
+        }
+
+        /* 用户信息区域 */
+        .sidebar-user {
+            padding: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .sidebar-user:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-status {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* 主内容区 - 左右分栏布局 */
+        .main-container {
+            margin-left: 240px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: 100vh;
+        }
+
+        /* 左侧结果面板 - 紫色渐变 */
+        .left-panel {
+            background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 50%, #6d28d9 100%);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .left-panel::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -30%;
+            width: 500px;
+            height: 500px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .left-panel::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -20%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .result-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .result-time {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 圆形结果显示 */
+        .result-circle-container {
+            position: relative;
+            width: 240px;
+            height: 240px;
+            margin: 20px 0;
+            z-index: 1;
+        }
+
+        .result-ring {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .result-ring svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+
+        .ring-bg {
+            fill: none;
+            stroke: rgba(255, 255, 255, 0.2);
+            stroke-width: 16;
+        }
+
+        .ring-progress {
+            fill: none;
+            stroke-width: 16;
+            stroke-linecap: round;
+            stroke: #c4b5fd;
+            stroke-dasharray: 628;
+            stroke-dashoffset: 314;
+            transition: stroke-dashoffset 0.5s ease;
+        }
+
+        .result-value {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: white;
+        }
+
+        .value-number {
+            font-size: 56px;
+            font-weight: 700;
+            line-height: 1;
+        }
+
+        .value-unit {
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 8px;
+        }
+
+        /* 状态标签 */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 15px;
+            font-weight: 600;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .status-badge.normal {
+            background: rgba(34, 197, 94, 0.2);
+            color: #86efac;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+
+        .status-badge.warning {
+            background: rgba(251, 191, 36, 0.2);
+            color: #fcd34d;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+        }
+
+        .status-badge.danger {
+            background: rgba(248, 113, 113, 0.2);
+            color: #fca5a5;
+            border: 1px solid rgba(248, 113, 113, 0.3);
+        }
+
+        /* 参考范围 */
+        .reference-range {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: var(--radius-xl);
+            position: relative;
+            z-index: 1;
+        }
+
+        .reference-range i {
+            color: #fcd34d;
+        }
+
+        .reference-range span {
+            color: white;
+            font-size: 14px;
+        }
+
+        /* 右侧详情面板 */
+        .right-panel {
+            background: white;
+            padding: 40px;
+            height: calc(100vh - 72px);
+            overflow-y: auto;
+        }
+
+        .detail-header {
+            margin-bottom: 32px;
+        }
+
+        .detail-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--gray-900);
+            margin-bottom: 8px;
+        }
+
+        .detail-subtitle {
+            font-size: 14px;
+            color: var(--gray-500);
+        }
+
+        /* AI提醒卡片 */
+        .ai-reminder-card {
+            background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .ai-reminder-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .ai-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .ai-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #6d28d9;
+        }
+
+        .ai-content {
+            font-size: 14px;
+            color: #5b21b6;
+            line-height: 1.6;
+        }
+
+        /* AI报告卡片 */
+        .ai-report-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--gray-200);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .ai-report-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .ai-report-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--gray-900);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .ai-report-title i {
+            color: var(--ghb-primary);
+        }
+
+        .ai-report-content {
+            font-size: 14px;
+            color: var(--gray-700);
+            line-height: 1.8;
+        }
+
+        .ai-report-content p {
+            margin-bottom: 12px;
+        }
+
+        .ai-report-content ul {
+            margin-left: 20px;
+            margin-bottom: 12px;
+        }
+
+        .ai-report-content li {
+            margin-bottom: 6px;
+        }
+
+        /* 反馈卡片 */
+        .feedback-card {
+            background: var(--gray-50);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 24px;
+        }
+
+        .feedback-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--gray-700);
+            margin-bottom: 12px;
+        }
+
+        .feedback-buttons {
+            display: flex;
+            gap: 12px;
+        }
+
+        .feedback-btn {
+            flex: 1;
+            padding: 12px;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .feedback-btn.like {
+            background: white;
+            color: var(--gray-600);
+            border: 1px solid var(--gray-200);
+        }
+
+        .feedback-btn.like:hover {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: var(--success-500);
+            color: var(--success-500);
+        }
+
+        .feedback-btn.dislike {
+            background: white;
+            color: var(--gray-600);
+            border: 1px solid var(--gray-200);
+        }
+
+        .feedback-btn.dislike:hover {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger-500);
+            color: var(--danger-500);
+        }
+
+        .feedback-btn.active.like {
+            background: rgba(34, 197, 94, 0.1);
+            border-color: var(--success-500);
+            color: var(--success-500);
+        }
+
+        .feedback-btn.active.dislike {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger-500);
+            color: var(--danger-500);
+        }
+
+        /* 咨询卡片 */
+        .consult-card {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border-radius: var(--radius-xl);
+            padding: 20px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .consult-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .consult-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 16px;
+        }
+
+        .consult-title {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .consult-desc {
+            font-size: 13px;
+            color: #3b82f6;
+            line-height: 1.6;
+        }
+
+        .consult-btn {
+            margin-top: 12px;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+            color: white;
+            border: none;
+            border-radius: var(--radius-lg);
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .consult-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        /* 操作按钮组 */
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin-top: auto;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: var(--radius-lg);
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+            color: white;
+            border: none;
+        }
+
+        .action-btn.primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .action-btn.secondary {
+            background: white;
+            color: var(--gray-700);
+            border: 1px solid var(--gray-200);
+        }
+
+        .action-btn.secondary:hover {
+            background: var(--gray-50);
+            border-color: var(--gray-300);
+        }
+
+        /* 返回链接 */
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--gray-500);
+            font-size: 14px;
+            text-decoration: none;
+            margin-bottom: 24px;
+            transition: color 0.2s ease;
+        }
+
+        .back-link:hover {
+            color: var(--ghb-primary);
+        }
+
+        /* 响应式 */
+        @media (max-width: 1200px) {
+            .sidebar {
+                width: 64px;
+            }
+
+            .sidebar-logo h1 span,
+            .nav-section-title,
+            .nav-item span,
+            .user-info {
+                display: none;
+            }
+
+            .main-container {
+                margin-left: 64px;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+
+            .left-panel {
+                min-height: 400px;
+            }
+
+            .result-circle-container {
+                width: 200px;
+                height: 200px;
+            }
+
+            .value-number {
+                font-size: 44px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                display: none;
+            }
+
+            .main-container {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- 侧边栏 -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <h1>
+                <i class="fas fa-heartbeat"></i>
+                <span>优唐智能AI+</span>
+            </h1>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <div class="nav-section-title">健康监测</div>
+                <a href="dashboard.html" class="nav-item">
+                    <i class="fas fa-th-large"></i>
+                    <span>健康概览</span>
+                </a>
+                <a href="blood-sugar.html" class="nav-item">
+                    <i class="fas fa-tint"></i>
+                    <span>血糖管理</span>
+                </a>
+                <a href="blood-pressure.html" class="nav-item">
+                    <i class="fas fa-heart"></i>
+                    <span>血压管理</span>
+                </a>
+                <a href="glycated.html" class="nav-item active">
+                    <i class="fas fa-chart-line"></i>
+                    <span>糖化血红蛋白</span>
+                </a>
+                <a href="uric-acid.html" class="nav-item">
+                    <i class="fas fa-flask"></i>
+                    <span>尿酸检测</span>
+                </a>
+                <a href="blood-ketone.html" class="nav-item">
+                    <i class="fas fa-burn"></i>
+                    <span>血酮检测</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">智能服务</div>
+                <a href="ai-chat.html" class="nav-item">
+                    <i class="fas fa-robot"></i>
+                    <span>AI助手</span>
+                    <span class="badge">新</span>
+                </a>
+                <a href="hospital.html" class="nav-item">
+                    <i class="fas fa-hospital"></i>
+                    <span>互联网医院</span>
+                </a>
+                <a href="devices.html" class="nav-item">
+                    <i class="fas fa-microchip"></i>
+                    <span>设备管理</span>
+                </a>
+                <a href="reports.html" class="nav-item">
+                    <i class="fas fa-file-medical-alt"></i>
+                    <span>健康报告</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <div class="nav-section-title">设置</div>
+                <a href="system_settings.html" class="nav-item">
+                    <i class="fas fa-cog"></i>
+                    <span>系统设置</span>
+                </a>
+            </div>
+        </nav>
+
+        <a href="profile.html" class="sidebar-user">
+            <div class="user-avatar">张</div>
+            <div class="user-info">
+                <div class="user-name">张先生</div>
+                <div class="user-status">健康会员</div>
+            </div>
+        </a>
+    </aside>
+
+    <!-- 主内容区 -->
+    <div class="main-container">
+        <!-- 左侧结果面板 -->
+        <div class="left-panel">
+            <div class="result-header">
+                <h1 class="result-title">记录成功</h1>
+                <p class="result-time" id="resultTime">2026年2月28日 09:00</p>
+            </div>
+
+            <!-- 圆形结果显示 -->
+            <div class="result-circle-container">
+                <div class="result-ring">
+                    <svg viewBox="0 0 200 200">
+                        <circle class="ring-bg" cx="100" cy="100" r="90"></circle>
+                        <circle class="ring-progress" id="resultRing" cx="100" cy="100" r="90"></circle>
+                    </svg>
+                    <div class="result-value">
+                        <div class="value-number" id="resultValue">6.5</div>
+                        <div class="value-unit">% HbA1c</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 状态标签 -->
+            <div class="status-badge" id="statusBadge">
+                <i class="fas fa-check-circle"></i>
+                <span id="statusText">达标良好</span>
+            </div>
+
+            <!-- 参考范围 -->
+            <div class="reference-range">
+                <i class="fas fa-lightbulb"></i>
+                <span>推荐目标：<7.0%</span>
+            </div>
+        </div>
+
+        <!-- 右侧详情面板 -->
+        <div class="right-panel">
+            <a href="glycated.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                返回糖化血红蛋白
+            </a>
+
+            <div class="detail-header">
+                <h2 class="detail-title">AI分析报告</h2>
+                <p class="detail-subtitle">基于您的检测结果生成的个性化建议</p>
+            </div>
+
+            <!-- AI提醒卡片 -->
+            <div class="ai-reminder-card">
+                <div class="ai-reminder-header">
+                    <div class="ai-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="ai-title">AI健康提醒</div>
+                </div>
+                <div class="ai-content" id="aiReminder">
+                    您的糖化血红蛋白值为6.5%，处于临界值。虽然达到了糖尿病的诊断标准，但只要积极控制，仍有机会改善。建议加强血糖监测，配合饮食和运动调整。
+                </div>
+            </div>
+
+            <!-- AI报告卡片 -->
+            <div class="ai-report-card">
+                <div class="ai-report-header">
+                    <div class="ai-report-title">
+                        <i class="fas fa-file-medical-alt"></i>
+                        详细分析报告
+                    </div>
+                </div>
+                <div class="ai-report-content" id="aiReport">
+                    <p><strong>检测结果解读：</strong></p>
+                    <p id="reportInterpretation">您的糖化血红蛋白值为6.5%，反映近2-3个月平均血糖水平约为7.8 mmol/L。这个数值刚好达到糖尿病诊断的临界点。</p>
+
+                    <p><strong>健康建议：</strong></p>
+                    <ul id="reportSuggestions">
+                        <li>继续保持规律监测，建议每3个月检测一次糖化血红蛋白</li>
+                        <li>控制碳水化合物摄入，选择低GI食物</li>
+                        <li>坚持每天30分钟以上的中等强度运动</li>
+                        <li>如正在用药，请按时服药并定期复诊</li>
+                    </ul>
+
+                    <p><strong>注意事项：</strong></p>
+                    <p id="reportNotice">糖化血红蛋白受多种因素影响，包括贫血、肝肾功能等。如有特殊情况，请咨询专业医生解读结果。</p>
+                </div>
+            </div>
+
+            <!-- 反馈卡片 -->
+            <div class="feedback-card">
+                <div class="feedback-title">这个分析对您有帮助吗？</div>
+                <div class="feedback-buttons">
+                    <button class="feedback-btn like" onclick="submitFeedback('like')">
+                        <i class="fas fa-thumbs-up"></i>
+                        有帮助
+                    </button>
+                    <button class="feedback-btn dislike" onclick="submitFeedback('dislike')">
+                        <i class="fas fa-thumbs-down"></i>
+                        需改进
+                    </button>
+                </div>
+            </div>
+
+            <!-- 咨询卡片 -->
+            <div class="consult-card">
+                <div class="consult-header">
+                    <div class="consult-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <div class="consult-title">需要专业指导？</div>
+                </div>
+                <div class="consult-desc">
+                    连接专业医生，获取个性化的血糖管理方案和用药指导。
+                </div>
+                <button class="consult-btn" onclick="window.location.href='hospital.html'">
+                    <i class="fas fa-hospital"></i> 前往互联网医院
+                </button>
+            </div>
+
+            <!-- 操作按钮 -->
+            <div class="action-buttons">
+                <button class="action-btn secondary" onclick="window.location.href='glycated.html'">
+                    <i class="fas fa-list"></i>
+                    查看历史
+                </button>
+                <button class="action-btn primary" onclick="window.location.href='glycated-manual.html'">
+                    <i class="fas fa-plus"></i>
+                    继续记录
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 从URL获取参数
+        function getUrlParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                value: parseFloat(params.get('value')) || 6.5,
+                date: params.get('date') || new Date().toISOString().split('T')[0],
+                time: params.get('time') || '09:00',
+                org: params.get('org') || '',
+                status: params.get('status') || 'unknown',
+                notes: params.get('notes') || ''
+            };
+        }
+
+        // 获取状态
+        function getStatus(value) {
+            if (value < 5.7) {
+                return {
+                    level: 'normal',
+                    text: '正常范围',
+                    icon: 'fa-check-circle'
+                };
+            } else if (value < 6.5) {
+                return {
+                    level: 'warning',
+                    text: '偏高',
+                    icon: 'fa-exclamation-circle'
+                };
+            } else {
+                return {
+                    level: 'danger',
+                    text: '建议关注',
+                    icon: 'fa-exclamation-triangle'
+                };
+            }
+        }
+
+        // 更新进度环
+        function updateProgressRing(value) {
+            const ring = document.getElementById('resultRing');
+            const circumference = 2 * Math.PI * 90;
+            const percentage = Math.min((value - 4) / (15 - 4), 1);
+            const offset = circumference * (1 - percentage);
+            ring.style.strokeDashoffset = offset;
+
+            // 根据数值更新颜色
+            if (value < 5.7) {
+                ring.style.stroke = '#4ade80'; // 正常 - 绿色
+            } else if (value < 6.5) {
+                ring.style.stroke = '#fbbf24'; // 偏高 - 黄色
+            } else {
+                ring.style.stroke = '#f87171'; // 糖尿病 - 红色
+            }
+        }
+
+        // 生成AI报告
+        function generateAIReport(value, status) {
+            const statusInfo = getStatus(value);
+            const reminderEl = document.getElementById('aiReminder');
+            const interpretationEl = document.getElementById('reportInterpretation');
+            const suggestionsEl = document.getElementById('reportSuggestions');
+
+            let reminder, interpretation, suggestions;
+
+            if (value < 5.7) {
+                reminder = '恭喜！您的糖化血红蛋白数值在正常范围内，说明近期的血糖控制情况良好。继续保持健康的生活方式！';
+                interpretation = `您的糖化血红蛋白值为${value}%，处于正常范围（4.0%-5.6%）。这表明近2-3个月您的平均血糖水平保持在健康范围内，约为${(value * 1.2 + 1.6).toFixed(1)} mmol/L。`;
+                suggestions = `
+                    <li>继续保持均衡饮食，控制糖分摄入</li>
+                    <li>坚持规律运动，每周至少150分钟中等强度运动</li>
+                    <li>建议每6-12个月检测一次糖化血红蛋白</li>
+                    <li>保持良好的作息习惯，避免熬夜</li>
+                `;
+            } else if (value < 6.5) {
+                reminder = '您的糖化血红蛋白偏高，属于糖尿病前期。此时积极干预可以有效预防或延缓糖尿病的发生。建议调整生活方式，必要时咨询医生。';
+                interpretation = `您的糖化血红蛋白值为${value}%，处于糖尿病前期范围（5.7%-6.4%）。这表明近2-3个月您的平均血糖水平偏高，约为${(value * 1.2 + 1.6).toFixed(1)} mmol/L。需要引起重视并采取措施。`;
+                suggestions = `
+                    <li>严格控制饮食，减少精制碳水化合物摄入</li>
+                    <li>增加运动量，每天至少30分钟有氧运动</li>
+                    <li>控制体重，减轻体重5%-10%可显著降低糖尿病风险</li>
+                    <li>建议每3个月检测一次糖化血红蛋白</li>
+                    <li>定期监测空腹血糖和餐后血糖</li>
+                `;
+            } else {
+                reminder = '您的糖化血红蛋白达到糖尿病诊断标准。请不要过于担心，通过规范的血糖管理，可以有效控制病情。建议尽快咨询专业医生，制定个性化治疗方案。';
+                interpretation = `您的糖化血红蛋白值为${value}%，已达到糖尿病诊断标准（≥6.5%）。这表明近2-3个月您的平均血糖水平约为${(value * 1.2 + 1.6).toFixed(1)} mmol/L。需要在医生指导下进行规范管理。`;
+                suggestions = `
+                    <li>尽快就医，在专业医生指导下制定治疗方案</li>
+                    <li>如医生开具药物，请按时按量服用</li>
+                    <li>严格控制饮食，遵循糖尿病饮食原则</li>
+                    <li>每天监测血糖，记录血糖变化</li>
+                    <li>定期复查糖化血红蛋白，建议每3个月一次</li>
+                    <li>注意并发症筛查，包括眼底、肾功能等</li>
+                `;
+            }
+
+            reminderEl.textContent = reminder;
+            interpretationEl.textContent = interpretation;
+            suggestionsEl.innerHTML = suggestions;
+        }
+
+        // 初始化页面
+        function initializePage() {
+            const params = getUrlParams();
+
+            // 更新数值显示
+            document.getElementById('resultValue').textContent = params.value.toFixed(1);
+
+            // 更新时间显示
+            const dateObj = new Date(params.date + 'T' + params.time);
+            const timeStr = dateObj.toLocaleDateString('zh-CN', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            }) + ' ' + params.time;
+            document.getElementById('resultTime').textContent = timeStr;
+
+            // 更新状态标签
+            const statusInfo = getStatus(params.value);
+            const statusBadge = document.getElementById('statusBadge');
+            statusBadge.className = 'status-badge ' + statusInfo.level;
+            statusBadge.innerHTML = `<i class="fas ${statusInfo.icon}"></i><span>${statusInfo.text}</span>`;
+
+            // 更新进度环
+            updateProgressRing(params.value);
+
+            // 生成AI报告
+            generateAIReport(params.value, params.status);
+        }
+
+        // 提交反馈
+        function submitFeedback(type) {
+            const buttons = document.querySelectorAll('.feedback-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            if (type === 'like') {
+                document.querySelector('.feedback-btn.like').classList.add('active');
+                alert('感谢您的反馈！我们会继续努力为您提供更好的服务。');
+            } else {
+                document.querySelector('.feedback-btn.dislike').classList.add('active');
+                alert('感谢您的反馈！我们会不断改进，为您提供更准确的分析。');
+            }
+        }
+
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', initializePage);
+    </script>
+</body>
+
+</html>
