@@ -54,11 +54,19 @@ export default function HospitalPage() {
     return (
         <DashboardLayout hideHeader>
             <div className="hospital-page fade-in">
-                {/* Header built into layout stream */}
-                <header className="bg-white px-8 py-5 border-b border-gray-200 flex items-center justify-between -mx-8 -mt-8 mb-6">
-                    <div>
-                        <h1 className="text-2xl font-semibold text-gray-800">互联网医院</h1>
-                        <p className="text-sm text-gray-500 mt-1">专业医生在线问诊，足不出户享受优质医疗服务</p>
+                {/* 顶部标题栏 */}
+                <header className="page-header">
+                    <div className="header-left">
+                        <div>
+                            <h1 className="page-title">互联网医院</h1>
+                            <p className="page-title-sub">专业医生在线问诊，足不出户享受优质医疗服务</p>
+                        </div>
+                    </div>
+                    <div className="header-right">
+                        <div className="notification-btn" title="通知">
+                            <i className="fas fa-bell" style={{ color: 'var(--gray-600)' }}></i>
+                            <span className="notification-dot"></span>
+                        </div>
                     </div>
                 </header>
 

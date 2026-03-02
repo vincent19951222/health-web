@@ -160,21 +160,27 @@ export default function ReportsPage() {
     return (
         <DashboardLayout hideHeader>
             <div className="reports-page fade-in">
-                {/* Header built into layout stream */}
-                <header className="bg-white px-8 py-5 border-b border-gray-200 flex items-center justify-between -mx-8 -mt-8 mb-6">
-                    <div className="flex flex-col">
-                        <h2 className="text-2xl font-semibold text-gray-800">健康报告</h2>
-                        <span className="text-sm text-gray-500 mt-1">管理您的健康档案与报告</span>
+                {/* 顶部标题栏 */}
+                <header className="page-header">
+                    <div className="header-left">
+                        <div>
+                            <h1 className="page-title">健康报告</h1>
+                            <p className="page-title-sub">管理您的健康档案与报告</p>
+                        </div>
                     </div>
-                    <div className="flex items-center gap-4">
-                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-gray-100 text-gray-700 hover:bg-gray-200">
+                    <div className="header-right">
+                        <button className="header-btn header-btn-secondary">
                             <i className="fas fa-download"></i>
                             批量导出
                         </button>
-                        <button className="flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-[#0891b2] text-white hover:bg-[#0e7490] hover:shadow-lg">
+                        <button className="header-btn header-btn-primary">
                             <i className="fas fa-plus"></i>
                             新建报告
                         </button>
+                        <div className="notification-btn" title="通知" style={{ marginLeft: "8px" }}>
+                            <i className="fas fa-bell" style={{ color: 'var(--gray-600)' }}></i>
+                            <span className="notification-dot"></span>
+                        </div>
                     </div>
                 </header>
 

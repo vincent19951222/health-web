@@ -161,15 +161,19 @@ export default function AiChatPage() {
                     <div className="header-left">
                         <h1 className="page-title">优唐AI助手</h1>
                     </div>
-                    <div className="header-right" style={{ display: 'flex', gap: '12px' }}>
-                        <button className="header-btn header-btn-primary bg-blue-500 text-white rounded-lg px-4 py-2 hover:bg-blue-600 transition" onClick={newChat}>
-                            <i className="fas fa-plus mr-2"></i>
-                            新建对话
-                        </button>
-                        <button className="header-btn header-btn-secondary bg-gray-100 text-gray-700 rounded-lg px-4 py-2 hover:bg-gray-200 transition" onClick={() => setIsHistoryOpen(true)}>
-                            <i className="fas fa-history mr-2"></i>
+                    <div className="header-right">
+                        <button className="header-btn header-btn-secondary" onClick={() => setIsHistoryOpen(true)}>
+                            <i className="fas fa-history"></i>
                             历史记录
                         </button>
+                        <button className="header-btn header-btn-primary" onClick={newChat}>
+                            <i className="fas fa-plus"></i>
+                            新建对话
+                        </button>
+                        <div className="notification-btn" title="通知" style={{ marginLeft: "8px" }}>
+                            <i className="fas fa-bell" style={{ color: 'var(--gray-600)' }}></i>
+                            <span className="notification-dot"></span>
+                        </div>
                     </div>
                 </header>
 
