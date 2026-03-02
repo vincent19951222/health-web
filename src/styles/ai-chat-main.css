@@ -1,0 +1,604 @@
+/* 医疗健康主题 - Web端AI聊天页面专属样式 (ai-chat-main.css) */
+
+/* 此页面拥有专属的CSS变量配置由于布局和色彩需求差异 */
+.ai-chat-page {
+    /* 针对组件级的作用域覆盖 */
+    --history-panel-width: 320px;
+    --header-height: 64px;
+    --input-height: 80px;
+
+    /* 我们复用 Tailwind 的某些主色但这里补充特定变量 */
+    --c-primary-500: #3b82f6;
+    --c-primary-600: #2563eb;
+    --c-secondary-500: #8b5cf6;
+    --c-success-500: #22c55e;
+    --c-info-500: #06b6d4;
+    --c-danger-500: #ef4444;
+}
+
+/* 顶部定制 Header 覆盖 DashboardLayout 内部默认行为 */
+.ai-header {
+    background: white;
+    height: var(--header-height);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin: -24px -24px 0 -24px;
+    /* 补偿 Dashboard 默认 padding */
+}
+
+/* 主容器扩展以适配全高和侧边栏推拉效应 */
+.ai-main-wrapper {
+    min-height: calc(100vh - var(--header-height));
+    display: flex;
+    flex-direction: column;
+    transition: margin-right 0.3s ease;
+    padding-bottom: 24px;
+    margin: 0 -24px -24px -24px;
+    /* 展开到边框 */
+    position: relative;
+    background: var(--gray-50);
+}
+
+.ai-main-wrapper.history-open {
+    margin-right: calc(var(--history-panel-width) - 24px);
+}
+
+/* 聊天内容区域 */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    max-width: 900px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 24px 32px;
+    padding-bottom: calc(var(--input-height) + 140px);
+}
+
+/* 欢迎消息卡片 */
+.welcome-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+    text-align: center;
+}
+
+.welcome-avatar {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(135deg, var(--c-primary-500) 0%, var(--c-secondary-500) 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 24px rgba(59, 130, 246, 0.3);
+    color: white;
+    font-size: 32px;
+}
+
+.welcome-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--gray-900);
+    margin-bottom: 12px;
+}
+
+.welcome-desc {
+    font-size: 15px;
+    color: var(--gray-600);
+    line-height: 1.7;
+    margin-bottom: 24px;
+}
+
+.welcome-features {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.feature-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: var(--gray-50);
+    border-radius: 9999px;
+    font-size: 13px;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-200);
+}
+
+.feature-tag.blood i {
+    color: var(--c-primary-500);
+}
+
+.feature-tag.food i {
+    color: var(--success-500);
+}
+
+.feature-tag.exercise i {
+    color: var(--info-500);
+}
+
+.feature-tag.medicine i {
+    color: var(--danger-500);
+}
+
+.feature-tag.emotion i {
+    color: var(--secondary-500);
+}
+
+/* 快捷问题区域 */
+.quick-questions-title {
+    font-size: 14px;
+    color: var(--gray-500);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.quick-questions-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 24px;
+}
+
+.quick-question-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    font-size: 14px;
+    color: var(--gray-700);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.quick-question-btn:hover {
+    border-color: var(--c-primary-500);
+    color: var(--c-primary-600);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.quick-question-btn.purple i {
+    color: var(--c-secondary-500);
+}
+
+.quick-question-btn.green i {
+    color: var(--c-success-500);
+}
+
+.quick-question-btn.blue i {
+    color: var(--c-primary-500);
+}
+
+.quick-question-btn.red i {
+    color: var(--c-danger-500);
+}
+
+/* 消息列表 */
+.messages-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    flex: 1;
+    /* allow it to grow */
+}
+
+.message {
+    display: flex;
+    gap: 12px;
+    max-width: 100%;
+}
+
+.message.user {
+    flex-direction: row-reverse;
+}
+
+.message-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.message.ai .message-avatar {
+    background: linear-gradient(135deg, var(--c-primary-500) 0%, var(--c-secondary-500) 100%);
+    color: white;
+    font-size: 16px;
+}
+
+.message.user .message-avatar {
+    background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.message-content {
+    max-width: 70%;
+    padding: 16px 20px;
+    border-radius: var(--radius-xl);
+    line-height: 1.7;
+}
+
+.message.ai .message-content {
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xl) var(--radius-xl) var(--radius-xl) 4px;
+    color: var(--gray-800);
+    box-shadow: var(--shadow-sm);
+}
+
+.message.user .message-content {
+    background: linear-gradient(135deg, var(--c-primary-500) 0%, var(--c-secondary-500) 100%);
+    color: white;
+    border-radius: var(--radius-xl) var(--radius-xl) 4px var(--radius-xl);
+}
+
+.message-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--gray-100);
+}
+
+.message-time {
+    font-size: 12px;
+    color: var(--gray-400);
+}
+
+.message-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.message-action-btn {
+    font-size: 12px;
+    color: var(--gray-400);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    background: none;
+    border: none;
+}
+
+.message-action-btn:hover {
+    color: var(--c-primary-500);
+}
+
+/* 打字指示器 */
+.typing-indicator {
+    padding: 16px 20px;
+    background: white;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: max-content;
+}
+
+.typing-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.typing-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--gray-400);
+    border-radius: 50%;
+    animation: typing 1.4s infinite ease-in-out;
+}
+
+.typing-dot:nth-child(1) {
+    animation-delay: -0.32s;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: -0.16s;
+}
+
+@keyframes typing {
+
+    0%,
+    80%,
+    100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+    }
+
+    40% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* 底部输入区域 */
+.input-area {
+    position: fixed;
+    bottom: 0;
+    left: 240px;
+    /* var(--sidebar-width) */
+    right: 0;
+    background: white;
+    border-top: 1px solid var(--gray-200);
+    padding: 16px 32px;
+    z-index: 50;
+    transition: right 0.3s ease;
+}
+
+.ai-main-wrapper.history-open .input-area {
+    right: var(--history-panel-width);
+}
+
+.input-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.input-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
+    background: var(--gray-50);
+    border-radius: var(--radius-xl);
+    padding: 12px 16px;
+    border: 2px solid var(--gray-200);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input-container:focus-within {
+    border-color: var(--c-primary-500);
+    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.input-actions-left {
+    display: flex;
+    gap: 8px;
+}
+
+.input-action-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: white;
+    border: 1px solid var(--gray-200);
+    color: var(--gray-500);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input-action-btn:hover {
+    background: var(--gray-100);
+    color: var(--c-primary-500);
+}
+
+.message-input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    font-size: 15px;
+    color: var(--gray-800);
+    resize: none;
+    outline: none;
+    min-height: 24px;
+    max-height: 120px;
+    line-height: 1.5;
+}
+
+.message-input::placeholder {
+    color: var(--gray-400);
+}
+
+.send-btn {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--c-primary-500) 0%, var(--c-secondary-500) 100%);
+    border: none;
+    color: white;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.send-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+}
+
+.send-btn:disabled {
+    background: var(--gray-300);
+    cursor: not-allowed;
+}
+
+.input-hint {
+    text-align: center;
+    margin-top: 8px;
+    font-size: 12px;
+    color: var(--gray-400);
+}
+
+/* 右侧历史面板 */
+.history-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--history-panel-width);
+    background: white;
+    border-left: 1px solid var(--gray-200);
+    z-index: 60;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    box-shadow: var(--shadow-xl);
+}
+
+.history-panel.open {
+    transform: translateX(0);
+}
+
+.history-panel-header {
+    padding: 20px;
+    border-bottom: 1px solid var(--gray-200);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.history-panel-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.history-panel-close {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--gray-100);
+    border: none;
+    color: var(--gray-500);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.history-panel-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px;
+}
+
+.history-date-group {
+    margin-bottom: 24px;
+}
+
+.history-date-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--gray-500);
+    margin-bottom: 12px;
+    padding: 0 4px;
+}
+
+.history-item {
+    padding: 12px 16px;
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+}
+
+.history-item:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-200);
+}
+
+.history-item.active {
+    background: #eff6ff;
+    border-color: #bfdbfe;
+}
+
+.history-item-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--gray-800);
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.history-item-preview {
+    font-size: 13px;
+    color: var(--gray-500);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.5;
+}
+
+.history-item-time {
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-top: 8px;
+}
+
+/* 遮罩层 */
+.history-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 55;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+.history-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* 响应式 */
+@media (max-width: 1200px) {
+    .chat-container {
+        padding: 20px 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .input-area {
+        left: 0;
+    }
+
+    .history-panel {
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .message-content {
+        max-width: 85%;
+    }
+}

@@ -4,14 +4,16 @@ import Header from "./Header";
 
 export default function DashboardLayout({
     children,
+    hideHeader = false,
 }: {
     children: React.ReactNode;
+    hideHeader?: boolean;
 }) {
     return (
         <>
             <Sidebar />
             <div className="main-content">
-                <Header />
+                {!hideHeader && <Header />}
                 <main className="content">
                     {children}
                 </main>

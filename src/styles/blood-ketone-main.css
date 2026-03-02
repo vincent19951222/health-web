@@ -1,0 +1,632 @@
+/* 医疗健康主题 - Web端血酮检测页面专属样式 (blood-ketone-main.css) */
+
+/* 血酮主卡片 - 紫色渐变 */
+.bk-main-card {
+    background: linear-gradient(135deg, #a855f7 0%, #9333ea 50%, #7e22ce 100%);
+    border-radius: var(--radius-2xl);
+    padding: 32px;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+
+.bk-main-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 400px;
+    height: 400px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+}
+
+.bk-card-header {
+    position: absolute;
+    top: 32px;
+    left: 32px;
+    right: 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 10;
+}
+
+.bk-card-title {
+    font-size: 18px;
+    font-weight: 600;
+    opacity: 0.9;
+}
+
+.bk-card-time {
+    font-size: 13px;
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+/* 居中内容区 */
+.bk-center-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+    min-height: 320px;
+    padding-top: 40px;
+}
+
+/* 模式切换按钮 */
+.mode-toggle {
+    display: flex;
+    gap: 8px;
+}
+
+.mode-btn {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: transparent;
+    color: white;
+}
+
+.mode-btn.active {
+    background: white;
+    color: #a855f7;
+    border-color: white;
+}
+
+.mode-btn:hover:not(.active) {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* 圆环显示 */
+.ring-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.bk-ring {
+    width: 200px;
+    height: 200px;
+    position: relative;
+}
+
+.bk-ring svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.bk-ring .ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.2);
+    stroke-width: 16;
+}
+
+.bk-ring .ring-progress {
+    fill: none;
+    stroke-width: 16;
+    stroke-linecap: round;
+    stroke: #e9d5ff;
+    /* dynamic rendering applied inline in React */
+    transition: stroke-dashoffset 0.5s ease;
+}
+
+.ring-value {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.ring-value .number {
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.ring-value .unit {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 4px;
+}
+
+/* 状态标签 */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: var(--radius-xl);
+    margin-bottom: 16px;
+}
+
+.status-badge i {
+    font-size: 14px;
+}
+
+/* 状态信息 */
+.status-info {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 10px;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    opacity: 0.9;
+}
+
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.status-dot.normal {
+    background: #4ade80;
+}
+
+.status-dot.warning {
+    background: #fbbf24;
+}
+
+.status-dot.danger {
+    background: #f87171;
+}
+
+/* 统计网格 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-100);
+}
+
+.stat-card-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+    color: var(--gray-500);
+    font-size: 13px;
+}
+
+.stat-card-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--gray-900);
+}
+
+.stat-card-unit {
+    font-size: 14px;
+    color: var(--gray-500);
+    font-weight: 400;
+    margin-left: 2px;
+}
+
+.stat-card-trend {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    margin-top: 8px;
+    font-size: 12px;
+}
+
+.stat-card-trend.up {
+    color: var(--danger-500);
+}
+
+.stat-card-trend.down {
+    color: var(--success-500);
+}
+
+.stat-card-trend.stable {
+    color: var(--gray-400);
+}
+
+/* 操作按钮区 */
+.action-buttons {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.action-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 24px;
+    border-radius: var(--radius-xl);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.action-btn.primary {
+    background: linear-gradient(135deg, #a855f7, #9333ea);
+    color: white;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
+}
+
+.action-btn.primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(168, 85, 247, 0.4);
+}
+
+.action-btn.secondary {
+    background: white;
+    color: var(--gray-700);
+    border: 1px solid var(--gray-200);
+}
+
+.action-btn.secondary:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-300);
+}
+
+.action-btn i {
+    font-size: 18px;
+}
+
+/* 趋势图表卡片 */
+.chart-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-100);
+    margin-bottom: 24px;
+}
+
+.chart-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.chart-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.chart-tabs {
+    display: flex;
+    gap: 4px;
+    background: var(--gray-100);
+    padding: 4px;
+    border-radius: var(--radius-lg);
+}
+
+.chart-tab {
+    padding: 6px 12px;
+    border-radius: var(--radius-md);
+    font-size: 12px;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+    background: transparent;
+}
+
+.chart-tab.active {
+    background: white;
+    color: var(--gray-900);
+    box-shadow: var(--shadow-sm);
+}
+
+.chart-container {
+    height: 280px;
+    position: relative;
+}
+
+/* SVG 趋势图 */
+.trend-chart {
+    width: 100%;
+    height: 100%;
+}
+
+.chart-line {
+    fill: none;
+    stroke-width: 3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke: #a855f7;
+}
+
+.chart-area {
+    fill: #a855f7;
+    opacity: 0.1;
+}
+
+.chart-grid-line {
+    stroke: var(--gray-200);
+    stroke-width: 1;
+}
+
+.chart-label {
+    font-size: 11px;
+    fill: var(--gray-400);
+}
+
+.chart-dot {
+    r: 5;
+    stroke-width: 2;
+    stroke: white;
+    fill: #a855f7;
+}
+
+/* 参考线 */
+.reference-line {
+    stroke: #22c55e;
+    stroke-width: 1.5;
+    stroke-dasharray: 5, 5;
+}
+
+.reference-line-danger {
+    stroke: #ef4444;
+    stroke-width: 1.5;
+    stroke-dasharray: 5, 5;
+}
+
+/* 图例 */
+.chart-legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--gray-100);
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--gray-600);
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.legend-line {
+    width: 20px;
+    height: 2px;
+}
+
+/* 参考范围卡片 */
+.reference-card {
+    background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+    border-radius: var(--radius-xl);
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(168, 85, 247, 0.2);
+}
+
+.reference-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #7e22ce;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.reference-items {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+}
+
+.reference-item {
+    text-align: center;
+    padding: 12px;
+    background: white;
+    border-radius: var(--radius-lg);
+}
+
+.reference-label {
+    font-size: 12px;
+    color: #a855f7;
+    margin-bottom: 4px;
+}
+
+.reference-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #7e22ce;
+}
+
+/* 历史记录卡片 */
+.history-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    box-shadow: var(--shadow-sm);
+    border: 1px solid var(--gray-100);
+}
+
+.history-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.history-card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.view-all-btn {
+    color: var(--primary-500);
+    font-size: 13px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.view-all-btn:hover {
+    color: var(--primary-600);
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.history-item:hover {
+    background: var(--gray-100);
+}
+
+.history-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 16px;
+    font-size: 18px;
+}
+
+.history-icon.normal {
+    background: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+}
+
+.history-icon.warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+}
+
+.history-icon.danger {
+    background: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+}
+
+.history-content {
+    flex: 1;
+}
+
+.history-value {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.history-meta {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-top: 2px;
+}
+
+.history-time {
+    font-size: 12px;
+    color: var(--gray-400);
+}
+
+/* 警告卡片 */
+.warning-card {
+    background: linear-gradient(135deg, #fef2f2 0%, #fee2e2 100%);
+    border-radius: var(--radius-xl);
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.warning-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: #b91c1c;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.warning-content {
+    font-size: 13px;
+    color: #991b1b;
+    line-height: 1.6;
+}
+
+/* 响应式 */
+@media (max-width: 1400px) {
+    .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .reference-items {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .bk-ring {
+        width: 150px;
+        height: 150px;
+    }
+
+    .ring-value .number {
+        font-size: 40px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .reference-items {
+        grid-template-columns: 1fr;
+    }
+}
