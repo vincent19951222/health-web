@@ -1,0 +1,379 @@
+/* ================================================================
+   系统设置页面 - 卡片、网格、统计 + 设置项
+   ================================================================ */
+
+/* 卡片基础 */
+.card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: 24px;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--gray-200);
+    margin-bottom: 24px;
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.card-subtitle {
+    font-size: 13px;
+    color: var(--gray-500);
+    margin-top: 4px;
+}
+
+/* 统计网格 */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.stat-item {
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    text-align: center;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary-600);
+}
+
+.stat-label {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-top: 4px;
+}
+
+/* 两列网格布局 */
+.grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+}
+
+@media (max-width: 1200px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* 设置列表 */
+.settings-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.settings-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px;
+    background: var(--gray-50);
+    border-radius: var(--radius-lg);
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.settings-item:hover {
+    background: var(--gray-100);
+}
+
+.settings-item-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.settings-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+}
+
+.settings-icon.blue {
+    background: var(--primary-100);
+    color: var(--primary-600);
+}
+
+.settings-icon.green {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.settings-icon.orange {
+    background: #fff7ed;
+    color: #ea580c;
+}
+
+.settings-icon.red {
+    background: #fee2e2;
+    color: #dc2626;
+}
+
+.settings-icon.cyan {
+    background: #ecfeff;
+    color: #0891b2;
+}
+
+.settings-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.settings-name {
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.settings-desc {
+    font-size: 12px;
+    color: var(--gray-500);
+}
+
+.settings-value {
+    font-size: 13px;
+    color: var(--gray-500);
+}
+
+/* 开关按钮 */
+.toggle {
+    position: relative;
+    width: 48px;
+    height: 26px;
+    background: var(--gray-300);
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: none;
+}
+
+.toggle::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 20px;
+    height: 20px;
+    background: white;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.toggle.on {
+    background: var(--success-500);
+}
+
+.toggle.on::after {
+    transform: translateX(22px);
+}
+
+/* 密码表单 */
+.password-form {
+    display: grid;
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.form-input {
+    height: 44px;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--radius-lg);
+    padding: 0 16px;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px var(--primary-100);
+}
+
+.form-btn {
+    height: 44px;
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-600));
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.form-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.form-btn.danger {
+    background: var(--danger-500);
+}
+
+.form-btn.danger:hover {
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.form-hint {
+    font-size: 12px;
+    color: var(--gray-400);
+}
+
+/* 危险区域 */
+.danger-card {
+    border-color: #fecaca;
+    background: linear-gradient(180deg, #fff5f5, #fff);
+}
+
+.danger-card .card-title {
+    color: var(--danger-500);
+}
+
+/* 会话管理样式 */
+.session-info {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.session-item {
+    display: flex;
+    align-items: center;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--gray-200);
+    gap: 14px;
+}
+
+.session-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: var(--radius-lg);
+    background: var(--primary-100);
+    color: var(--primary-600);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.session-icon.other {
+    background: var(--gray-100);
+    color: var(--gray-500);
+}
+
+.session-details {
+    flex: 1;
+}
+
+.session-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--gray-900);
+}
+
+.session-meta {
+    font-size: 12px;
+    color: var(--gray-500);
+    margin-top: 2px;
+}
+
+.session-status {
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background: var(--gray-100);
+    color: var(--gray-500);
+}
+
+.session-status.active {
+    background: #dcfce7;
+    color: #16a34a;
+}
+
+.logout-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 24px;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+    border: none;
+    border-radius: var(--radius-lg);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.logout-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+}
+
+.logout-btn i {
+    font-size: 16px;
+}
+
+.logout-hint {
+    text-align: center;
+    font-size: 12px;
+    color: var(--gray-400);
+    margin-top: 12px;
+}
+
+/* 可折叠卡片 */
+details.card summary {
+    list-style: none;
+    cursor: pointer;
+    margin-bottom: 0;
+    outline: none;
+}
+
+details.card summary::-webkit-details-marker {
+    display: none;
+}
+
+details.card summary .toggle-icon {
+    color: var(--gray-400);
+    transition: transform 0.3s ease;
+}
+
+details.card[open] summary .toggle-icon {
+    transform: rotate(-180deg);
+}
+
+details.card[open] summary {
+    margin-bottom: 16px;
+}

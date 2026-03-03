@@ -92,7 +92,7 @@ export default function Sidebar() {
 
                 <div className="nav-section">
                     <div className="nav-section-title">设置</div>
-                    <Link href="#" className="nav-item">
+                    <Link href="/settings" className={`nav-item ${isActive('/settings') ? 'active' : ''}`}>
                         <i className="fas fa-cog"></i>
                         <span>系统设置</span>
                     </Link>
