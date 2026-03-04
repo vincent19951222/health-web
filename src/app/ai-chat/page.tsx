@@ -293,7 +293,7 @@ export default function AiChatPage() {
                                 value={inputValue}
                                 onChange={handleInput}
                                 onKeyDown={handleKeyDown}
-                                placeholder="问问 Gemini..."
+                                placeholder="问问优小唐..."
                                 rows={1}
                                 maxLength={500}
                             />
@@ -325,7 +325,7 @@ export default function AiChatPage() {
                             </div>
                         </div>
                         <div className="input-hint">
-                            Gemini 是一款 AI 工具，其回答未必正确无误。
+                            优小唐是一款 AI 工具，其回答未必正确无误。
                         </div>
                     </div>
                 </div>
