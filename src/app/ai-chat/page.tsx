@@ -286,36 +286,46 @@ export default function AiChatPage() {
                 {/* Fixed Bottom Input Area */}
                 <div className="input-area">
                     <div className="input-wrapper">
-                        <div className="input-container">
-                            <div className="input-actions-left">
-                                <button className="input-action-btn" title="语音输入">
-                                    <i className="fas fa-microphone"></i>
-                                </button>
-                                <button className="input-action-btn" title="上传图片">
-                                    <i className="fas fa-image"></i>
-                                </button>
-                            </div>
+                        <div className="input-container gemini-style">
                             <textarea
-                                className="message-input"
+                                className="message-input gemini-input"
                                 ref={textareaRef}
                                 value={inputValue}
                                 onChange={handleInput}
                                 onKeyDown={handleKeyDown}
-                                placeholder="请输入您的健康问题..."
+                                placeholder="问问 Gemini..."
                                 rows={1}
                                 maxLength={500}
                             />
-                            <button
-                                className="send-btn"
-                                disabled={!inputValue.trim()}
-                                onClick={sendMessage}
-                            >
-                                <i className="fas fa-paper-plane"></i>
-                            </button>
+                            <div className="gemini-action-bar">
+                                <div className="gemini-actions-left">
+                                    <button className="gemini-btn icon-only" title="添加附件">
+                                        <i className="fas fa-plus"></i>
+                                    </button>
+                                    <button className="gemini-btn text-icon" title="工具">
+                                        <i className="fas fa-sliders-h"></i>
+                                        <span>工具</span>
+                                    </button>
+                                </div>
+                                <div className="gemini-actions-right">
+                                    <button className="gemini-btn text-icon" title="模型选择">
+                                        <span>快速</span>
+                                        <i className="fas fa-chevron-down text-xs ml-1"></i>
+                                    </button>
+                                    {inputValue.trim() ? (
+                                        <button className="gemini-btn icon-only send-active" onClick={sendMessage} title="发送">
+                                            <i className="fas fa-paper-plane"></i>
+                                        </button>
+                                    ) : (
+                                        <button className="gemini-btn icon-only" title="语音输入">
+                                            <i className="fas fa-microphone"></i>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                         <div className="input-hint">
-                            <i className="fas fa-info-circle mr-1"></i>
-                            内容由AI生成，仅供参考，如有不适请及时就医
+                            Gemini 是一款 AI 工具，其回答未必正确无误。
                         </div>
                     </div>
                 </div>

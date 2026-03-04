@@ -74,13 +74,7 @@ export default function Sidebar() {
                         <i className="fas fa-hospital w-5 text-center text-lg"></i>
                         <span className="text-sm">互联网医院</span>
                     </Link>
-                    <Link
-                        href="/devices"
-                        className={`nav-item ${isActive('/devices') ? 'active' : ''}`}
-                    >
-                        <i className="fas fa-microchip w-5 text-center text-lg"></i>
-                        <span className="text-sm">设备管理</span>
-                    </Link>
+
                     <Link
                         href="/reports"
                         className={`nav-item ${isActive('/reports') ? 'active' : ''}`}

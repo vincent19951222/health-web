@@ -28,8 +28,7 @@
     position: sticky;
     top: 0;
     z-index: 50;
-    margin: -24px -24px 0 -24px;
-    /* 补偿 Dashboard 默认 padding */
+    margin: 0;
 }
 
 /* 主容器扩展以适配全高和侧边栏推拉效应 */
@@ -39,14 +38,14 @@
     flex-direction: column;
     transition: margin-right 0.3s ease;
     padding-bottom: 24px;
-    margin: 0 -24px -24px -24px;
-    /* 展开到边框 */
+    margin: -24px -32px -24px -32px;
+    /* 补偿 Dashboard 默认 padding (top 24, right 32, bottom 24, left 32) */
     position: relative;
     background: var(--gray-50);
 }
 
 .ai-main-wrapper.history-open {
-    margin-right: calc(var(--history-panel-width) - 24px);
+    margin-right: calc(var(--history-panel-width) - 32px);
 }
 
 /* 聊天内容区域 */
@@ -349,7 +348,7 @@
     right: 0;
     background: white;
     border-top: 1px solid var(--gray-200);
-    padding: 16px 32px;
+    padding: 16px 0;
     z-index: 50;
     transition: right 0.3s ease;
 }
@@ -361,95 +360,105 @@
 .input-wrapper {
     max-width: 900px;
     margin: 0 auto;
+    width: 100%;
+    padding: 0 32px;
 }
 
-.input-container {
+/* Gemini Style Input Area */
+.input-container.gemini-style {
     display: flex;
-    align-items: flex-end;
-    gap: 12px;
-    background: var(--gray-50);
-    border-radius: var(--radius-xl);
-    padding: 12px 16px;
-    border: 2px solid var(--gray-200);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.input-container:focus-within {
-    border-color: var(--c-primary-500);
-    box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
-}
-
-.input-actions-left {
-    display: flex;
-    gap: 8px;
-}
-
-.input-action-btn {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
+    flex-direction: column;
     background: white;
+    border-radius: 32px;
+    /* Very pill shaped */
+    padding: 16px 20px 12px 20px;
     border: 1px solid var(--gray-200);
-    color: var(--gray-500);
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
 }
 
-.input-action-btn:hover {
-    background: var(--gray-100);
-    color: var(--c-primary-500);
+.input-container.gemini-style:focus-within {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+    border-color: var(--gray-300);
 }
 
-.message-input {
-    flex: 1;
+.message-input.gemini-input {
+    width: 100%;
     border: none;
     background: transparent;
-    font-size: 15px;
+    font-size: 16px;
     color: var(--gray-800);
     resize: none;
     outline: none;
-    min-height: 24px;
-    max-height: 120px;
+    min-height: 56px;
+    max-height: 200px;
     line-height: 1.5;
+    padding: 0;
+    margin-bottom: 8px;
 }
 
-.message-input::placeholder {
+.message-input.gemini-input::placeholder {
     color: var(--gray-400);
 }
 
-.send-btn {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, var(--c-primary-500) 0%, var(--c-secondary-500) 100%);
-    border: none;
-    color: white;
-    cursor: pointer;
-    transition: all 0.2s ease;
+.gemini-action-bar {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+.gemini-actions-left,
+.gemini-actions-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.gemini-btn {
+    background: transparent;
+    border: none;
+    color: var(--gray-600);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
     justify-content: center;
+    border-radius: 9999px;
+    font-size: 14px;
+}
+
+.gemini-btn:hover {
+    background: var(--gray-100);
+    color: var(--gray-800);
+}
+
+.gemini-btn.icon-only {
+    width: 36px;
+    height: 36px;
     font-size: 16px;
 }
 
-.send-btn:hover:not(:disabled) {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+.gemini-btn.text-icon {
+    padding: 6px 12px;
+    height: 36px;
+    font-weight: 500;
+    gap: 6px;
 }
 
-.send-btn:disabled {
-    background: var(--gray-300);
-    cursor: not-allowed;
+.gemini-btn.send-active {
+    color: var(--c-primary-500);
+}
+
+.gemini-btn.send-active:hover {
+    background: var(--primary-50);
+    color: var(--c-primary-600);
 }
 
 .input-hint {
     text-align: center;
-    margin-top: 8px;
+    margin-top: 12px;
     font-size: 12px;
-    color: var(--gray-400);
+    color: var(--gray-500);
 }
 
 /* 右侧历史面板 */
@@ -586,11 +595,15 @@
     .chat-container {
         padding: 20px 24px;
     }
+
+    .input-wrapper {
+        padding: 0 24px;
+    }
 }
 
 @media (max-width: 768px) {
     .input-area {
-        left: 0;
+        left: 64px;
     }
 
     .history-panel {
