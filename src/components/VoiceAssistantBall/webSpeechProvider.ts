@@ -1,10 +1,56 @@
+// @ts-nocheck
+// Web Speech API 浏览器类型声明（补充标准 lib 缺失的定义）
+declare global {
+    interface Window {
+        SpeechRecognition: typeof SpeechRecognition;
+        webkitSpeechRecognition: typeof SpeechRecognition;
+    }
+
+    class SpeechRecognition extends EventTarget {
+        continuous: boolean;
+        interimResults: boolean;
+        lang: string;
+        onresult: ((event: SpeechRecognitionEvent) => void) | null;
+        onerror: ((event: SpeechRecognitionErrorEvent) => void) | null;
+        onend: (() => void) | null;
+        start(): void;
+        stop(): void;
+    }
+
+    interface SpeechRecognitionEvent extends Event {
+        resultIndex: number;
+        results: SpeechRecognitionResultList;
+    }
+
+    interface SpeechRecognitionResultList {
+        length: number;
+        [index: number]: SpeechRecognitionResult;
+    }
+
+    interface SpeechRecognitionResult {
+        isFinal: boolean;
+        length: number;
+        [index: number]: SpeechRecognitionAlternative;
+    }
+
+    interface SpeechRecognitionAlternative {
+        transcript: string;
+        confidence: number;
+    }
+
+    interface SpeechRecognitionErrorEvent extends Event {
+        error: string;
+        message: string;
+    }
+}
+
 export interface ASRResult {
     text: string;
     isFinal: boolean;
 }
 
 export interface ASRProvider {
-    start(onResult: (result: ASRResult) => void, onError: (error: string) => void): void;
+    start(onResult: (result: ASRResult) => void, onError: (error: string) => void): void | Promise<void>;
     stop(): void;
     isSupported(): boolean;
 }

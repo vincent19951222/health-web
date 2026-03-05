@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import SubtitleBubble from './SubtitleBubble';
-import { WebSpeechProvider } from './webSpeechProvider';
+import { VolcASRProvider } from './volcASRProvider';
 import './voice-assistant.css';
 
 type BallState = 'idle' | 'listening';
 type MessageType = 'transcript' | 'info' | 'error';
 
-const provider = new WebSpeechProvider();
+const provider = new VolcASRProvider();
 
 export default function VoiceAssistantBall() {
     const [ballState, setBallState] = useState<BallState>('idle');
@@ -45,9 +45,9 @@ export default function VoiceAssistantBall() {
         }
     };
 
-    const startListening = () => {
+    const startListening = async () => {
         if (!provider.isSupported()) {
-            showMessage('请使用 Chrome 或 Edge 浏览器以启用语音功能', 'info', true);
+            showMessage('请使用现代浏览器（Chrome/Edge/Firefox）以启用语音功能', 'info', true);
             scheduleFade(5000);
             return;
         }
@@ -55,15 +55,17 @@ export default function VoiceAssistantBall() {
         setBallState('listening');
         showMessage('', 'transcript', false);
 
-        provider.start(
+        await provider.start(
             (result) => {
                 showMessage(result.text, 'transcript', result.isFinal);
             },
             (error) => {
                 if (error === 'permission_denied') {
                     showMessage('请在浏览器设置中允许麦克风权限后重试', 'error', true);
-                } else if (error === 'browser_not_supported') {
-                    showMessage('请使用 Chrome 或 Edge 浏览器以启用语音功能', 'info', true);
+                } else if (error === 'asr_not_configured') {
+                    showMessage('语音服务未配置，请联系管理员', 'error', true);
+                } else if (error === 'connection_failed') {
+                    showMessage('语音服务连接失败，请检查网络后重试', 'error', true);
                 } else {
                     showMessage('语音识别出现问题，请重试', 'error', true);
                 }

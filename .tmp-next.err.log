@@ -1,0 +1,4 @@
+⨯ TypeError: Cannot convert argument to a ByteString because the character at index 243 has a value of 27431 which is greater than 255.
+    at ignore-listed frames {
+  digest: '232911670'
+}

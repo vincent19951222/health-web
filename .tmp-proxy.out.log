@@ -1,0 +1,15 @@
+
+> youtangzhineng@0.1.0 asr-proxy
+> node server/asr-proxy.js
+
+ASR proxy listening at ws://localhost:8766
+ASR upstream: wss://openspeech.bytedance.com/api/v3/sauc/bigmodel
+ASR resource: volc.bigasr.sauc.duration
+[proxy] upstream connected: connect_id=d8549afa-113e-4a78-97e7-e38e42d39a5e
+[proxy] upstream close: connect_id=d8549afa-113e-4a78-97e7-e38e42d39a5e code=1000 reason=finish last sequence
+[proxy] upstream connected: connect_id=526d152c-be4e-4024-8d47-a52b33f3fd68
+[proxy] upstream close: connect_id=526d152c-be4e-4024-8d47-a52b33f3fd68 code=1000 reason=finish last sequence
+[proxy] upstream connected: connect_id=93965844-bf41-478e-a7ea-fb81971310ff
+[proxy] upstream close: connect_id=93965844-bf41-478e-a7ea-fb81971310ff code=1000 reason=finish last sequence
+[proxy] upstream connected: connect_id=9d2d2f83-f1b7-4a8d-a01f-8b9c0fc60482
+[proxy] upstream close: connect_id=9d2d2f83-f1b7-4a8d-a01f-8b9c0fc60482 code=1000 reason=finish last sequence
