@@ -154,7 +154,8 @@ export default function AiChatPage() {
     return (
         <DashboardLayout hideHeader>
             {/* The main AI Chat Wrapper */}
-            <div className={`ai-chat-page ai-main-wrapper ${isHistoryOpen ? 'history-open' : ''}`}>
+            <div className="ai-chat-page">
+                <div className={`ai-main-wrapper ${isHistoryOpen ? 'history-open' : ''}`}>
 
                 {/* Custom sticky sub-header over Dashboard default */}
                 <header className="ai-header">
@@ -390,6 +391,7 @@ export default function AiChatPage() {
                         </div>
                     </div>
                 </aside>
+                </div>
             </div>
         </DashboardLayout>
     );

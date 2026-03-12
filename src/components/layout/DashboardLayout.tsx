@@ -1,4 +1,3 @@
-import "@/styles/dashboard.css";
 import Sidebar from "./Sidebar";
 import Header from "./Header";
 

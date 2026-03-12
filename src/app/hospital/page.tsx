@@ -53,7 +53,8 @@ export default function HospitalPage() {
 
     return (
         <DashboardLayout hideHeader>
-            <div className="hospital-page fade-in">
+            <div className="hospital-scope">
+                <div className="hospital-page fade-in">
                 {/* 顶部标题栏 */}
                 <header className="page-header">
                     <div className="header-left">
@@ -204,6 +205,7 @@ export default function HospitalPage() {
                             </ul>
                         </div>
                     </div>
+                </div>
                 </div>
             </div>
         </DashboardLayout>

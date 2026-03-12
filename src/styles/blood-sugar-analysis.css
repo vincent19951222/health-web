@@ -1,9 +1,9 @@
 /* ================================================================
-   血糖数据分析页面专用样式 (blood-sugar.html)
+   琛€绯栨暟鎹垎鏋愰〉闈笓鐢ㄦ牱寮?(blood-sugar.html)
    ================================================================ */
 
-/* ======================== 标签页导航 ======================== */
-.tabs-container {
+/* ======================== 鏍囩椤靛鑸?======================== */
+.bs-analysis-page .tabs-container {
     background: white;
     border-radius: var(--radius-xl);
     padding: 6px;
@@ -13,7 +13,7 @@
     gap: 4px;
 }
 
-.tab-btn {
+.bs-analysis-page .tab-btn {
     padding: 10px 24px;
     border-radius: var(--radius-lg);
     font-size: 14px;
@@ -25,18 +25,18 @@
     color: var(--gray-600);
 }
 
-.tab-btn:hover {
+.bs-analysis-page .tab-btn:hover {
     color: var(--gray-900);
     background: var(--gray-100);
 }
 
-.tab-btn.active {
+.bs-analysis-page .tab-btn.active {
     background: var(--primary-500);
     color: white;
 }
 
-/* ======================== 日期选择器 ======================== */
-.date-selector {
+/* ======================== 鏃ユ湡閫夋嫨鍣?======================== */
+.bs-analysis-page .date-selector {
     background: white;
     border-radius: var(--radius-xl);
     padding: 16px 24px;
@@ -47,13 +47,13 @@
     justify-content: space-between;
 }
 
-.date-nav {
+.bs-analysis-page .date-nav {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.date-nav-btn {
+.bs-analysis-page .date-nav-btn {
     width: 36px;
     height: 36px;
     border-radius: 50%;
@@ -67,13 +67,13 @@
     color: var(--gray-500);
 }
 
-.date-nav-btn:hover {
+.bs-analysis-page .date-nav-btn:hover {
     background: var(--primary-50);
     border-color: var(--primary-500);
     color: var(--primary-500);
 }
 
-.date-display {
+.bs-analysis-page .date-display {
     font-size: 18px;
     font-weight: 600;
     color: var(--gray-900);
@@ -81,12 +81,12 @@
     text-align: center;
 }
 
-.date-range-tabs {
+.bs-analysis-page .date-range-tabs {
     display: flex;
     gap: 8px;
 }
 
-.date-range-tab {
+.bs-analysis-page .date-range-tab {
     padding: 8px 20px;
     border-radius: var(--radius-md);
     font-size: 14px;
@@ -98,26 +98,26 @@
     color: var(--gray-600);
 }
 
-.date-range-tab:hover {
+.bs-analysis-page .date-range-tab:hover {
     border-color: var(--primary-500);
     color: var(--primary-500);
 }
 
-.date-range-tab.active {
+.bs-analysis-page .date-range-tab.active {
     background: var(--primary-500);
     color: white;
     border-color: var(--primary-500);
 }
 
-/* ======================== 统计卡片网格 ======================== */
-.stats-grid {
+/* ======================== 缁熻鍗＄墖缃戞牸 ======================== */
+.bs-analysis-page .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
 
-.stat-card {
+.bs-analysis-page .stat-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 20px;
@@ -125,19 +125,19 @@
     transition: all 0.2s ease;
 }
 
-.stat-card:hover {
+.bs-analysis-page .stat-card:hover {
     box-shadow: var(--shadow-md);
     transform: translateY(-2px);
 }
 
-.stat-card-header {
+.bs-analysis-page .stat-card-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
 }
 
-.stat-card-icon {
+.bs-analysis-page .stat-card-icon {
     width: 40px;
     height: 40px;
     border-radius: var(--radius-lg);
@@ -147,45 +147,45 @@
     font-size: 18px;
 }
 
-.stat-card-icon.blue {
+.bs-analysis-page .stat-card-icon.blue {
     background: var(--primary-100);
     color: var(--primary-600);
 }
 
-.stat-card-icon.green {
+.bs-analysis-page .stat-card-icon.green {
     background: #dcfce7;
     color: #16a34a;
 }
 
-.stat-card-icon.red {
+.bs-analysis-page .stat-card-icon.red {
     background: #fee2e2;
     color: #dc2626;
 }
 
-.stat-card-icon.orange {
+.bs-analysis-page .stat-card-icon.orange {
     background: #ffedd5;
     color: #ea580c;
 }
 
-.stat-card-icon.purple {
+.bs-analysis-page .stat-card-icon.purple {
     background: #f3e8ff;
     color: #9333ea;
 }
 
-.stat-card-value {
+.bs-analysis-page .stat-card-value {
     font-size: 28px;
     font-weight: 700;
     color: var(--gray-900);
     margin-bottom: 4px;
 }
 
-.stat-card-label {
+.bs-analysis-page .stat-card-label {
     font-size: 13px;
     color: var(--gray-500);
 }
 
-/* ======================== 图表卡片 ======================== */
-.chart-card {
+/* ======================== 鍥捐〃鍗＄墖 ======================== */
+.bs-analysis-page .chart-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -193,25 +193,25 @@
     margin-bottom: 24px;
 }
 
-.chart-header {
+.bs-analysis-page .chart-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 20px;
 }
 
-.chart-title {
+.bs-analysis-page .chart-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.chart-legend {
+.bs-analysis-page .chart-legend {
     display: flex;
     gap: 16px;
 }
 
-.legend-item {
+.bs-analysis-page .legend-item {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -219,18 +219,18 @@
     color: var(--gray-600);
 }
 
-.legend-dot {
+.bs-analysis-page .legend-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
 }
 
-.chart-container {
+.bs-analysis-page .chart-container {
     height: 300px;
     position: relative;
 }
 
-.chart-y-axis {
+.bs-analysis-page .chart-y-axis {
     position: absolute;
     left: 0;
     top: 0;
@@ -245,7 +245,7 @@
     padding-right: 8px;
 }
 
-.chart-area {
+.bs-analysis-page .chart-area {
     position: absolute;
     left: 55px;
     right: 0;
@@ -253,7 +253,7 @@
     bottom: 30px;
 }
 
-.chart-x-axis {
+.bs-analysis-page .chart-x-axis {
     position: absolute;
     left: 55px;
     right: 0;
@@ -266,8 +266,8 @@
     padding-top: 8px;
 }
 
-/* ======================== 数据表格 ======================== */
-.table-card {
+/* ======================== 鏁版嵁琛ㄦ牸 ======================== */
+.bs-analysis-page .table-card {
     background: white;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
@@ -275,7 +275,7 @@
     margin-bottom: 24px;
 }
 
-.table-header {
+.bs-analysis-page .table-header {
     padding: 20px 24px;
     border-bottom: 1px solid var(--gray-100);
     display: flex;
@@ -283,18 +283,18 @@
     justify-content: space-between;
 }
 
-.table-title {
+.bs-analysis-page .table-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.data-table {
+.bs-analysis-page .data-table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.data-table th {
+.bs-analysis-page .data-table th {
     background: var(--gray-50);
     padding: 12px 16px;
     text-align: center;
@@ -304,7 +304,7 @@
     border-bottom: 1px solid var(--gray-200);
 }
 
-.data-table td {
+.bs-analysis-page .data-table td {
     padding: 12px 16px;
     text-align: center;
     font-size: 14px;
@@ -312,39 +312,39 @@
     border-bottom: 1px solid var(--gray-100);
 }
 
-.data-table tbody tr:hover {
+.bs-analysis-page .data-table tbody tr:hover {
     background: var(--gray-50);
 }
 
-.data-table .status-normal {
+.bs-analysis-page .data-table .status-normal {
     color: #16a34a;
     font-weight: 600;
 }
 
-.data-table .status-high {
+.bs-analysis-page .data-table .status-high {
     color: #dc2626;
     font-weight: 600;
 }
 
-.data-table .status-low {
+.bs-analysis-page .data-table .status-low {
     color: #ea580c;
     font-weight: 600;
 }
 
-/* ======================== 记录列表 ======================== */
-.records-section {
+/* ======================== 璁板綍鍒楄〃 ======================== */
+.bs-analysis-page .records-section {
     display: grid;
     gap: 16px;
 }
 
-.day-card {
+.bs-analysis-page .day-card {
     background: white;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
-.day-header {
+.bs-analysis-page .day-header {
     padding: 16px 24px;
     background: var(--gray-50);
     display: flex;
@@ -354,23 +354,23 @@
     transition: background 0.2s ease;
 }
 
-.day-header:hover {
+.bs-analysis-page .day-header:hover {
     background: var(--gray-100);
 }
 
-.day-info {
+.bs-analysis-page .day-info {
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.day-date {
+.bs-analysis-page .day-date {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.day-badge {
+.bs-analysis-page .day-badge {
     padding: 4px 12px;
     background: var(--primary-100);
     color: var(--primary-600);
@@ -379,18 +379,18 @@
     font-weight: 500;
 }
 
-.day-stats {
+.bs-analysis-page .day-stats {
     display: flex;
     align-items: center;
     gap: 16px;
 }
 
-.day-average {
+.bs-analysis-page .day-average {
     font-size: 14px;
     color: var(--gray-600);
 }
 
-.day-toggle {
+.bs-analysis-page .day-toggle {
     width: 32px;
     height: 32px;
     display: flex;
@@ -400,15 +400,15 @@
     transition: transform 0.2s ease;
 }
 
-.day-toggle.expanded {
+.bs-analysis-page .day-toggle.expanded {
     transform: rotate(180deg);
 }
 
-.day-records {
+.bs-analysis-page .day-records {
     border-top: 1px solid var(--gray-100);
 }
 
-.record-item {
+.bs-analysis-page .record-item {
     display: flex;
     align-items: center;
     padding: 16px 24px;
@@ -416,39 +416,39 @@
     transition: background 0.2s ease;
 }
 
-.record-item:last-child {
+.bs-analysis-page .record-item:last-child {
     border-bottom: none;
 }
 
-.record-item:hover {
+.bs-analysis-page .record-item:hover {
     background: var(--gray-50);
 }
 
-.record-time {
+.bs-analysis-page .record-time {
     width: 140px;
 }
 
-.record-time-text {
+.bs-analysis-page .record-time-text {
     font-size: 14px;
     font-weight: 500;
     color: var(--gray-900);
 }
 
-.record-device {
+.bs-analysis-page .record-device {
     font-size: 12px;
     color: var(--primary-500);
     margin-left: 8px;
     cursor: pointer;
 }
 
-.record-value {
+.bs-analysis-page .record-value {
     flex: 1;
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.value-badge {
+.bs-analysis-page .value-badge {
     width: 56px;
     height: 56px;
     border-radius: 50%;
@@ -459,77 +459,77 @@
     font-weight: 700;
 }
 
-.value-badge.normal {
+.bs-analysis-page .value-badge.normal {
     background: #dcfce7;
     color: #16a34a;
 }
 
-.value-badge.high {
+.bs-analysis-page .value-badge.high {
     background: #fee2e2;
     color: #dc2626;
 }
 
-.value-badge.low {
+.bs-analysis-page .value-badge.low {
     background: #ffedd5;
     color: #ea580c;
 }
 
-.value-info {
+.bs-analysis-page .value-info {
     display: flex;
     flex-direction: column;
 }
 
-.value-number {
+.bs-analysis-page .value-number {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.value-status {
+.bs-analysis-page .value-status {
     font-size: 12px;
     color: var(--gray-500);
 }
 
-.record-tags {
+.bs-analysis-page .record-tags {
     display: flex;
     gap: 8px;
 }
 
-.record-tag {
+.bs-analysis-page .record-tag {
     padding: 4px 10px;
     border-radius: 9999px;
     font-size: 12px;
 }
 
-.tag-green {
+.bs-analysis-page .tag-green {
     background: #dcfce7;
     color: #16a34a;
 }
 
-.tag-yellow {
+.bs-analysis-page .tag-yellow {
     background: #fef3c7;
     color: #d97706;
 }
 
-.tag-orange {
+.bs-analysis-page .tag-orange {
     background: #ffedd5;
     color: #ea580c;
 }
 
-.tag-blue {
+.bs-analysis-page .tag-blue {
     background: #dbeafe;
     color: #2563eb;
 }
 
-/* ======================== 目标设置卡片 ======================== */
-.target-card {
+/* ======================== 鐩爣璁剧疆鍗＄墖 ======================== */
+.bs-analysis-page .target-card {
     background: white;
     border-radius: var(--radius-xl);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
 }
 
-.target-header {
+.bs-analysis-page .target-header {
     padding: 20px 24px;
     border-bottom: 1px solid var(--gray-100);
     display: flex;
@@ -537,17 +537,17 @@
     justify-content: space-between;
 }
 
-.target-title {
+.bs-analysis-page .target-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.target-table {
+.bs-analysis-page .target-table {
     width: 100%;
 }
 
-.target-table th {
+.bs-analysis-page .target-table th {
     padding: 14px 20px;
     text-align: left;
     font-size: 13px;
@@ -557,28 +557,28 @@
     border-bottom: 1px solid var(--gray-100);
 }
 
-.target-table th:not(:first-child) {
+.bs-analysis-page .target-table th:not(:first-child) {
     text-align: center;
 }
 
-.target-table td {
+.bs-analysis-page .target-table td {
     padding: 14px 20px;
     font-size: 14px;
     color: var(--gray-700);
     border-bottom: 1px solid var(--gray-100);
 }
 
-.target-table td:not(:first-child) {
+.bs-analysis-page .target-table td:not(:first-child) {
     text-align: center;
 }
 
-.target-value {
+.bs-analysis-page .target-value {
     background: var(--primary-50);
     color: var(--primary-700);
     font-weight: 600;
 }
 
-.target-input {
+.bs-analysis-page .target-input {
     width: 70px;
     padding: 6px 10px;
     border: 1px solid var(--gray-300);
@@ -587,19 +587,19 @@
     font-size: 14px;
 }
 
-.target-input:focus {
+.bs-analysis-page .target-input:focus {
     outline: none;
     border-color: var(--primary-500);
     box-shadow: 0 0 0 3px var(--primary-100);
 }
 
-.target-notice {
+.bs-analysis-page .target-notice {
     padding: 20px 24px;
     background: var(--gray-50);
     border-top: 1px solid var(--gray-100);
 }
 
-.target-notice h4 {
+.bs-analysis-page .target-notice h4 {
     font-size: 14px;
     font-weight: 600;
     color: var(--gray-800);
@@ -609,26 +609,26 @@
     gap: 8px;
 }
 
-.target-notice p {
+.bs-analysis-page .target-notice p {
     font-size: 13px;
     color: var(--gray-600);
     line-height: 1.6;
     margin-bottom: 6px;
 }
 
-/* ======================== 响应式设计 ======================== */
+/* ======================== 鍝嶅簲寮忚璁?======================== */
 @media (max-width: 1200px) {
-    .stats-grid {
+    .bs-analysis-page .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    .stats-grid {
+    .bs-analysis-page .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    .date-selector {
+    .bs-analysis-page .date-selector {
         flex-direction: column;
         gap: 16px;
     }

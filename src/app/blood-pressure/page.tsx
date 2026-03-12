@@ -44,16 +44,16 @@ export default function BloodPressureMainPage() {
                 </>
             }
         >
-            <div className="content">
+            <div className="content bp-page">
                 {/* 血压主卡片 */}
                 <div className="bp-main-card fade-in">
 
 
                     {/* 双圆环区域 */}
-                    <div className="dual-ring-container">
+                    <div className="bp-dual-ring-container">
                         {/* 收缩压圆环 */}
-                        <div className="ring-wrapper">
-                            <div className="ring-label">收缩压 (高压)</div>
+                        <div className="bp-ring-wrapper">
+                            <div className="bp-ring-label">收缩压 (高压)</div>
                             <div className="bp-ring">
                                 <svg width="140" height="140" viewBox="0 0 140 140">
                                     <circle className="ring-bg" cx="70" cy="70" r="58"></circle>
@@ -63,16 +63,16 @@ export default function BloodPressureMainPage() {
                                         strokeDashoffset={systolicDashoffset}>
                                     </circle>
                                 </svg>
-                                <div className="ring-value">
-                                    <div className="number">{bpValue.systolic}</div>
-                                    <div className="unit">mmHg</div>
+                                <div className="bp-ring-value">
+                                    <div className="bp-number">{bpValue.systolic}</div>
+                                    <div className="bp-unit">mmHg</div>
                                 </div>
                             </div>
                         </div>
 
                         {/* 舒张压圆环 */}
-                        <div className="ring-wrapper">
-                            <div className="ring-label">舒张压 (低压)</div>
+                        <div className="bp-ring-wrapper">
+                            <div className="bp-ring-label">舒张压 (低压)</div>
                             <div className="bp-ring">
                                 <svg width="140" height="140" viewBox="0 0 140 140">
                                     <circle className="ring-bg" cx="70" cy="70" r="58"></circle>
@@ -82,9 +82,9 @@ export default function BloodPressureMainPage() {
                                         strokeDashoffset={diastolicDashoffset}>
                                     </circle>
                                 </svg>
-                                <div className="ring-value">
-                                    <div className="number">{bpValue.diastolic}</div>
-                                    <div className="unit">mmHg</div>
+                                <div className="bp-ring-value">
+                                    <div className="bp-number">{bpValue.diastolic}</div>
+                                    <div className="bp-unit">mmHg</div>
                                 </div>
                             </div>
                         </div>
@@ -107,6 +107,18 @@ export default function BloodPressureMainPage() {
                             <div className="status-dot normal"></div>
                             <span>血压正常</span>
                         </div>
+                    </div>
+
+                    {/* 操作按钮组 */}
+                    <div className="action-buttons fade-in" style={{ animationDelay: '0.3s' }}>
+                        <button className="action-btn primary" onClick={() => alert('打开蓝牙血压计测量')}>
+                            <i className="fab fa-bluetooth-b"></i>
+                            设备测量
+                        </button>
+                        <button className="action-btn secondary" onClick={() => router.push('/blood-pressure-manual')}>
+                            <i className="fas fa-edit"></i>
+                            手动记录
+                        </button>
                     </div>
                 </div>
 
@@ -174,18 +186,6 @@ export default function BloodPressureMainPage() {
                             <div className="reference-value">≥140/90 mmHg</div>
                         </div>
                     </div>
-                </div>
-
-                {/* 操作按钮组 */}
-                <div className="action-buttons fade-in" style={{ animationDelay: '0.3s' }}>
-                    <button className="action-btn primary" onClick={() => alert('打开蓝牙血压计测量')}>
-                        <i className="fab fa-bluetooth-b"></i>
-                        设备测量
-                    </button>
-                    <button className="action-btn secondary" onClick={() => router.push('/blood-pressure-manual')}>
-                        <i className="fas fa-edit"></i>
-                        手动记录
-                    </button>
                 </div>
 
                 {/* 近7天血压趋势图 */}

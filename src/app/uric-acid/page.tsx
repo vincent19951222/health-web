@@ -39,7 +39,7 @@ export default function UricAcidMainPage() {
                 </>
             }
         >
-            <div className="content">
+            <div className="content ua-page">
                 {/* 尿酸主卡片 */}
                 <div className="ua-main-card fade-in">
                     <div className="ua-card-header">

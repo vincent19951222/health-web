@@ -15,7 +15,8 @@ export default function BloodSugarPage() {
 
     return (
         <DashboardLayout>
-            <div className="header-left mb-6">
+            <div className="bs-analysis-page">
+                <div className="header-left mb-6">
                 <h2 className="page-title">血糖数据分析</h2>
                 <span className="text-sm text-gray-500">全面了解您的血糖控制情况</span>
             </div>
@@ -37,6 +38,7 @@ export default function BloodSugarPage() {
                 <span>© 2026 优糖智能AI+ · 您的健康管理专家</span>
                 <span>数据更新时间: 2026-02-27 14:30:00</span>
             </footer>
+            </div>
         </DashboardLayout>
     );
 }

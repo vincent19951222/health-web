@@ -39,7 +39,7 @@ export default function GlycatedMainPage() {
                 </>
             }
         >
-            <div className="content">
+            <div className="content ghb-page">
                 {/* 糖化血红蛋白主卡片 */}
                 <div className="ghb-main-card fade-in">
                     <div className="ghb-card-header">

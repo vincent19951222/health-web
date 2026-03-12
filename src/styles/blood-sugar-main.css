@@ -1,7 +1,7 @@
-/* 血糖主页面专属样式 (blood-sugar-main.css) */
+/* 琛€绯栦富椤甸潰涓撳睘鏍峰紡 (blood-sugar-main.css) */
 
-/* 血糖主卡片 - 渐变背景 */
-.blood-sugar-main-card {
+/* 琛€绯栦富鍗＄墖 - 娓愬彉鑳屾櫙 */
+.bs-page .blood-sugar-main-card {
     background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 25%, #2563eb 50%, #1d4ed8 75%, #1e40af 100%);
     border-radius: var(--radius-xl);
     padding: 32px;
@@ -11,7 +11,7 @@
     box-shadow: var(--shadow-lg);
 }
 
-.blood-sugar-main-card::before {
+.bs-page .blood-sugar-main-card::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -22,8 +22,8 @@
     border-radius: 50%;
 }
 
-/* 顶部操作栏 */
-.card-top-controls {
+/* 椤堕儴鎿嶄綔鏍?*/
+.bs-page .card-top-controls {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -32,7 +32,7 @@
     z-index: 10;
 }
 
-.control-btn {
+.bs-page .control-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -48,22 +48,22 @@
     box-shadow: var(--shadow-sm);
 }
 
-.control-btn:hover {
+.bs-page .control-btn:hover {
     background: var(--gray-50);
     transform: translateY(-1px);
 }
 
-.control-btn.primary {
+.bs-page .control-btn.primary {
     background: var(--primary-500);
     color: white;
 }
 
-.control-btn.primary:hover {
+.bs-page .control-btn.primary:hover {
     background: var(--primary-600);
 }
 
-/* 时间段选择器 */
-.time-period-selector {
+/* 鏃堕棿娈甸€夋嫨鍣?*/
+.bs-page .time-period-selector {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -73,7 +73,7 @@
     z-index: 10;
 }
 
-.time-period-btn {
+.bs-page .time-period-btn {
     padding: 8px 20px;
     border-radius: 9999px;
     font-size: 14px;
@@ -85,20 +85,20 @@
     color: white;
 }
 
-.time-period-btn:hover {
+.bs-page .time-period-btn:hover {
     background: rgba(255, 255, 255, 0.1);
     border-color: rgba(255, 255, 255, 0.5);
 }
 
-.time-period-btn.active {
+.bs-page .time-period-btn.active {
     background: white;
     color: var(--primary-600);
     border-color: white;
     font-weight: 600;
 }
 
-/* 血糖圆环区域 */
-.glucose-ring-section {
+/* 琛€绯栧渾鐜尯鍩?*/
+.bs-page .glucose-ring-section {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -108,77 +108,103 @@
     z-index: 10;
 }
 
-.glucose-ring-container {
+.bs-page .glucose-ring-container {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.glucose-ring {
+.bs-page .glucose-ring {
     position: relative;
     width: 200px;
     height: 200px;
 }
 
-.glucose-ring svg {
+.bs-page .glucose-ring svg {
     transform: rotate(-90deg);
 }
 
-.ring-bg {
+.bs-page .blood-sugar-main-card .ring-bg {
     fill: none;
     stroke: rgba(255, 255, 255, 0.2);
     stroke-width: 14;
 }
 
-.ring-progress {
+.bs-page .blood-sugar-main-card .ring-progress {
     fill: none;
     stroke-width: 14;
     stroke-linecap: round;
     transition: stroke-dashoffset 0.8s ease;
 }
 
-.ring-center {
+.bs-page .blood-sugar-main-card .ring-center {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    pointer-events: none;
 }
 
-.ring-value {
+.bs-page .blood-sugar-main-card .ring-value {
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    margin: 0;
+    padding: 0;
+    display: block;
     font-size: 42px;
     font-weight: 800;
     color: white;
     line-height: 1;
 }
 
-.ring-unit {
+.bs-page .blood-sugar-main-card .ring-unit {
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    display: block;
+    line-height: 1.2;
     font-size: 14px;
     color: rgba(255, 255, 255, 0.8);
-    margin-top: 4px;
+    margin: 4px 0 0;
 }
 
-.ring-label {
+.bs-page .blood-sugar-main-card .ring-label {
+    position: static;
+    top: auto;
+    left: auto;
+    transform: none;
+    display: block;
+    line-height: 1.2;
     font-size: 13px;
     color: rgba(255, 255, 255, 0.7);
-    margin-top: 2px;
+    margin: 2px 0 0;
 }
 
-/* 状态信息 */
-.status-info {
+/* 鐘舵€佷俊鎭?*/
+.bs-page .blood-sugar-main-card .status-info {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.status-item {
+.bs-page .blood-sugar-main-card .status-item {
     display: flex;
     align-items: center;
     gap: 8px;
     color: white;
 }
 
-.status-icon {
+.bs-page .blood-sugar-main-card .status-icon {
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -189,16 +215,16 @@
     font-size: 14px;
 }
 
-.status-text {
+.bs-page .blood-sugar-main-card .status-text {
     font-size: 14px;
 }
 
-.status-value {
+.bs-page .blood-sugar-main-card .status-value {
     font-weight: 600;
 }
 
-/* 统计数据网格 */
-.stats-grid {
+/* 缁熻鏁版嵁缃戞牸 */
+.bs-page .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 12px;
@@ -207,7 +233,7 @@
     z-index: 10;
 }
 
-.stat-item {
+.bs-page .stat-item {
     background: rgba(255, 255, 255, 0.15);
     backdrop-filter: blur(10px);
     border-radius: var(--radius-lg);
@@ -216,20 +242,20 @@
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.stat-label {
+.bs-page .stat-label {
     font-size: 12px;
     color: rgba(255, 255, 255, 0.7);
     margin-bottom: 4px;
 }
 
-.stat-value {
+.bs-page .stat-value {
     font-size: 20px;
     font-weight: 700;
     color: white;
 }
 
-/* 操作按钮组 */
-.action-buttons {
+/* 鎿嶄綔鎸夐挳缁?*/
+.bs-page .action-buttons {
     display: flex;
     justify-content: center;
     gap: 16px;
@@ -237,7 +263,7 @@
     z-index: 10;
 }
 
-.action-btn {
+.bs-page .action-btn {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -252,30 +278,30 @@
     justify-content: center;
 }
 
-.action-btn.device {
+.bs-page .action-btn.device {
     background: linear-gradient(135deg, #fb923c 0%, #f97316 100%);
     color: white;
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
-.action-btn.device:hover {
+.bs-page .action-btn.device:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
 }
 
-.action-btn.manual {
+.bs-page .action-btn.manual {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     color: white;
     box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
-.action-btn.manual:hover {
+.bs-page .action-btn.manual:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(16, 185, 129, 0.4);
 }
 
-/* 图表卡片 */
-.chart-card {
+/* 鍥捐〃鍗＄墖 */
+.bs-page .chart-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -284,7 +310,7 @@
     margin-bottom: 24px;
 }
 
-.chart-header {
+.bs-page .chart-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -293,18 +319,18 @@
     border-bottom: 1px solid var(--gray-100);
 }
 
-.chart-title {
+.bs-page .chart-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.chart-filters {
+.bs-page .chart-filters {
     display: flex;
     gap: 8px;
 }
 
-.chart-filter {
+.bs-page .chart-filter {
     padding: 6px 14px;
     border-radius: var(--radius-md);
     font-size: 13px;
@@ -316,22 +342,22 @@
     border: none;
 }
 
-.chart-filter.active {
+.bs-page .chart-filter.active {
     background: var(--primary-500);
     color: white;
 }
 
-.chart-filter:hover:not(.active) {
+.bs-page .chart-filter:hover:not(.active) {
     background: var(--gray-200);
 }
 
-.chart-container {
+.bs-page .chart-container {
     height: 300px;
     position: relative;
 }
 
-/* Y轴标签 */
-.chart-y-axis {
+/* Y杞存爣绛?*/
+.bs-page .chart-y-axis {
     position: absolute;
     left: 0;
     top: 0;
@@ -346,8 +372,8 @@
     padding-right: 8px;
 }
 
-/* 图表区域 */
-.chart-area {
+/* 鍥捐〃鍖哄煙 */
+.bs-page .chart-area {
     position: absolute;
     left: 55px;
     right: 0;
@@ -355,8 +381,8 @@
     bottom: 30px;
 }
 
-/* X轴标签 */
-.chart-x-axis {
+/* X杞存爣绛?*/
+.bs-page .chart-x-axis {
     position: absolute;
     left: 55px;
     right: 0;
@@ -369,8 +395,8 @@
     padding-top: 8px;
 }
 
-/* 历史记录卡片 */
-.history-section {
+/* 鍘嗗彶璁板綍鍗＄墖 */
+.bs-page .history-section {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -378,20 +404,20 @@
     border: 1px solid var(--gray-200);
 }
 
-.history-header {
+.bs-page .history-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 16px;
 }
 
-.history-title {
+.bs-page .history-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.history-action {
+.bs-page .history-action {
     font-size: 14px;
     color: var(--primary-500);
     cursor: pointer;
@@ -400,17 +426,17 @@
     gap: 4px;
 }
 
-.history-action:hover {
+.bs-page .history-action:hover {
     color: var(--primary-600);
 }
 
-.history-list {
+.bs-page .history-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.history-item {
+.bs-page .history-item {
     display: flex;
     align-items: center;
     padding: 16px;
@@ -420,33 +446,33 @@
     cursor: pointer;
 }
 
-.history-item:hover {
+.bs-page .history-item:hover {
     background: var(--gray-100);
 }
 
-.history-time {
+.bs-page .history-time {
     width: 100px;
 }
 
-.history-date {
+.bs-page .history-date {
     font-size: 13px;
     font-weight: 500;
     color: var(--gray-700);
 }
 
-.history-period {
+.bs-page .history-period {
     font-size: 12px;
     color: var(--gray-500);
 }
 
-.history-value {
+.bs-page .history-value {
     flex: 1;
     display: flex;
     align-items: center;
     gap: 12px;
 }
 
-.value-circle {
+.bs-page .value-circle {
     width: 48px;
     height: 48px;
     border-radius: 50%;
@@ -457,49 +483,49 @@
     font-weight: 700;
 }
 
-.value-circle.normal {
+.bs-page .value-circle.normal {
     background: #dcfce7;
     color: #16a34a;
 }
 
-.value-circle.high {
+.bs-page .value-circle.high {
     background: #fee2e2;
     color: #dc2626;
 }
 
-.value-circle.low {
+.bs-page .value-circle.low {
     background: #fef3c7;
     color: #d97706;
 }
 
-.value-detail {
+.bs-page .value-detail {
     display: flex;
     flex-direction: column;
 }
 
-.value-number {
+.bs-page .value-number {
     font-size: 18px;
     font-weight: 700;
     color: var(--gray-900);
 }
 
-.value-status {
+.bs-page .value-status {
     font-size: 12px;
     color: var(--gray-500);
 }
 
-.history-note {
+.bs-page .history-note {
     width: 120px;
     font-size: 13px;
     color: var(--gray-600);
 }
 
-.history-actions {
+.bs-page .history-actions {
     display: flex;
     gap: 8px;
 }
 
-.history-btn {
+.bs-page .history-btn {
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -513,14 +539,14 @@
     color: var(--gray-500);
 }
 
-.history-btn:hover {
+.bs-page .history-btn:hover {
     background: var(--primary-50);
     border-color: var(--primary-500);
     color: var(--primary-500);
 }
 
-/* 模式切换提示 */
-.mode-indicator {
+/* 妯″紡鍒囨崲鎻愮ず */
+.bs-page .mode-indicator {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -532,7 +558,7 @@
     font-weight: 500;
 }
 
-.mode-dot {
+.bs-page .mode-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
@@ -552,37 +578,37 @@
     }
 }
 
-/* 响应式设计 */
+/* 鍝嶅簲寮忚璁?*/
 @media (max-width: 1200px) {
-    .glucose-ring-section {
+    .bs-page .glucose-ring-section {
         flex-direction: column;
         gap: 24px;
     }
 
-    .stats-grid {
+    .bs-page .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    .glucose-ring {
+    .bs-page .glucose-ring {
         width: 160px;
         height: 160px;
     }
 
-    .ring-value {
+    .bs-page .blood-sugar-main-card .ring-value {
         font-size: 32px;
     }
 
-    .stats-grid {
+    .bs-page .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .action-buttons {
+    .bs-page .action-buttons {
         flex-direction: column;
     }
 
-    .action-btn {
+    .bs-page .action-btn {
         width: 100%;
     }
 }

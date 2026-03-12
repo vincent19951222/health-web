@@ -54,7 +54,7 @@ export default function BloodSugarMainPage() {
                 </>
             }
         >
-            <div className="content">
+            <div className="content bs-page">
                 {/* 血糖主卡片 */}
                 <div className="blood-sugar-main-card fade-in">
                     {/* 顶部控制栏 */}

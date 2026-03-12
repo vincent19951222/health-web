@@ -39,7 +39,7 @@ export default function BloodKetoneMainPage() {
                 </>
             }
         >
-            <div className="content">
+            <div className="content bk-page">
                 {/* 血酮主卡片 */}
                 <div className="bk-main-card fade-in">
                     <div className="bk-card-header">

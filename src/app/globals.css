@@ -72,5 +72,7 @@ body {
 @import "../styles/layout.css";
 @import "../styles/blood-sugar-main.css";
 @import "../styles/blood-sugar-analysis.css";
+@import "../styles/blood-sugar-manual.css";
+@import "../styles/blood-sugar-result.css";
 @import "../styles/components.css";
 @import "../styles/settings.css";

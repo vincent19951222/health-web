@@ -1,12 +1,12 @@
-/* 医疗健康主题 - Web端互联网医院专属样式 (hospital-main.css) */
+/* 鍖荤枟鍋ュ悍涓婚 - Web绔簰鑱旂綉鍖婚櫌涓撳睘鏍峰紡 (hospital-main.css) */
 
-.hospital-page {
-    /* 继承全局预设，但提供特定组件级类 */
+.hospital-scope .hospital-page {
+    /* 缁ф壙鍏ㄥ眬棰勮锛屼絾鎻愪緵鐗瑰畾缁勪欢绾х被 */
     background: var(--gray-50);
 }
 
-/* 服务介绍横幅 */
-.service-banner {
+/* 鏈嶅姟浠嬬粛妯箙 */
+.hospital-scope .service-banner {
     background: linear-gradient(135deg, #0891B2 0%, #06B6D4 100%);
     border-radius: var(--radius-xl);
     padding: 24px 32px;
@@ -17,18 +17,18 @@
     justify-content: space-between;
 }
 
-.banner-content h3 {
+.hospital-scope .banner-content h3 {
     font-size: 20px;
     font-weight: 600;
     margin-bottom: 8px;
 }
 
-.banner-content p {
+.hospital-scope .banner-content p {
     font-size: 14px;
     opacity: 0.9;
 }
 
-.banner-icon {
+.hospital-scope .banner-icon {
     width: 80px;
     height: 80px;
     background: rgba(255, 255, 255, 0.2);
@@ -39,8 +39,8 @@
     font-size: 36px;
 }
 
-/* 科室筛选卡片 */
-.department-filter {
+/* 绉戝绛涢€夊崱鐗?*/
+.hospital-scope .department-filter {
     background: white;
     border-radius: var(--radius-xl);
     padding: 20px;
@@ -48,20 +48,20 @@
     box-shadow: var(--shadow-sm);
 }
 
-.department-filter-title {
+.hospital-scope .department-filter-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-800);
     margin-bottom: 16px;
 }
 
-.department-tags {
+.hospital-scope .department-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 10px;
 }
 
-.department-tag {
+.hospital-scope .department-tag {
     padding: 8px 16px;
     border-radius: 20px;
     font-size: 14px;
@@ -72,43 +72,43 @@
     color: var(--gray-600);
 }
 
-.department-tag:hover {
+.hospital-scope .department-tag:hover {
     border-color: var(--primary-500);
     color: var(--primary-500);
 }
 
-.department-tag.active {
+.hospital-scope .department-tag.active {
     background: var(--primary-500);
     color: white;
     border-color: var(--primary-500);
 }
 
-/* 双列布局 */
-.hospital-two-column {
+/* 鍙屽垪甯冨眬 */
+.hospital-scope .hospital-two-column {
     display: grid;
     grid-template-columns: 1fr 360px;
     gap: 24px;
 }
 
-/* 医生列表区域 */
-.doctors-section {
+/* 鍖荤敓鍒楄〃鍖哄煙 */
+.hospital-scope .doctors-section {
     margin-bottom: 24px;
 }
 
-.hospital-section-header {
+.hospital-scope .hospital-section-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 16px;
 }
 
-.hospital-section-title {
+.hospital-scope .hospital-section-title {
     font-size: 18px;
     font-weight: 600;
     color: var(--gray-800);
 }
 
-.view-all {
+.hospital-scope .view-all {
     color: var(--primary-500);
     font-size: 14px;
     text-decoration: none;
@@ -118,18 +118,18 @@
     cursor: pointer;
 }
 
-.view-all:hover {
+.hospital-scope .view-all:hover {
     color: var(--primary-600);
 }
 
-/* 医生卡片网格 */
-.doctors-grid {
+/* 鍖荤敓鍗＄墖缃戞牸 */
+.hospital-scope .doctors-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 20px;
 }
 
-.doctor-card {
+.hospital-scope .doctor-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -138,18 +138,18 @@
     cursor: pointer;
 }
 
-.doctor-card:hover {
+.hospital-scope .doctor-card:hover {
     box-shadow: var(--shadow-lg);
     transform: translateY(-2px);
 }
 
-.doctor-header {
+.hospital-scope .doctor-header {
     display: flex;
     gap: 16px;
     margin-bottom: 16px;
 }
 
-.doctor-avatar {
+.hospital-scope .doctor-avatar {
     width: 72px;
     height: 72px;
     border-radius: 50%;
@@ -159,36 +159,36 @@
     /* Fallback */
 }
 
-.doctor-info {
+.hospital-scope .doctor-info {
     flex: 1;
 }
 
-.doctor-name {
+.hospital-scope .doctor-name {
     font-size: 18px;
     font-weight: 600;
     color: var(--gray-800);
     margin-bottom: 4px;
 }
 
-.doctor-title {
+.hospital-scope .doctor-title {
     font-size: 14px;
     color: var(--primary-500);
     margin-bottom: 4px;
 }
 
-.doctor-department {
+.hospital-scope .doctor-department {
     font-size: 13px;
     color: var(--gray-500);
 }
 
-.doctor-tags {
+.hospital-scope .doctor-tags {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 16px;
 }
 
-.doctor-tag {
+.hospital-scope .doctor-tag {
     padding: 4px 10px;
     background: var(--gray-100);
     border-radius: 12px;
@@ -196,7 +196,7 @@
     color: var(--gray-600);
 }
 
-.doctor-stats {
+.hospital-scope .doctor-stats {
     display: flex;
     gap: 16px;
     padding-top: 16px;
@@ -204,22 +204,22 @@
     margin-bottom: 16px;
 }
 
-.doctor-stat-item {
+.hospital-scope .doctor-stat-item {
     text-align: center;
 }
 
-.doctor-stat-value {
+.hospital-scope .doctor-stat-value {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-800);
 }
 
-.doctor-stat-label {
+.hospital-scope .doctor-stat-label {
     font-size: 12px;
     color: var(--gray-500);
 }
 
-.consult-btn {
+.hospital-scope .consult-btn {
     width: 100%;
     padding: 12px;
     background: linear-gradient(135deg, var(--primary-500) 0%, var(--primary-600) 100%);
@@ -236,11 +236,11 @@
     gap: 8px;
 }
 
-.consult-btn:hover {
+.hospital-scope .consult-btn:hover {
     background: linear-gradient(135deg, var(--primary-600) 0%, var(--primary-700) 100%);
 }
 
-.online-indicator {
+.hospital-scope .online-indicator {
     width: 8px;
     height: 8px;
     background: var(--success-500);
@@ -262,8 +262,8 @@
     }
 }
 
-/* 问诊须知卡片 */
-.notice-card {
+/* 闂瘖椤荤煡鍗＄墖 */
+.hospital-scope .notice-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -271,7 +271,7 @@
     height: max-content;
 }
 
-.notice-title {
+.hospital-scope .notice-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-800);
@@ -281,13 +281,13 @@
     gap: 8px;
 }
 
-.notice-list {
+.hospital-scope .notice-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
 
-.notice-item {
+.hospital-scope .notice-item {
     display: flex;
     align-items: flex-start;
     gap: 12px;
@@ -295,11 +295,11 @@
     border-bottom: 1px solid var(--gray-100);
 }
 
-.notice-item:last-child {
+.hospital-scope .notice-item:last-child {
     border-bottom: none;
 }
 
-.notice-icon {
+.hospital-scope .notice-icon {
     width: 32px;
     height: 32px;
     background: var(--primary-50);
@@ -311,29 +311,29 @@
     flex-shrink: 0;
 }
 
-.notice-content h4 {
+.hospital-scope .notice-content h4 {
     font-size: 14px;
     font-weight: 500;
     color: var(--gray-800);
     margin-bottom: 4px;
 }
 
-.notice-content p {
+.hospital-scope .notice-content p {
     font-size: 13px;
     color: var(--gray-500);
     line-height: 1.5;
     margin: 0;
 }
 
-/* 响应式 */
+/* 鍝嶅簲寮?*/
 @media (max-width: 1200px) {
-    .hospital-two-column {
+    .hospital-scope .hospital-two-column {
         grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 768px) {
-    .doctors-grid {
+    .hospital-scope .doctors-grid {
         grid-template-columns: 1fr;
     }
 }

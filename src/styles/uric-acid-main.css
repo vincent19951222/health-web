@@ -1,7 +1,7 @@
-/* 医疗健康主题 - Web端尿酸检测页面专属样式 (uric-acid-main.css) */
+/* 鍖荤枟鍋ュ悍涓婚 - Web绔翱閰告娴嬮〉闈笓灞炴牱寮?(uric-acid-main.css) */
 
-/* 尿酸主卡片 - 靛蓝色渐变 */
-.ua-main-card {
+/* 灏块吀涓诲崱鐗?- 闈涜摑鑹叉笎鍙?*/
+.ua-page .ua-main-card {
     background: linear-gradient(135deg, #6366f1 0%, #4f46e5 50%, #4338ca 100%);
     border-radius: var(--radius-2xl);
     padding: 32px;
@@ -11,7 +11,7 @@
     margin-bottom: 24px;
 }
 
-.ua-main-card::before {
+.ua-page .ua-main-card::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -22,32 +22,32 @@
     border-radius: 50%;
 }
 
-.ua-card-header {
+.ua-page .ua-card-header {
     position: absolute;
     top: 32px;
     left: 32px;
     right: 32px;
-    /* 为了让 header 左右布满，保证 mode-toggle 可以在右侧 */
+    /* 涓轰簡璁?header 宸﹀彸甯冩弧锛屼繚璇?mode-toggle 鍙互鍦ㄥ彸渚?*/
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     z-index: 10;
 }
 
-.ua-card-title {
+.ua-page .ua-card-title {
     font-size: 18px;
     font-weight: 600;
     opacity: 0.9;
 }
 
-.ua-card-time {
+.ua-page .ua-card-time {
     font-size: 13px;
     opacity: 0.8;
     margin-top: 4px;
 }
 
-/* 居中内容区 */
-.ua-center-content {
+/* 灞呬腑鍐呭鍖?*/
+.ua-page .ua-center-content {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -55,19 +55,19 @@
     position: relative;
     z-index: 1;
     min-height: 320px;
-    /* 提供足够的空间用于居中 */
+    /* 鎻愪緵瓒冲鐨勭┖闂寸敤浜庡眳涓?*/
     padding-top: 40px;
-    /* 避开 absolute header */
+    /* 閬垮紑 absolute header */
 }
 
-/* 模式切换按钮 */
-.mode-toggle {
+/* 妯″紡鍒囨崲鎸夐挳 */
+.ua-page .mode-toggle {
     display: flex;
     gap: 8px;
-    /* absolute 放在 card-header 中，不需要单独定位 */
+    /* absolute 鏀惧湪 card-header 涓紝涓嶉渶瑕佸崟鐙畾浣?*/
 }
 
-.mode-btn {
+.ua-page .mode-btn {
     padding: 8px 16px;
     border-radius: 20px;
     font-size: 12px;
@@ -79,52 +79,52 @@
     color: white;
 }
 
-.mode-btn.active {
+.ua-page .mode-btn.active {
     background: white;
     color: #6366f1;
     border-color: white;
 }
 
-.mode-btn:hover:not(.active) {
+.ua-page .mode-btn:hover:not(.active) {
     background: rgba(255, 255, 255, 0.15);
 }
 
-/* 圆环显示 */
-.ring-container {
+/* 鍦嗙幆鏄剧ず */
+.ua-page .ring-container {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-bottom: 24px;
 }
 
-.ua-ring {
+.ua-page .ua-ring {
     width: 200px;
     height: 200px;
     position: relative;
 }
 
-.ua-ring svg {
+.ua-page .ua-ring svg {
     width: 100%;
     height: 100%;
     transform: rotate(-90deg);
 }
 
-.ua-ring .ring-bg {
+.ua-page .ua-ring .ring-bg {
     fill: none;
     stroke: rgba(255, 255, 255, 0.2);
     stroke-width: 16;
 }
 
-.ua-ring .ring-progress {
+.ua-page .ua-ring .ring-progress {
     fill: none;
     stroke-width: 16;
     stroke-linecap: round;
     stroke: #a5b4fc;
-    /* stroke-dasharray & offset 会在 React 里动态计算 */
+    /* stroke-dasharray & offset 浼氬湪 React 閲屽姩鎬佽绠?*/
     transition: stroke-dashoffset 0.5s ease;
 }
 
-.ring-value {
+.ua-page .ring-value {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -132,20 +132,20 @@
     text-align: center;
 }
 
-.ring-value .number {
+.ua-page .ring-value .number {
     font-size: 56px;
     font-weight: 700;
     line-height: 1;
 }
 
-.ring-value .unit {
+.ua-page .ring-value .unit {
     font-size: 14px;
     opacity: 0.8;
     margin-top: 4px;
 }
 
-/* 性别参考 */
-.gender-reference {
+/* 鎬у埆鍙傝€?*/
+.ua-page .gender-reference {
     display: flex;
     justify-content: center;
     gap: 32px;
@@ -157,25 +157,25 @@
     border-radius: var(--radius-xl);
 }
 
-.gender-item {
+.ua-page .gender-item {
     display: flex;
     align-items: center;
     gap: 8px;
     font-size: 13px;
 }
 
-.gender-item i {
+.ua-page .gender-item i {
     font-size: 14px;
 }
 
-/* 状态信息 */
-.status-info {
+/* 鐘舵€佷俊鎭?*/
+.ua-page .status-info {
     display: flex;
     justify-content: center;
     gap: 24px;
 }
 
-.status-item {
+.ua-page .status-item {
     display: flex;
     align-items: center;
     gap: 6px;
@@ -183,33 +183,33 @@
     opacity: 0.9;
 }
 
-.status-dot {
+.ua-page .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
 }
 
-.status-dot.normal {
+.ua-page .status-dot.normal {
     background: #4ade80;
 }
 
-.status-dot.warning {
+.ua-page .status-dot.warning {
     background: #fbbf24;
 }
 
-.status-dot.danger {
+.ua-page .status-dot.danger {
     background: #f87171;
 }
 
-/* 统计网格 */
-.stats-grid {
+/* 缁熻缃戞牸 */
+.ua-page .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
 
-.stat-card {
+.ua-page .stat-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 20px;
@@ -217,7 +217,7 @@
     border: 1px solid var(--gray-100);
 }
 
-.stat-card-header {
+.ua-page .stat-card-header {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -226,20 +226,20 @@
     font-size: 13px;
 }
 
-.stat-card-value {
+.ua-page .stat-card-value {
     font-size: 28px;
     font-weight: 700;
     color: var(--gray-900);
 }
 
-.stat-card-unit {
+.ua-page .stat-card-unit {
     font-size: 14px;
     color: var(--gray-500);
     font-weight: 400;
     margin-left: 2px;
 }
 
-.stat-card-trend {
+.ua-page .stat-card-trend {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -247,26 +247,26 @@
     font-size: 12px;
 }
 
-.stat-card-trend.up {
+.ua-page .stat-card-trend.up {
     color: var(--danger-500);
 }
 
-.stat-card-trend.down {
+.ua-page .stat-card-trend.down {
     color: var(--success-500);
 }
 
-.stat-card-trend.stable {
+.ua-page .stat-card-trend.stable {
     color: var(--gray-400);
 }
 
-/* 操作按钮区 */
-.action-buttons {
+/* 鎿嶄綔鎸夐挳鍖?*/
+.ua-page .action-buttons {
     display: flex;
     gap: 16px;
     margin-bottom: 24px;
 }
 
-.action-btn {
+.ua-page .action-btn {
     flex: 1;
     display: flex;
     align-items: center;
@@ -281,34 +281,34 @@
     border: none;
 }
 
-.action-btn.primary {
+.ua-page .action-btn.primary {
     background: linear-gradient(135deg, #6366f1, #4f46e5);
     color: white;
     box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
-.action-btn.primary:hover {
+.ua-page .action-btn.primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
 }
 
-.action-btn.secondary {
+.ua-page .action-btn.secondary {
     background: white;
     color: var(--gray-700);
     border: 1px solid var(--gray-200);
 }
 
-.action-btn.secondary:hover {
+.ua-page .action-btn.secondary:hover {
     background: var(--gray-50);
     border-color: var(--gray-300);
 }
 
-.action-btn i {
+.ua-page .action-btn i {
     font-size: 18px;
 }
 
-/* 趋势图表卡片 */
-.chart-card {
+/* 瓒嬪娍鍥捐〃鍗＄墖 */
+.ua-page .chart-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -317,20 +317,20 @@
     margin-bottom: 24px;
 }
 
-.chart-card-header {
+.ua-page .chart-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.chart-card-title {
+.ua-page .chart-card-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.chart-tabs {
+.ua-page .chart-tabs {
     display: flex;
     gap: 4px;
     background: var(--gray-100);
@@ -338,7 +338,7 @@
     border-radius: var(--radius-lg);
 }
 
-.chart-tab {
+.ua-page .chart-tab {
     padding: 6px 12px;
     border-radius: var(--radius-md);
     font-size: 12px;
@@ -349,24 +349,24 @@
     background: transparent;
 }
 
-.chart-tab.active {
+.ua-page .chart-tab.active {
     background: white;
     color: var(--gray-900);
     box-shadow: var(--shadow-sm);
 }
 
-.chart-container {
+.ua-page .chart-container {
     height: 280px;
     position: relative;
 }
 
-/* SVG 趋势图 */
-.trend-chart {
+/* SVG 瓒嬪娍鍥?*/
+.ua-page .trend-chart {
     width: 100%;
     height: 100%;
 }
 
-.chart-line {
+.ua-page .chart-line {
     fill: none;
     stroke-width: 3;
     stroke-linecap: round;
@@ -374,43 +374,43 @@
     stroke: #6366f1;
 }
 
-.chart-area {
+.ua-page .chart-area {
     fill: #6366f1;
     opacity: 0.1;
 }
 
-.chart-grid-line {
+.ua-page .chart-grid-line {
     stroke: var(--gray-200);
     stroke-width: 1;
 }
 
-.chart-label {
+.ua-page .chart-label {
     font-size: 11px;
     fill: var(--gray-400);
 }
 
-.chart-dot {
+.ua-page .chart-dot {
     r: 5;
     stroke-width: 2;
     stroke: white;
     fill: #6366f1;
 }
 
-/* 参考线 */
-.reference-line {
+/* 鍙傝€冪嚎 */
+.ua-page .reference-line {
     stroke: #22c55e;
     stroke-width: 1.5;
     stroke-dasharray: 5, 5;
 }
 
-.reference-line-upper {
+.ua-page .reference-line-upper {
     stroke: #f59e0b;
     stroke-width: 1.5;
     stroke-dasharray: 5, 5;
 }
 
-/* 图例 */
-.chart-legend {
+/* 鍥句緥 */
+.ua-page .chart-legend {
     display: flex;
     justify-content: center;
     gap: 24px;
@@ -419,7 +419,7 @@
     border-top: 1px solid var(--gray-100);
 }
 
-.legend-item {
+.ua-page .legend-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -427,19 +427,19 @@
     color: var(--gray-600);
 }
 
-.legend-dot {
+.ua-page .legend-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
 }
 
-.legend-line {
+.ua-page .legend-line {
     width: 20px;
     height: 2px;
 }
 
-/* 参考范围卡片 */
-.reference-card {
+/* 鍙傝€冭寖鍥村崱鐗?*/
+.ua-page .reference-card {
     background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
     border-radius: var(--radius-xl);
     padding: 20px;
@@ -447,7 +447,7 @@
     border: 1px solid rgba(99, 102, 241, 0.2);
 }
 
-.reference-title {
+.ua-page .reference-title {
     font-size: 14px;
     font-weight: 600;
     color: #4338ca;
@@ -457,33 +457,33 @@
     gap: 8px;
 }
 
-.reference-items {
+.ua-page .reference-items {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
 
-.reference-item {
+.ua-page .reference-item {
     text-align: center;
     padding: 12px;
     background: white;
     border-radius: var(--radius-lg);
 }
 
-.reference-label {
+.ua-page .reference-label {
     font-size: 12px;
     color: #6366f1;
     margin-bottom: 4px;
 }
 
-.reference-value {
+.ua-page .reference-value {
     font-size: 14px;
     font-weight: 600;
     color: #4338ca;
 }
 
-/* 历史记录卡片 */
-.history-card {
+/* 鍘嗗彶璁板綍鍗＄墖 */
+.ua-page .history-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -491,20 +491,20 @@
     border: 1px solid var(--gray-100);
 }
 
-.history-card-header {
+.ua-page .history-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
 }
 
-.history-card-title {
+.ua-page .history-card-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.view-all-btn {
+.ua-page .view-all-btn {
     color: var(--primary-500);
     font-size: 13px;
     text-decoration: none;
@@ -513,17 +513,17 @@
     gap: 4px;
 }
 
-.view-all-btn:hover {
+.ua-page .view-all-btn:hover {
     color: var(--primary-600);
 }
 
-.history-list {
+.ua-page .history-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.history-item {
+.ua-page .history-item {
     display: flex;
     align-items: center;
     padding: 12px 16px;
@@ -533,11 +533,11 @@
     cursor: pointer;
 }
 
-.history-item:hover {
+.ua-page .history-item:hover {
     background: var(--gray-100);
 }
 
-.history-icon {
+.ua-page .history-icon {
     width: 44px;
     height: 44px;
     border-radius: var(--radius-lg);
@@ -548,44 +548,44 @@
     font-size: 18px;
 }
 
-.history-icon.normal {
+.ua-page .history-icon.normal {
     background: rgba(34, 197, 94, 0.1);
     color: #22c55e;
 }
 
-.history-icon.warning {
+.ua-page .history-icon.warning {
     background: rgba(245, 158, 11, 0.1);
     color: #f59e0b;
 }
 
-.history-icon.danger {
+.ua-page .history-icon.danger {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
 }
 
-.history-content {
+.ua-page .history-content {
     flex: 1;
 }
 
-.history-value {
+.ua-page .history-value {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.history-meta {
+.ua-page .history-meta {
     font-size: 12px;
     color: var(--gray-500);
     margin-top: 2px;
 }
 
-.history-time {
+.ua-page .history-time {
     font-size: 12px;
     color: var(--gray-400);
 }
 
-/* 健康提示卡片 */
-.tips-card {
+/* 鍋ュ悍鎻愮ず鍗＄墖 */
+.ua-page .tips-card {
     background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
     border-radius: var(--radius-xl);
     padding: 20px;
@@ -593,7 +593,7 @@
     border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
-.tips-title {
+.ua-page .tips-title {
     font-size: 14px;
     font-weight: 600;
     color: #92400e;
@@ -603,46 +603,46 @@
     gap: 8px;
 }
 
-.tips-list {
+.ua-page .tips-list {
     font-size: 13px;
     color: #78350f;
     line-height: 1.8;
 }
 
-.tips-list li {
+.ua-page .tips-list li {
     margin-bottom: 4px;
 }
 
-/* 响应式 */
+/* 鍝嶅簲寮?*/
 @media (max-width: 1400px) {
-    .stats-grid {
+    .ua-page .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 768px) {
-    .stats-grid {
+    .ua-page .stats-grid {
         grid-template-columns: 1fr;
     }
 
-    .ua-ring {
+    .ua-page .ua-ring {
         width: 150px;
         height: 150px;
     }
 
-    .ring-value .number {
+    .ua-page .ring-value .number {
         font-size: 40px;
     }
 
-    .action-buttons {
+    .ua-page .action-buttons {
         flex-direction: column;
     }
 
-    .reference-items {
+    .ua-page .reference-items {
         grid-template-columns: 1fr;
     }
 
-    .gender-reference {
+    .ua-page .gender-reference {
         flex-direction: column;
         gap: 8px;
     }

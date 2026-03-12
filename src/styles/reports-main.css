@@ -1,19 +1,19 @@
-/* 医疗健康主题 - Web端健康报告专属样式 (reports-main.css) */
+/* 鍖荤枟鍋ュ悍涓婚 - Web绔仴搴锋姤鍛婁笓灞炴牱寮?(reports-main.css) */
 
-.reports-page {
-    /* 继承全局预设，但提供特定组件级类 */
+.reports-scope .reports-page {
+    /* 缁ф壙鍏ㄥ眬棰勮锛屼絾鎻愪緵鐗瑰畾缁勪欢绾х被 */
     background: var(--gray-50);
 }
 
-/* 统计卡片 (Stats Row) */
-.stats-row {
+/* 缁熻鍗＄墖 (Stats Row) */
+.reports-scope .stats-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 20px;
     margin-bottom: 24px;
 }
 
-.stat-card {
+.reports-scope .stat-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 20px 24px;
@@ -21,14 +21,14 @@
     border: 1px solid var(--gray-200);
 }
 
-.stat-header {
+.reports-scope .stat-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 12px;
 }
 
-.stat-icon {
+.reports-scope .stat-icon {
     width: 44px;
     height: 44px;
     border-radius: var(--radius-lg);
@@ -38,41 +38,41 @@
     font-size: 18px;
 }
 
-.stat-icon.total {
+.reports-scope .stat-icon.total {
     background: var(--primary-50);
     color: var(--primary-600);
 }
 
-.stat-icon.completed {
+.reports-scope .stat-icon.completed {
     background: #dcfce7;
     color: #16a34a;
 }
 
-.stat-icon.pending {
+.reports-scope .stat-icon.pending {
     background: #fef3c7;
     color: #d97706;
 }
 
-.stat-icon.this-month {
+.reports-scope .stat-icon.this-month {
     background: #ede9fe;
     color: #7c3aed;
 }
 
-.stat-value {
+.reports-scope .stat-value {
     font-size: 32px;
     font-weight: 800;
     color: var(--gray-900);
     line-height: 1;
 }
 
-.stat-label {
+.reports-scope .stat-label {
     font-size: 14px;
     color: var(--gray-500);
     margin-top: 4px;
 }
 
-/* 筛选栏 (Filter Bar) */
-.filter-bar {
+/* 绛涢€夋爮 (Filter Bar) */
+.reports-scope .filter-bar {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -81,7 +81,7 @@
     gap: 16px;
 }
 
-.filter-tabs {
+.reports-scope .filter-tabs {
     display: flex;
     gap: 8px;
     background: var(--gray-100);
@@ -89,7 +89,7 @@
     border-radius: var(--radius-lg);
 }
 
-.filter-tab {
+.reports-scope .filter-tab {
     padding: 8px 16px;
     border-radius: var(--radius-md);
     font-size: 14px;
@@ -101,17 +101,17 @@
     border: none;
 }
 
-.filter-tab.active {
+.reports-scope .filter-tab.active {
     background: white;
     color: var(--primary-600);
     box-shadow: var(--shadow-sm);
 }
 
-.filter-tab:hover:not(.active) {
+.reports-scope .filter-tab:hover:not(.active) {
     color: var(--gray-800);
 }
 
-.search-box {
+.reports-scope .search-box {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -122,11 +122,11 @@
     min-width: 280px;
 }
 
-.search-box i {
+.reports-scope .search-box i {
     color: var(--gray-400);
 }
 
-.search-box input {
+.reports-scope .search-box input {
     border: none;
     outline: none;
     flex: 1;
@@ -134,19 +134,19 @@
     color: var(--gray-800);
 }
 
-.search-box input::placeholder {
+.reports-scope .search-box input::placeholder {
     color: var(--gray-400);
 }
 
-/* 报告卡片网格 (Reports Grid) */
-.reports-grid {
+/* 鎶ュ憡鍗＄墖缃戞牸 (Reports Grid) */
+.reports-scope .reports-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
     gap: 24px;
     margin-bottom: 24px;
 }
 
-.report-card {
+.reports-scope .report-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -158,7 +158,7 @@
     cursor: pointer;
 }
 
-.report-card::before {
+.reports-scope .report-card::before {
     content: '';
     position: absolute;
     top: 0;
@@ -168,20 +168,20 @@
     background: linear-gradient(90deg, var(--primary-500), var(--primary-600));
 }
 
-.report-card:hover {
+.reports-scope .report-card:hover {
     transform: translateY(-4px);
     box-shadow: var(--shadow-lg);
     border-color: var(--primary-200);
 }
 
-.card-header {
+.reports-scope .card-header {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     margin-bottom: 16px;
 }
 
-.card-icon {
+.reports-scope .card-icon {
     width: 52px;
     height: 52px;
     background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
@@ -194,12 +194,12 @@
     flex-shrink: 0;
 }
 
-.card-info {
+.reports-scope .card-info {
     flex: 1;
     margin-left: 14px;
 }
 
-.card-title {
+.reports-scope .card-title {
     font-size: 16px;
     font-weight: 700;
     color: var(--gray-900);
@@ -207,7 +207,7 @@
     line-height: 1.4;
 }
 
-.card-meta {
+.reports-scope .card-meta {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -215,18 +215,18 @@
     color: var(--gray-500);
 }
 
-.card-meta span {
+.reports-scope .card-meta span {
     display: flex;
     align-items: center;
     gap: 4px;
 }
 
-.card-actions {
+.reports-scope .card-actions {
     display: flex;
     gap: 8px;
 }
 
-.card-action-btn {
+.reports-scope .card-action-btn {
     width: 36px;
     height: 36px;
     display: flex;
@@ -240,25 +240,25 @@
     transition: all 0.2s ease;
 }
 
-.card-action-btn:hover {
+.reports-scope .card-action-btn:hover {
     background: var(--gray-100);
     color: var(--gray-600);
 }
 
-.card-action-btn.delete:hover {
+.reports-scope .card-action-btn.delete:hover {
     background: #fef2f2;
     color: var(--danger-500);
 }
 
-/* 状态标签 (Status Badge) */
-.status-badges {
+/* 鐘舵€佹爣绛?(Status Badge) */
+.reports-scope .status-badges {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
     margin-top: 16px;
 }
 
-.status-badge {
+.reports-scope .status-badge {
     display: inline-flex;
     align-items: center;
     gap: 4px;
@@ -268,52 +268,52 @@
     font-weight: 600;
 }
 
-.status-badge.completed {
+.reports-scope .status-badge.completed {
     background: #dcfce7;
     color: #16a34a;
 }
 
-.status-badge.pending {
+.reports-scope .status-badge.pending {
     background: #fef3c7;
     color: #d97706;
 }
 
-.status-badge.draft {
+.reports-scope .status-badge.draft {
     background: var(--gray-100);
     color: var(--gray-600);
 }
 
-/* 报告摘要 (Card Summary) */
-.card-summary {
+/* 鎶ュ憡鎽樿 (Card Summary) */
+.reports-scope .card-summary {
     margin-top: 16px;
     padding-top: 16px;
     border-top: 1px solid var(--gray-100);
 }
 
-.summary-item {
+.reports-scope .summary-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 8px 0;
 }
 
-.summary-label {
+.reports-scope .summary-label {
     font-size: 13px;
     color: var(--gray-500);
 }
 
-.summary-value {
+.reports-scope .summary-value {
     font-size: 14px;
     font-weight: 600;
     color: var(--gray-800);
 }
 
-.summary-value.highlight {
+.reports-scope .summary-value.highlight {
     color: var(--primary-600);
 }
 
-/* 空状态 (Empty State) */
-.empty-state {
+/* 绌虹姸鎬?(Empty State) */
+.reports-scope .empty-state {
     text-align: center;
     padding: 80px 20px;
     background: white;
@@ -321,7 +321,7 @@
     border: 2px dashed var(--gray-200);
 }
 
-.empty-icon {
+.reports-scope .empty-icon {
     width: 100px;
     height: 100px;
     background: linear-gradient(135deg, var(--primary-50) 0%, var(--primary-100) 100%);
@@ -334,14 +334,14 @@
     font-size: 40px;
 }
 
-.empty-title {
+.reports-scope .empty-title {
     font-size: 20px;
     font-weight: 700;
     color: var(--gray-900);
     margin-bottom: 8px;
 }
 
-.empty-desc {
+.reports-scope .empty-desc {
     font-size: 15px;
     color: var(--gray-500);
     line-height: 1.6;
@@ -349,7 +349,7 @@
     margin: 0 auto 24px;
 }
 
-.empty-action {
+.reports-scope .empty-action {
     display: inline-flex;
     align-items: center;
     gap: 8px;
@@ -364,40 +364,40 @@
     border: none;
 }
 
-.empty-action:hover {
+.reports-scope .empty-action:hover {
     background: var(--primary-700);
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(8, 145, 178, 0.3);
 }
 
-/* 响应式 */
+/* 鍝嶅簲寮?*/
 @media (max-width: 1400px) {
-    .stats-row {
+    .reports-scope .stats-row {
         grid-template-columns: repeat(2, 1fr);
     }
 }
 
 @media (max-width: 1200px) {
-    .reports-grid {
+    .reports-scope .reports-grid {
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     }
 }
 
 @media (max-width: 768px) {
-    .stats-row {
+    .reports-scope .stats-row {
         grid-template-columns: 1fr;
     }
 
-    .filter-bar {
+    .reports-scope .filter-bar {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .search-box {
+    .reports-scope .search-box {
         min-width: auto;
     }
 
-    .reports-grid {
+    .reports-scope .reports-grid {
         grid-template-columns: 1fr;
     }
 }

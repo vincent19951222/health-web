@@ -159,7 +159,8 @@ export default function ReportsPage() {
 
     return (
         <DashboardLayout hideHeader>
-            <div className="reports-page fade-in">
+            <div className="reports-scope">
+                <div className="reports-page fade-in">
                 {/* 顶部标题栏 */}
                 <header className="page-header">
                     <div className="header-left">
@@ -312,6 +313,7 @@ export default function ReportsPage() {
                             </button>
                         </div>
                     )}
+                </div>
                 </div>
             </div>
         </DashboardLayout>

@@ -1,17 +1,20 @@
-/* 医疗健康主题 - Web端血压管理页面专属样式 (blood-pressure-main.css) */
+/* 鍖荤枟鍋ュ悍涓婚 - Web绔鍘嬬鐞嗛〉闈笓灞炴牱寮?(blood-pressure-main.css) */
 
-/* 血压主卡片 - 橙色渐变 */
-.bp-main-card {
+/* 琛€鍘嬩富鍗＄墖 - 姗欒壊娓愬彉 */
+.bp-page .bp-main-card {
     background: linear-gradient(135deg, #f97316 0%, #ea580c 50%, #dc2626 100%);
     border-radius: var(--radius-2xl);
-    padding: 32px;
+    padding: 30px 28px 26px;
     color: white;
     position: relative;
     overflow: hidden;
     margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
-.bp-main-card::before {
+.bp-page .bp-main-card::before {
     content: '';
     position: absolute;
     top: -50%;
@@ -22,7 +25,7 @@
     border-radius: 50%;
 }
 
-.bp-card-header {
+.bp-page .bp-card-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -31,20 +34,20 @@
     z-index: 1;
 }
 
-.bp-card-title {
+.bp-page .bp-card-title {
     font-size: 18px;
     font-weight: 600;
     opacity: 0.9;
 }
 
-.bp-card-time {
+.bp-page .bp-card-time {
     font-size: 13px;
     opacity: 0.8;
     margin-top: 4px;
 }
 
-/* 顶部控制栏 */
-.card-top-controls {
+/* 椤堕儴鎺у埗鏍?*/
+.bp-page .card-top-controls {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -53,7 +56,7 @@
     z-index: 10;
 }
 
-.control-btn {
+.bp-page .control-btn {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -69,72 +72,73 @@
     box-shadow: var(--shadow-sm);
 }
 
-.control-btn:hover {
+.bp-page .control-btn:hover {
     background: var(--gray-50);
     transform: translateY(-1px);
 }
 
-.control-btn.primary {
+.bp-page .control-btn.primary {
     background: linear-gradient(135deg, #f97316, #ea580c);
     color: white;
     box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 }
 
-.control-btn.primary:hover {
+.bp-page .control-btn.primary:hover {
     background: linear-gradient(135deg, #ea580c, #dc2626);
     box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
 }
 
-/* 双圆环容器 */
-.dual-ring-container {
+/* 鍙屽渾鐜鍣?*/
+.bp-page .bp-dual-ring-container {
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 60px;
-    margin: 32px 0;
+    margin: 20px 0 14px;
     position: relative;
     z-index: 1;
+    width: 100%;
 }
 
-/* 单个圆环 */
-.ring-wrapper {
+/* 鍗曚釜鍦嗙幆 */
+.bp-page .bp-ring-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.ring-label {
+.bp-page .bp-ring-label {
     font-size: 12px;
     opacity: 0.8;
     margin-bottom: 8px;
 }
 
-.bp-ring {
+.bp-page .bp-ring {
     width: 140px;
     height: 140px;
     position: relative;
 }
 
-.bp-ring svg {
+.bp-page .bp-ring svg {
     width: 100%;
     height: 100%;
     transform: rotate(-90deg);
 }
 
-.bp-ring .ring-bg {
+.bp-page .bp-ring .ring-bg {
     fill: none;
     stroke: rgba(255, 255, 255, 0.2);
     stroke-width: 12;
 }
 
-.bp-ring .ring-progress {
+.bp-page .bp-ring .ring-progress {
     fill: none;
     stroke-width: 12;
     stroke-linecap: round;
     transition: stroke-dashoffset 0.5s ease;
 }
 
-.ring-value {
+.bp-page .bp-ring-value {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -142,33 +146,35 @@
     text-align: center;
 }
 
-.ring-value .number {
+.bp-page .bp-number {
     font-size: 32px;
     font-weight: 700;
     line-height: 1;
     color: white;
 }
 
-.ring-value .unit {
+.bp-page .bp-unit {
     font-size: 11px;
     opacity: 0.8;
     margin-top: 2px;
     color: white;
 }
 
-/* 心率显示 */
-.heart-rate-display {
+/* 蹇冪巼鏄剧ず */
+.bp-page .heart-rate-display {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-top: 16px;
+    margin-top: 8px;
     padding: 12px 24px;
     background: rgba(255, 255, 255, 0.15);
     border-radius: var(--radius-xl);
+    position: relative;
+    z-index: 1;
 }
 
-.heart-rate-display i {
+.bp-page .heart-rate-display i {
     color: #fca5a5;
     animation: heartbeat 1s ease-in-out infinite;
 }
@@ -185,61 +191,66 @@
     }
 }
 
-.heart-rate-value {
+.bp-page .heart-rate-value {
     font-size: 24px;
     font-weight: 700;
 }
 
-.heart-rate-unit {
+.bp-page .heart-rate-unit {
     font-size: 12px;
     opacity: 0.8;
 }
 
-/* 状态信息 */
-.status-info {
+/* 鐘舵€佷俊鎭?*/
+.bp-page .status-info {
     display: flex;
     justify-content: center;
-    gap: 24px;
-    margin-top: 20px;
+    gap: 10px;
+    margin-top: 16px;
     position: relative;
     z-index: 1;
+    flex-wrap: wrap;
 }
 
-.status-item {
+.bp-page .status-item {
     display: flex;
     align-items: center;
     gap: 6px;
     font-size: 13px;
-    opacity: 0.9;
+    opacity: 0.95;
+    padding: 6px 12px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.status-dot {
+.bp-page .status-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
 }
 
-.status-dot.normal {
+.bp-page .status-dot.normal {
     background: #4ade80;
 }
 
-.status-dot.warning {
+.bp-page .status-dot.warning {
     background: #fbbf24;
 }
 
-.status-dot.danger {
+.bp-page .status-dot.danger {
     background: #f87171;
 }
 
-/* 统计网格 */
-.stats-grid {
+/* 缁熻缃戞牸 */
+.bp-page .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
 
-.stat-card {
+.bp-page .stat-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 20px;
@@ -247,7 +258,7 @@
     border: 1px solid var(--gray-100);
 }
 
-.stat-card-header {
+.bp-page .stat-card-header {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -256,19 +267,19 @@
     font-size: 13px;
 }
 
-.stat-card-value {
+.bp-page .stat-card-value {
     font-size: 28px;
     font-weight: 700;
     color: var(--gray-900);
 }
 
-.stat-card-unit {
+.bp-page .stat-card-unit {
     font-size: 14px;
     color: var(--gray-500);
     font-weight: 400;
 }
 
-.stat-card-trend {
+.bp-page .stat-card-trend {
     display: flex;
     align-items: center;
     gap: 4px;
@@ -276,68 +287,72 @@
     font-size: 12px;
 }
 
-.stat-card-trend.up {
+.bp-page .stat-card-trend.up {
     color: var(--danger-500);
 }
 
-.stat-card-trend.down {
+.bp-page .stat-card-trend.down {
     color: var(--success-500);
 }
 
-.stat-card-trend.stable {
+.bp-page .stat-card-trend.stable {
     color: var(--gray-400);
 }
 
-/* 操作按钮区 */
-.action-buttons {
+/* 鎿嶄綔鎸夐挳鍖?*/
+.bp-page .action-buttons {
     display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
+    gap: 12px;
+    margin: 18px auto 0;
+    width: 100%;
+    max-width: 560px;
+    position: relative;
+    z-index: 1;
 }
 
-.action-btn {
+.bp-page .action-btn {
     flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    padding: 16px 24px;
-    border-radius: var(--radius-xl);
+    padding: 14px 20px;
+    border-radius: 14px;
     font-size: 15px;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
-    border: none;
+    border: 1px solid rgba(255, 255, 255, 0.28);
+    backdrop-filter: blur(4px);
 }
 
-.action-btn.primary {
-    background: linear-gradient(135deg, #f97316, #ea580c);
-    color: white;
-    box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
-}
-
-.action-btn.primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
-}
-
-.action-btn.secondary {
+.bp-page .action-btn.primary {
     background: white;
-    color: var(--gray-700);
-    border: 1px solid var(--gray-200);
+    color: #c2410c;
+    box-shadow: 0 6px 18px rgba(124, 45, 18, 0.22);
 }
 
-.action-btn.secondary:hover {
-    background: var(--gray-50);
-    border-color: var(--gray-300);
+.bp-page .action-btn.primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(124, 45, 18, 0.26);
 }
 
-.action-btn i {
+.bp-page .action-btn.secondary {
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+}
+
+.bp-page .action-btn.secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-1px);
+}
+
+.bp-page .action-btn i {
     font-size: 18px;
 }
 
-/* 趋势图表卡片 */
-.chart-card {
+/* 瓒嬪娍鍥捐〃鍗＄墖 */
+.bp-page .chart-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -346,20 +361,20 @@
     margin-bottom: 24px;
 }
 
-.chart-card-header {
+.bp-page .chart-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
 }
 
-.chart-card-title {
+.bp-page .chart-card-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.chart-tabs {
+.bp-page .chart-tabs {
     display: flex;
     gap: 4px;
     background: var(--gray-100);
@@ -367,7 +382,7 @@
     border-radius: var(--radius-lg);
 }
 
-.chart-tab {
+.bp-page .chart-tab {
     padding: 6px 12px;
     border-radius: var(--radius-md);
     font-size: 12px;
@@ -378,76 +393,76 @@
     background: transparent;
 }
 
-.chart-tab.active {
+.bp-page .chart-tab.active {
     background: white;
     color: var(--gray-900);
     box-shadow: var(--shadow-sm);
 }
 
-.chart-container {
+.bp-page .chart-container {
     height: 280px;
     position: relative;
 }
 
-/* SVG 趋势图 */
-.trend-chart {
+/* SVG 瓒嬪娍鍥?*/
+.bp-page .trend-chart {
     width: 100%;
     height: 100%;
 }
 
-.chart-line {
+.bp-page .chart-line {
     fill: none;
     stroke-width: 2.5;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
-.chart-line.systolic {
+.bp-page .chart-line.systolic {
     stroke: #ef4444;
 }
 
-.chart-line.diastolic {
+.bp-page .chart-line.diastolic {
     stroke: #3b82f6;
 }
 
-.chart-area {
+.bp-page .chart-area {
     opacity: 0.1;
 }
 
-.chart-area.systolic {
+.bp-page .chart-area.systolic {
     fill: #ef4444;
 }
 
-.chart-area.diastolic {
+.bp-page .chart-area.diastolic {
     fill: #3b82f6;
 }
 
-.chart-grid-line {
+.bp-page .chart-grid-line {
     stroke: var(--gray-200);
     stroke-width: 1;
 }
 
-.chart-label {
+.bp-page .chart-label {
     font-size: 11px;
     fill: var(--gray-400);
 }
 
-.chart-dot {
+.bp-page .chart-dot {
     r: 4;
     stroke-width: 2;
     stroke: white;
 }
 
-.chart-dot.systolic {
+.bp-page .chart-dot.systolic {
     fill: #ef4444;
 }
 
-.chart-dot.diastolic {
+.bp-page .chart-dot.diastolic {
     fill: #3b82f6;
 }
 
-/* 图例 */
-.chart-legend {
+/* 鍥句緥 */
+.bp-page .chart-legend {
     display: flex;
     justify-content: center;
     gap: 24px;
@@ -456,7 +471,7 @@
     border-top: 1px solid var(--gray-100);
 }
 
-.legend-item {
+.bp-page .legend-item {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -464,22 +479,22 @@
     color: var(--gray-600);
 }
 
-.legend-dot {
+.bp-page .legend-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
 }
 
-.legend-dot.systolic {
+.bp-page .legend-dot.systolic {
     background: #ef4444;
 }
 
-.legend-dot.diastolic {
+.bp-page .legend-dot.diastolic {
     background: #3b82f6;
 }
 
-/* 历史记录卡片 */
-.history-card {
+/* 鍘嗗彶璁板綍鍗＄墖 */
+.bp-page .history-card {
     background: white;
     border-radius: var(--radius-xl);
     padding: 24px;
@@ -487,20 +502,20 @@
     border: 1px solid var(--gray-100);
 }
 
-.history-card-header {
+.bp-page .history-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
 }
 
-.history-card-title {
+.bp-page .history-card-title {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.view-all-btn {
+.bp-page .view-all-btn {
     color: var(--primary-500);
     font-size: 13px;
     text-decoration: none;
@@ -509,17 +524,17 @@
     gap: 4px;
 }
 
-.view-all-btn:hover {
+.bp-page .view-all-btn:hover {
     color: var(--primary-600);
 }
 
-.history-list {
+.bp-page .history-list {
     display: flex;
     flex-direction: column;
     gap: 12px;
 }
 
-.history-item {
+.bp-page .history-item {
     display: flex;
     align-items: center;
     padding: 12px 16px;
@@ -529,11 +544,11 @@
     cursor: pointer;
 }
 
-.history-item:hover {
+.bp-page .history-item:hover {
     background: var(--gray-100);
 }
 
-.history-icon {
+.bp-page .history-icon {
     width: 44px;
     height: 44px;
     border-radius: var(--radius-lg);
@@ -544,44 +559,44 @@
     font-size: 18px;
 }
 
-.history-icon.normal {
+.bp-page .history-icon.normal {
     background: rgba(34, 197, 94, 0.1);
     color: #22c55e;
 }
 
-.history-icon.warning {
+.bp-page .history-icon.warning {
     background: rgba(245, 158, 11, 0.1);
     color: #f59e0b;
 }
 
-.history-icon.danger {
+.bp-page .history-icon.danger {
     background: rgba(239, 68, 68, 0.1);
     color: #ef4444;
 }
 
-.history-content {
+.bp-page .history-content {
     flex: 1;
 }
 
-.history-value {
+.bp-page .history-value {
     font-size: 16px;
     font-weight: 600;
     color: var(--gray-900);
 }
 
-.history-meta {
+.bp-page .history-meta {
     font-size: 12px;
     color: var(--gray-500);
     margin-top: 2px;
 }
 
-.history-time {
+.bp-page .history-time {
     font-size: 12px;
     color: var(--gray-400);
 }
 
-/* 参考范围卡片 */
-.reference-card {
+/* 鍙傝€冭寖鍥村崱鐗?*/
+.bp-page .reference-card {
     background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
     border-radius: var(--radius-xl);
     padding: 20px;
@@ -589,7 +604,7 @@
     border: 1px solid rgba(249, 115, 22, 0.2);
 }
 
-.reference-title {
+.bp-page .reference-title {
     font-size: 14px;
     font-weight: 600;
     color: #c2410c;
@@ -599,40 +614,58 @@
     gap: 8px;
 }
 
-.reference-items {
+.bp-page .reference-items {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 16px;
 }
 
-.reference-item {
+.bp-page .reference-item {
     text-align: center;
 }
 
-.reference-label {
+.bp-page .reference-label {
     font-size: 12px;
     color: #9a3412;
     margin-bottom: 4px;
 }
 
-.reference-value {
+.bp-page .reference-value {
     font-size: 14px;
     font-weight: 600;
     color: #7c2d12;
 }
 
 @media (max-width: 1200px) {
-    .dual-ring-container {
+    .bp-page .bp-dual-ring-container {
         gap: 32px;
+    }
+
+    .bp-page .action-buttons {
+        max-width: 480px;
     }
 }
 
 @media (max-width: 768px) {
-    .stats-grid {
+    .bp-page .stats-grid {
         grid-template-columns: repeat(2, 1fr);
     }
 
-    .action-buttons {
+    .bp-page .action-buttons {
         flex-direction: column;
+        margin-top: 14px;
+    }
+
+    .bp-page .bp-main-card {
+        padding: 24px 18px 20px;
+    }
+
+    .bp-page .bp-dual-ring-container {
+        gap: 16px;
+    }
+
+    .bp-page .bp-ring {
+        width: 124px;
+        height: 124px;
     }
 }
