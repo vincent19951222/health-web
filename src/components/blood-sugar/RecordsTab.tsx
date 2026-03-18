@@ -20,7 +20,7 @@ interface RecordData {
 interface DayData {
     date: string;
     dateLabel: string;
-    recordCount: parseInt;
+    recordCount: number;
     average: number;
     records: RecordData[];
 }
@@ -39,7 +39,7 @@ export default function RecordsTab() {
         {
             date: "2026-02-27",
             dateLabel: "02月27日",
-            recordCount: 6 as any,
+            recordCount: 6,
             average: 6.4,
             records: [
                 {
@@ -69,7 +69,7 @@ export default function RecordsTab() {
         {
             date: "2026-02-26",
             dateLabel: "02月26日",
-            recordCount: 5 as any,
+            recordCount: 5,
             average: 6.7,
             records: [
                 {

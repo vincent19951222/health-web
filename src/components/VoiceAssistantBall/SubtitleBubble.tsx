@@ -24,7 +24,7 @@ export default function SubtitleBubble({
     };
 
     return (
-        <div className={`subtitle-bubble ${visible ? 'visible' : 'hidden'}`}>
+        <div className={`subtitle-bubble ${visible ? 'visible' : 'hidden'} ${messageType}`}>
             {isListening && messageType === 'transcript' && (
                 <div className="subtitle-status">
                     <span className="listening-dot" />

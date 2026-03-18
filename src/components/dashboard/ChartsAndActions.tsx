@@ -1,175 +1,178 @@
-'use client';
-import Link from 'next/link';
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+
+const quickActions = [
+    {
+        href: "/blood-sugar",
+        title: "记录血糖",
+        description: "进入血糖管理页查看今日趋势与手动录入。",
+        icon: "fa-droplet",
+        tone: "blue",
+    },
+    {
+        href: "/blood-pressure",
+        title: "查看血压",
+        description: "快速进入血压详情与历史波动页面。",
+        icon: "fa-heart-pulse",
+        tone: "coral",
+    },
+    {
+        href: "/reports",
+        title: "导出报告",
+        description: "生成并查看本周健康摘要与关键结论。",
+        icon: "fa-file-medical",
+        tone: "indigo",
+    },
+];
 
 export default function ChartsAndActions() {
     return (
-        <div className="chart-section">
-            {/* 图表区域 占 2/3 */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-                {/* 血糖趋势图 */}
-                <div className="chart-card fade-in">
-                    <div className="chart-header">
-                        <h4 className="chart-title">血糖趋势</h4>
-                        <div className="chart-filters">
-                            <button className="chart-filter">日</button>
-                            <button className="chart-filter active">周</button>
-                            <button className="chart-filter">月</button>
+        <section className="dashboard-section">
+            <div className="chart-action-layout">
+                <div className="chart-stack">
+                    <motion.article
+                        className="dashboard-chart-card"
+                        initial={{ opacity: 0, y: 18 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        transition={{ duration: 0.45 }}
+                    >
+                        <div className="dashboard-chart-card__header">
+                            <div>
+                                <h3>近 7 日血糖趋势</h3>
+                                <p>餐后波动稳定，整体仍位于建议区间。</p>
+                            </div>
+                            <div className="dashboard-chart-card__filters">
+                                <button className="chart-filter">日</button>
+                                <button className="chart-filter active">周</button>
+                                <button className="chart-filter">月</button>
+                            </div>
                         </div>
-                    </div>
-                    <div className="chart-container">
-                        <div className="chart-y-axis">
-                            <span>15</span><span>12</span><span>9</span><span>6</span><span>3</span><span>0</span>
-                        </div>
-                        <div className="chart-area">
-                            <svg width="100%" height="100%" viewBox="0 0 600 220" preserveAspectRatio="none">
-                                <rect x="0" y="66" width="600" height="88" fill="#10b981" fillOpacity="0.1"></rect>
-                                <line x1="0" y1="0" x2="600" y2="0" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="44" x2="600" y2="44" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="88" x2="600" y2="88" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="132" x2="600" y2="132" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="176" x2="600" y2="176" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="220" x2="600" y2="220" stroke="#e5e7eb" strokeWidth="1"></line>
+                        <div className="dashboard-chart">
+                            <div className="dashboard-chart__labels dashboard-chart__labels--y">
+                                <span>15</span>
+                                <span>12</span>
+                                <span>9</span>
+                                <span>6</span>
+                                <span>3</span>
+                                <span>0</span>
+                            </div>
+                            <svg viewBox="0 0 620 260" preserveAspectRatio="none" className="dashboard-chart__svg">
                                 <defs>
-                                    <linearGradient id="areaGradientSugar" x1="0%" y1="0%" x2="0%" y2="100%">
-                                        <stop offset="0%" stopColor="#3b82f6" stopOpacity="0.3"></stop>
-                                        <stop offset="100%" stopColor="#3b82f6" stopOpacity="0"></stop>
+                                    <linearGradient id="dashboardSugarArea" x1="0%" y1="0%" x2="0%" y2="100%">
+                                        <stop offset="0%" stopColor="#2a6cf0" stopOpacity="0.32" />
+                                        <stop offset="100%" stopColor="#2a6cf0" stopOpacity="0.02" />
                                     </linearGradient>
                                 </defs>
-                                <path d="M0,120 Q50,100 100,110 T200,90 T300,100 T400,80 T500,95 T600,85 L600,220 L0,220 Z" fill="url(#areaGradientSugar)"></path>
-                                <path d="M0,120 Q50,100 100,110 T200,90 T300,100 T400,80 T500,95 T600,85" fill="none" stroke="#3b82f6" strokeWidth="3" strokeLinecap="round"></path>
-                                <circle cx="0" cy="120" r="5" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="100" cy="110" r="5" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="200" cy="90" r="5" fill="white" stroke="#10b981" strokeWidth="2"></circle>
-                                <circle cx="300" cy="100" r="5" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="400" cy="80" r="5" fill="white" stroke="#10b981" strokeWidth="2"></circle>
-                                <circle cx="500" cy="95" r="5" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="600" cy="85" r="6" fill="#3b82f6" stroke="white" strokeWidth="2"></circle>
+                                <rect x="0" y="78" width="620" height="84" rx="20" fill="#dff6ef" />
+                                <path d="M0 132 C55 110, 105 122, 155 104 S255 92, 310 116 S410 82, 465 96 S565 84, 620 74 L620 260 L0 260 Z" fill="url(#dashboardSugarArea)" />
+                                <path d="M0 132 C55 110, 105 122, 155 104 S255 92, 310 116 S410 82, 465 96 S565 84, 620 74" fill="none" stroke="#2a6cf0" strokeWidth="5" strokeLinecap="round" />
+                                <circle cx="155" cy="104" r="7" fill="#ffffff" stroke="#2a6cf0" strokeWidth="4" />
+                                <circle cx="310" cy="116" r="7" fill="#ffffff" stroke="#57c7a5" strokeWidth="4" />
+                                <circle cx="465" cy="96" r="7" fill="#ffffff" stroke="#2a6cf0" strokeWidth="4" />
+                                <circle cx="620" cy="74" r="9" fill="#2a6cf0" stroke="#ffffff" strokeWidth="4" />
                             </svg>
+                            <div className="dashboard-chart__labels dashboard-chart__labels--x">
+                                <span>周一</span>
+                                <span>周二</span>
+                                <span>周三</span>
+                                <span>周四</span>
+                                <span>周五</span>
+                                <span>周六</span>
+                                <span>周日</span>
+                            </div>
                         </div>
-                        <div className="chart-x-axis">
-                            <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
+                    </motion.article>
+
+                    <motion.article
+                        className="dashboard-chart-card"
+                        initial={{ opacity: 0, y: 18 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.2 }}
+                        transition={{ duration: 0.45, delay: 0.06 }}
+                    >
+                        <div className="dashboard-chart-card__header">
+                            <div>
+                                <h3>近 7 日血压变化</h3>
+                                <p>收缩压与舒张压均处在建议范围内。</p>
+                            </div>
+                            <div className="dashboard-chart-card__legend">
+                                <span><i className="fas fa-circle" /> 收缩压</span>
+                                <span><i className="fas fa-circle" /> 舒张压</span>
+                            </div>
                         </div>
-                    </div>
+                        <div className="dashboard-chart dashboard-chart--pressure">
+                            <div className="dashboard-chart__labels dashboard-chart__labels--y">
+                                <span>180</span>
+                                <span>150</span>
+                                <span>120</span>
+                                <span>90</span>
+                                <span>60</span>
+                            </div>
+                            <svg viewBox="0 0 620 260" preserveAspectRatio="none" className="dashboard-chart__svg">
+                                <rect x="0" y="86" width="620" height="72" rx="18" fill="#fff0ea" />
+                                <path d="M0 88 L103 82 L206 94 L310 76 L413 84 L516 76 L620 68" fill="none" stroke="#ff8b67" strokeWidth="5" strokeLinecap="round" />
+                                <path d="M0 150 L103 156 L206 148 L310 152 L413 144 L516 148 L620 142" fill="none" stroke="#2a6cf0" strokeWidth="5" strokeLinecap="round" />
+                            </svg>
+                            <div className="dashboard-chart__labels dashboard-chart__labels--x">
+                                <span>周一</span>
+                                <span>周二</span>
+                                <span>周三</span>
+                                <span>周四</span>
+                                <span>周五</span>
+                                <span>周六</span>
+                                <span>周日</span>
+                            </div>
+                        </div>
+                    </motion.article>
                 </div>
 
-                {/* 血压趋势图 */}
-                <div className="chart-card fade-in">
-                    <div className="chart-header">
-                        <h4 className="chart-title">近7日血压变化</h4>
-                        <div className="chart-filters">
-                            <button className="chart-filter">日</button>
-                            <button className="chart-filter active">周</button>
-                            <button className="chart-filter">月</button>
-                        </div>
-                    </div>
-                    <div className="chart-container">
-                        <div className="chart-y-axis">
-                            <span>180</span><span>150</span><span>120</span><span>90</span><span>60</span>
-                        </div>
-                        <div className="chart-area">
-                            <svg width="100%" height="100%" viewBox="0 0 600 220" preserveAspectRatio="none">
-                                <rect x="0" y="44" width="600" height="88" fill="#10b981" fillOpacity="0.1"></rect>
-                                <line x1="0" y1="0" x2="600" y2="0" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="55" x2="600" y2="55" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="110" x2="600" y2="110" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="165" x2="600" y2="165" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <line x1="0" y1="220" x2="600" y2="220" stroke="#e5e7eb" strokeWidth="1"></line>
-                                <path d="M0,80 L100,75 L200,85 L300,70 L400,78 L500,72 L600,68" fill="none" stroke="#ef4444" strokeWidth="3" strokeLinecap="round"></path>
-                                <path d="M0,140 L100,145 L200,138 L300,142 L400,135 L500,140 L600,138" fill="none" stroke="#3b82f6" strokeWidth="3" strokeLinecap="round"></path>
-                                <circle cx="0" cy="80" r="4" fill="white" stroke="#ef4444" strokeWidth="2"></circle>
-                                <circle cx="100" cy="75" r="4" fill="white" stroke="#ef4444" strokeWidth="2"></circle>
-                                <circle cx="200" cy="85" r="4" fill="white" stroke="#ef4444" strokeWidth="2"></circle>
-                                <circle cx="300" cy="70" r="4" fill="white" stroke="#ef4444" strokeWidth="2"></circle>
-                                <circle cx="400" cy="78" r="4" fill="white" stroke="#ef4444" strokeWidth="2"></circle>
-                                <circle cx="500" cy="72" r="4" fill="white" stroke="#ef4444" strokeWidth="2"></circle>
-                                <circle cx="600" cy="68" r="5" fill="#ef4444" stroke="white" strokeWidth="2"></circle>
-                                <circle cx="0" cy="140" r="4" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="100" cy="145" r="4" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="200" cy="138" r="4" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="300" cy="142" r="4" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="400" cy="135" r="4" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="500" cy="140" r="4" fill="white" stroke="#3b82f6" strokeWidth="2"></circle>
-                                <circle cx="600" cy="138" r="5" fill="#3b82f6" stroke="white" strokeWidth="2"></circle>
-                            </svg>
-                        </div>
-                        <div className="chart-x-axis">
-                            <span>周一</span><span>周二</span><span>周三</span><span>周四</span><span>周五</span><span>周六</span><span>周日</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* 快捷操作 占 1/3 */}
-            <div>
-                <div className="quick-actions-card fade-in" style={{ height: '100%' }}>
-                    <h4 className="quick-actions-title">快捷操作</h4>
-
-                    {/* 设备状态 */}
-                    <div className="device-status-card">
-                        <div className="device-status-header">
-                            <div className="device-icon">
-                                <i className="fas fa-microchip"></i>
+                <motion.aside
+                    className="dashboard-side-panel"
+                    initial={{ opacity: 0, x: 12 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.2 }}
+                    transition={{ duration: 0.45, delay: 0.05 }}
+                >
+                    <div className="dashboard-device-card">
+                        <div className="dashboard-device-card__top">
+                            <div className="dashboard-device-card__icon">
+                                <i className="fas fa-microchip" />
                             </div>
-                            <div>
-                                <h4 style={{ fontSize: '14px', fontWeight: 600, color: 'var(--gray-900)' }}>硅基CGM设备</h4>
-                                <p style={{ fontSize: '12px', color: 'var(--gray-600)' }}>已绑定 · 传感器状态良好</p>
-                            </div>
-                            <span className="device-status-badge connected">已连接</span>
+                            <span className="dashboard-device-card__badge">已连接</span>
                         </div>
+                        <h3>CGM 设备在线</h3>
+                        <p>传感器状态良好，最近一次同步时间为 5 分钟前。</p>
                     </div>
 
-                    <button className="quick-action-btn">
-                        <div className="quick-action-icon" style={{ background: '#fff7ed', color: 'var(--secondary-600)' }}>
-                            <i className="fas fa-mobile-alt"></i>
-                        </div>
-                        蓝牙血糖仪测量
-                    </button>
-
-                    <button className="quick-action-btn">
-                        <div className="quick-action-icon" style={{ background: 'var(--primary-100)', color: 'var(--primary-600)' }}>
-                            <i className="fas fa-heart"></i>
-                        </div>
-                        蓝牙血压计测量
-                    </button>
-
-                    <button className="quick-action-btn">
-                        <div className="quick-action-icon" style={{ background: '#dcfce7', color: '#16a34a' }}>
-                            <i className="fas fa-edit"></i>
-                        </div>
-                        手动记录数据
-                    </button>
-
-                    <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--gray-200)' }}>
-                        <h5 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--gray-700)', marginBottom: '12px' }}>更多记录</h5>
-                        <div style={{ display: 'flex', flexWrap: 'wrap' as const, gap: '8px' }}>
-                            {['+ 尿酸', '+ 血酮', '+ 用药', '+ 饮食'].map((item) => (
-                                <span key={item} style={{
-                                    padding: '4px 12px',
-                                    background: 'var(--gray-100)',
-                                    borderRadius: '9999px',
-                                    fontSize: '13px',
-                                    color: 'var(--gray-600)',
-                                    cursor: 'pointer'
-                                }}>{item}</span>
-                            ))}
-                        </div>
+                    <div className="dashboard-action-list">
+                        {quickActions.map((item) => (
+                            <Link key={item.title} href={item.href} className={`dashboard-action dashboard-action--${item.tone}`}>
+                                <div className="dashboard-action__icon">
+                                    <i className={`fas ${item.icon}`} />
+                                </div>
+                                <div>
+                                    <strong>{item.title}</strong>
+                                    <span>{item.description}</span>
+                                </div>
+                                <i className="fas fa-arrow-right dashboard-action__arrow" />
+                            </Link>
+                        ))}
                     </div>
 
-                    <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--gray-200)' }}>
-                        <h5 style={{ fontSize: '14px', fontWeight: 500, color: 'var(--gray-700)', marginBottom: '12px' }}>快捷服务</h5>
-                        <Link href="/hospital" className="service-item">
-                            <div className="service-icon">
-                                <i className="fas fa-hospital"></i>
-                            </div>
-                            <div>
-                                <div style={{ fontSize: '14px', fontWeight: 500, color: 'var(--gray-800)' }}>在线问诊</div>
-                                <div style={{ fontSize: '12px', color: 'var(--gray-500)' }}>专业医生在线咨询</div>
-                            </div>
-                            <i className="fas fa-chevron-right" style={{ marginLeft: 'auto', color: 'var(--gray-400)', fontSize: '12px' }}></i>
+                    <div className="dashboard-service-card">
+                        <div className="dashboard-service-card__eyebrow">今日建议</div>
+                        <h3>晚餐后 30 分钟进行 15 分钟快走</h3>
+                        <p>有助于保持餐后血糖稳定，同时不会增加过多运动负担。</p>
+                        <Link href="/hospital" className="header-btn header-btn-secondary">
+                            <i className="fas fa-stethoscope" />
+                            进入互联网医院
                         </Link>
                     </div>
-                </div>
+                </motion.aside>
             </div>
-        </div>
+        </section>
     );
 }

@@ -1,103 +1,100 @@
 "use client";
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+interface NavItem {
+    href: string;
+    label: string;
+    icon: string;
+    aliases?: string[];
+    badge?: string;
+}
+
+interface NavSection {
+    title: string;
+    items: NavItem[];
+}
+
+const NAV_SECTIONS: NavSection[] = [
+    {
+        title: "健康监测",
+        items: [
+            { href: "/", label: "健康总览", icon: "fa-chart-pie", aliases: ["/dashboard"] },
+            { href: "/blood-sugar", label: "血糖管理", icon: "fa-droplet" },
+            { href: "/blood-pressure", label: "血压管理", icon: "fa-heart-pulse" },
+            { href: "/glycated", label: "糖化血红蛋白", icon: "fa-chart-line" },
+            { href: "/uric-acid", label: "尿酸监测", icon: "fa-vial" },
+            { href: "/blood-ketone", label: "血酮监测", icon: "fa-wave-square" },
+        ],
+    },
+    {
+        title: "智能服务",
+        items: [
+            { href: "/ai-chat", label: "AI 健康助手", icon: "fa-robot", badge: "NEW" },
+            { href: "/hospital", label: "互联网医院", icon: "fa-hospital" },
+            { href: "/reports", label: "健康报告", icon: "fa-file-medical" },
+        ],
+    },
+    {
+        title: "系统设置",
+        items: [{ href: "/settings", label: "设置中心", icon: "fa-cog" }],
+    },
+];
+
+function isPathActive(pathname: string, href: string, aliases?: string[]) {
+    if (href === "/") {
+        return pathname === "/" || pathname === "/dashboard" || aliases?.includes(pathname);
+    }
+
+    return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export default function Sidebar() {
     const pathname = usePathname();
 
-    const isActive = (path: string) => {
-        if (path === '/dashboard') {
-            return pathname === '/dashboard';
-        }
-        return pathname.startsWith(path);
-    };
-
     return (
         <aside className="sidebar">
             <div className="sidebar-logo">
-                <h1>
-                    <i className="fas fa-heartbeat"></i>
-                    <span>优唐智能AI+</span>
-                </h1>
+                <Link href="/" className="sidebar-logo__link">
+                    <div className="sidebar-logo__mark">
+                        <span className="sidebar-logo__dot" />
+                        YT
+                    </div>
+                    <div>
+                        <div className="sidebar-logo__title">优糖智能</div>
+                        <div className="sidebar-logo__subtitle">Health Command Center</div>
+                    </div>
+                </Link>
             </div>
 
             <nav className="sidebar-nav">
-                <div className="nav-section">
-                    <div className="nav-section-title">健康监测</div>
-                    <Link href="/dashboard" className={`nav-item ${isActive('/dashboard') ? 'active' : ''}`}>
-                        <i className="fas fa-th-large"></i>
-                        <span>健康概览</span>
-                    </Link>
-                    <Link href="/blood-sugar" className={`nav-item ${isActive('/blood-sugar') ? 'active' : ''}`}>
-                        <i className="fas fa-tint"></i>
-                        <span>血糖管理</span>
-                    </Link>
-                    <Link href="/blood-pressure" className={`nav-item ${isActive('/blood-pressure') ? 'active' : ''}`}>
-                        <i className="fas fa-heart"></i>
-                        <span>血压管理</span>
-                    </Link>
-                    <Link href="/glycated" className={`nav-item ${isActive('/glycated') ? 'active' : ''}`}>
-                        <i className="fas fa-chart-line"></i>
-                        <span>糖化血红蛋白</span>
-                    </Link>
-                    <Link
-                        href="/uric-acid"
-                        className={`nav-item ${isActive('/uric-acid') ? 'active' : ''}`}
-                    >
-                        <i className="fas fa-flask w-5 text-center text-lg"></i>
-                        <span className="text-sm">尿酸检测</span>
-                    </Link>
-                    <Link
-                        href="/blood-ketone"
-                        className={`nav-item ${isActive('/blood-ketone') ? 'active' : ''}`}
-                    >
-                        <i className="fas fa-burn w-5 text-center text-lg"></i>
-                        <span className="text-sm">血酮检测</span>
-                    </Link>
-                </div>
-
-                <div className="nav-section">
-                    <div className="nav-section-title">智能服务</div>
-                    <Link
-                        href="/ai-chat"
-                        className={`nav-item ${isActive('/ai-chat') ? 'active' : ''}`}
-                    >
-                        <i className="fas fa-robot w-5 text-center text-lg"></i>
-                        <span className="text-sm">AI助手</span>
-                        <span className="badge bg-red-500 text-white text-[11px] px-2 py-0.5 rounded-full font-semibold ml-auto">新</span>
-                    </Link>
-                    <Link
-                        href="/hospital"
-                        className={`nav-item ${isActive('/hospital') ? 'active' : ''}`}
-                    >
-                        <i className="fas fa-hospital w-5 text-center text-lg"></i>
-                        <span className="text-sm">互联网医院</span>
-                    </Link>
-
-                    <Link
-                        href="/reports"
-                        className={`nav-item ${isActive('/reports') ? 'active' : ''}`}
-                    >
-                        <i className="fas fa-file-medical-alt w-5 text-center text-lg"></i>
-                        <span className="text-sm">健康报告</span>
-                    </Link>
-                </div>
-
-                <div className="nav-section">
-                    <div className="nav-section-title">设置</div>
-                    <Link href="/settings" className={`nav-item ${isActive('/settings') ? 'active' : ''}`}>
-                        <i className="fas fa-cog"></i>
-                        <span>系统设置</span>
-                    </Link>
-                </div>
+                {NAV_SECTIONS.map((section) => (
+                    <div className="nav-section" key={section.title}>
+                        <div className="nav-section-title">{section.title}</div>
+                        {section.items.map((item) => {
+                            const active = isPathActive(pathname, item.href, item.aliases);
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    className={`nav-item ${active ? "active" : ""}`}
+                                >
+                                    <i className={`fas ${item.icon}`} />
+                                    <span>{item.label}</span>
+                                    {item.badge ? <span className="badge">{item.badge}</span> : null}
+                                </Link>
+                            );
+                        })}
+                    </div>
+                ))}
             </nav>
 
-            <Link href="#" className="sidebar-user">
-                <div className="user-avatar">张</div>
+            <Link href="/settings" className="sidebar-user">
+                <div className="user-avatar">唐</div>
                 <div>
-                    <div className="user-name">张先生</div>
-                    <div className="user-status">健康会员</div>
+                    <div className="user-name">唐先生</div>
+                    <div className="user-status">今日状态稳定</div>
                 </div>
             </Link>
         </aside>

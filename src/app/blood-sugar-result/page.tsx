@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import DashboardLayout from "@/components/layout/DashboardLayout";
@@ -31,7 +31,7 @@ function toNumber(raw: string | null, fallback: number) {
     return Number.isNaN(parsed) ? fallback : parsed;
 }
 
-export default function BloodSugarResultPage() {
+function BloodSugarResultContent() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [feedback, setFeedback] = useState<"like" | "dislike" | null>(null);
@@ -222,5 +222,13 @@ export default function BloodSugarResultPage() {
                 </div>
             </div>
         </DashboardLayout>
+    );
+}
+
+export default function BloodSugarResultPage() {
+    return (
+        <Suspense fallback={null}>
+            <BloodSugarResultContent />
+        </Suspense>
     );
 }

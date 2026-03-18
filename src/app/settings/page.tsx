@@ -78,16 +78,28 @@ export default function SettingsPage() {
                     </div>
                     <div className="stats-grid">
                         <div className="stat-item">
+                            <div className="settings-stat-icon">
+                                <i className="fas fa-shield-halved"></i>
+                            </div>
                             <div className="stat-value">3</div>
                             <div className="stat-label">已开启保护项</div>
+                            <div className="settings-stat-meta">安全能力已启用</div>
                         </div>
                         <div className="stat-item">
+                            <div className="settings-stat-icon">
+                                <i className="fas fa-bell"></i>
+                            </div>
                             <div className="stat-value" style={{ color: "var(--warning-500)" }}>1</div>
                             <div className="stat-label">待处理提醒</div>
+                            <div className="settings-stat-meta">需要手动确认</div>
                         </div>
                         <div className="stat-item">
+                            <div className="settings-stat-icon">
+                                <i className="fas fa-key"></i>
+                            </div>
                             <div className="stat-value">7天</div>
                             <div className="stat-label">最近密码更新</div>
+                            <div className="settings-stat-meta">账号状态正常</div>
                         </div>
                     </div>
                 </div>

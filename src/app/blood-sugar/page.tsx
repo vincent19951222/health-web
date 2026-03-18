@@ -157,20 +157,44 @@ export default function BloodSugarMainPage() {
                     {/* 统计数据网格 */}
                     <div className="stats-grid">
                         <div className="stat-item">
-                            <div className="stat-label">今日平均</div>
-                            <div className="stat-value">6.5</div>
+                            <div className="stat-card-icon">
+                                <i className="fas fa-chart-line"></i>
+                            </div>
+                            <div className="stat-card-copy">
+                                <div className="stat-label">今日平均</div>
+                                <div className="stat-value">6.5</div>
+                                <div className="stat-card-meta">全天均值</div>
+                            </div>
                         </div>
                         <div className="stat-item">
-                            <div className="stat-label">今日最高</div>
-                            <div className="stat-value">8.3</div>
+                            <div className="stat-card-icon">
+                                <i className="fas fa-arrow-trend-up"></i>
+                            </div>
+                            <div className="stat-card-copy">
+                                <div className="stat-label">今日最高</div>
+                                <div className="stat-value">8.3</div>
+                                <div className="stat-card-meta">重点观察峰值</div>
+                            </div>
                         </div>
                         <div className="stat-item">
-                            <div className="stat-label">今日最低</div>
-                            <div className="stat-value">4.2</div>
+                            <div className="stat-card-icon">
+                                <i className="fas fa-moon"></i>
+                            </div>
+                            <div className="stat-card-copy">
+                                <div className="stat-label">今日最低</div>
+                                <div className="stat-value">4.2</div>
+                                <div className="stat-card-meta">低点监测</div>
+                            </div>
                         </div>
                         <div className="stat-item">
-                            <div className="stat-label">达标率</div>
-                            <div className="stat-value">92%</div>
+                            <div className="stat-card-icon">
+                                <i className="fas fa-bullseye"></i>
+                            </div>
+                            <div className="stat-card-copy">
+                                <div className="stat-label">达标率</div>
+                                <div className="stat-value">92%</div>
+                                <div className="stat-card-meta">目标 &gt; 90%</div>
+                            </div>
                         </div>
                     </div>
 

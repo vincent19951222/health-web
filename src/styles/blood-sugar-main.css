@@ -227,31 +227,98 @@
 .bs-page .stats-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
+    gap: 16px;
     margin-bottom: 24px;
     position: relative;
     z-index: 10;
 }
 
 .bs-page .stat-item {
-    background: rgba(255, 255, 255, 0.15);
-    backdrop-filter: blur(10px);
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    text-align: center;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    --stat-accent: #2a6cf0;
+    --stat-accent-soft: rgba(255, 255, 255, 0.18);
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.18);
+    backdrop-filter: blur(14px);
+    border-radius: 24px;
+    padding: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    box-shadow: 0 18px 32px rgba(17, 39, 83, 0.12);
+    overflow: hidden;
+    transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+.bs-page .stat-item::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 4px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.95), var(--stat-accent));
+}
+
+.bs-page .stat-item:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 24px 36px rgba(17, 39, 83, 0.16);
+}
+
+.bs-page .stat-item:nth-child(1) {
+    --stat-accent: #8bd6ff;
+    --stat-accent-soft: rgba(139, 214, 255, 0.2);
+}
+
+.bs-page .stat-item:nth-child(2) {
+    --stat-accent: #ffd08b;
+    --stat-accent-soft: rgba(255, 208, 139, 0.2);
+}
+
+.bs-page .stat-item:nth-child(3) {
+    --stat-accent: #9be7c4;
+    --stat-accent-soft: rgba(155, 231, 196, 0.2);
+}
+
+.bs-page .stat-item:nth-child(4) {
+    --stat-accent: #c5c8ff;
+    --stat-accent-soft: rgba(197, 200, 255, 0.2);
+}
+
+.bs-page .stat-card-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--stat-accent-soft);
+    color: white;
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.bs-page .stat-card-copy {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .bs-page .stat-label {
     font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 4px;
+    color: rgba(255, 255, 255, 0.76);
+    letter-spacing: 0.06em;
 }
 
 .bs-page .stat-value {
-    font-size: 20px;
-    font-weight: 700;
+    font-family: var(--font-display-stack);
+    font-size: 30px;
+    font-weight: 800;
     color: white;
+    line-height: 1;
+}
+
+.bs-page .stat-card-meta {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.62);
 }
 
 /* 鎿嶄綔鎸夐挳缁?*/

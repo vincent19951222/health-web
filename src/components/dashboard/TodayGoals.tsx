@@ -1,90 +1,84 @@
+"use client";
+
+import { motion } from "framer-motion";
+
+const goals = [
+    {
+        title: "血糖达标率",
+        value: "92%",
+        subtitle: "目标 > 90%",
+        stroke: "#2a6cf0",
+        progress: 0.92,
+    },
+    {
+        title: "血压监测",
+        value: "120/80",
+        subtitle: "建议范围 90-140 / 60-90",
+        stroke: "#ff8b67",
+        progress: 0.76,
+    },
+    {
+        title: "血酮监测",
+        value: "0.4",
+        subtitle: "建议范围 0-0.6 mmol/L",
+        stroke: "#5e67ff",
+        progress: 0.65,
+    },
+];
+
+function GoalRing({ progress, stroke, label }: { progress: number; stroke: string; label: string }) {
+    const radius = 54;
+    const circumference = 2 * Math.PI * radius;
+    const dashOffset = circumference * (1 - progress);
+
+    return (
+        <svg className="goal-ring" width="136" height="136" viewBox="0 0 136 136" aria-label={label}>
+            <circle cx="68" cy="68" r={radius} className="goal-ring__bg" />
+            <circle
+                cx="68"
+                cy="68"
+                r={radius}
+                className="goal-ring__progress"
+                stroke={stroke}
+                strokeDasharray={circumference}
+                strokeDashoffset={dashOffset}
+            />
+        </svg>
+    );
+}
+
 export default function TodayGoals() {
     return (
-        <section className="overview-section fade-in">
+        <section className="dashboard-section">
             <div className="section-header">
-                <h3 className="section-title">今日健康目标</h3>
+                <div>
+                    <h3 className="section-title">今日健康目标</h3>
+                    <p className="section-caption">用更直观的环形进度表达目标完成度与当前状态。</p>
+                </div>
             </div>
 
-            <div className="ring-cards-grid">
-                {/* 血糖达标率 */}
-                <div className="ring-card">
-                    <div className="ring-card-title">血糖达标率</div>
-                    <div className="ring-container">
-                        <svg className="ring-svg" width="160" height="160" viewBox="0 0 160 160">
-                            <circle className="ring-bg" cx="80" cy="80" r="60"></circle>
-                            <circle className="ring-progress" cx="80" cy="80" r="60"
-                                stroke="#3b82f6"
-                                strokeDasharray="377"
-                                strokeDashoffset="30">
-                            </circle>
-                        </svg>
-                        <div className="ring-center">
-                            <div className="ring-value">92%</div>
-                            <div className="ring-unit">达标</div>
+            <div className="goal-grid">
+                {goals.map((goal, index) => (
+                    <motion.article
+                        key={goal.title}
+                        className="goal-card"
+                        initial={{ opacity: 0, y: 18 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true, amount: 0.3 }}
+                        transition={{ duration: 0.45, delay: index * 0.08 }}
+                    >
+                        <div className="goal-card__meta">
+                            <h4>{goal.title}</h4>
+                            <span>{goal.subtitle}</span>
                         </div>
-                    </div>
-                    <div className="ring-label">目标: &gt;90%</div>
-                </div>
-
-                {/* 血压双圆环 */}
-                <div className="ring-card">
-                    <div className="ring-card-title">血压监测</div>
-                    <div className="dual-ring-container">
-                        <div className="dual-ring-item">
-                            <div className="ring-container" style={{ width: '120px', height: '120px' }}>
-                                <svg className="ring-svg" width="120" height="120" viewBox="0 0 120 120">
-                                    <circle className="ring-bg" cx="60" cy="60" r="45"></circle>
-                                    <circle className="ring-progress" cx="60" cy="60" r="45"
-                                        stroke="#ef4444"
-                                        strokeDasharray="283"
-                                        strokeDashoffset="80">
-                                    </circle>
-                                </svg>
-                                <div className="ring-center">
-                                    <div className="ring-value" style={{ fontSize: '20px' }}>120</div>
-                                    <div className="ring-unit">收缩压</div>
-                                </div>
+                        <div className="goal-card__ring">
+                            <GoalRing progress={goal.progress} stroke={goal.stroke} label={goal.title} />
+                            <div className="goal-card__center">
+                                <strong>{goal.value}</strong>
                             </div>
                         </div>
-                        <div className="dual-ring-item">
-                            <div className="ring-container" style={{ width: '120px', height: '120px' }}>
-                                <svg className="ring-svg" width="120" height="120" viewBox="0 0 120 120">
-                                    <circle className="ring-bg" cx="60" cy="60" r="45"></circle>
-                                    <circle className="ring-progress" cx="60" cy="60" r="45"
-                                        stroke="#3b82f6"
-                                        strokeDasharray="283"
-                                        strokeDashoffset="140">
-                                    </circle>
-                                </svg>
-                                <div className="ring-center">
-                                    <div className="ring-value" style={{ fontSize: '20px' }}>80</div>
-                                    <div className="ring-unit">舒张压</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="ring-label" style={{ marginTop: '16px' }}>正常范围: 90-140/60-90</div>
-                </div>
-
-                {/* 血酮监测 */}
-                <div className="ring-card">
-                    <div className="ring-card-title">血酮监测</div>
-                    <div className="ring-container">
-                        <svg className="ring-svg" width="160" height="160" viewBox="0 0 160 160">
-                            <circle className="ring-bg" cx="80" cy="80" r="60"></circle>
-                            <circle className="ring-progress" cx="80" cy="80" r="60"
-                                stroke="#8b5cf6"
-                                strokeDasharray="377"
-                                strokeDashoffset="260">
-                            </circle>
-                        </svg>
-                        <div className="ring-center">
-                            <div className="ring-value">0.4</div>
-                            <div className="ring-unit">mmol/L</div>
-                        </div>
-                    </div>
-                    <div className="ring-label">正常范围: 0-0.6</div>
-                </div>
+                    </motion.article>
+                ))}
             </div>
         </section>
     );
